@@ -1,0 +1,4847 @@
+[
+ {
+  "case": {
+   "id": "S1",
+   "title": "On 2nite",
+   "artist": "Silva Bumpa",
+   "candidate_corrections": []
+  },
+  "searches": [
+   {
+    "via": "original_input",
+    "artist_query": "Silva Bumpa",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22On%202nite%22%20AND%20artist%3A%22Silva%20Bumpa%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/0b4671f91f94518f8dc21129.json",
+     "from_cache": true
+    },
+    "total_hits": 4,
+    "results_returned": 4
+   },
+   {
+    "via": "title_only",
+    "artist_query": null,
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22On%202nite%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/0c32bc47e803d2132c85bbd2.json",
+     "from_cache": true
+    },
+    "total_hits": 18,
+    "results_returned": 18
+   }
+  ],
+  "candidates": [
+   {
+    "observed": {
+     "mbid": "de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158000,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "release_count": 2,
+     "release_titles": [
+      "On 2nite"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "8ec04357-daed-492d-a4af-2b193768554d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158848,
+     "first_release_date": "2026-08-14",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Fantasy (Baby if u know me)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "68e07af2-584a-47e4-a45f-96d90c5efd4d",
+     "title": "On 2nite (extended mix)",
+     "disambiguation": null,
+     "length_ms": 270025,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "On 2nite (extended mix)"
+     ]
+    },
+    "search_score": 90,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "8075cea4-a491-4a18-9407-4df21276ae55",
+     "title": "On 2nite (Dusky remix)",
+     "disambiguation": null,
+     "length_ms": 172667,
+     "first_release_date": "2026-07-31",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2601058"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "On 2nite (Dusky remix)"
+     ]
+    },
+    "search_score": 90,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158000,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "release_count": 2,
+     "release_titles": [
+      "On 2nite"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8aa9aaeb-d2a4-4401-8f26-5342e70e4d3b",
+     "title": "On 2Nite",
+     "disambiguation": null,
+     "length_ms": 216746,
+     "first_release_date": "2009-11-03",
+     "artist_credit": "Stick Figure",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Smoke Stack"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8ec04357-daed-492d-a4af-2b193768554d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158848,
+     "first_release_date": "2026-08-14",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Fantasy (Baby if u know me)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "641eb773-78b9-4989-b847-ad8e54d16a96",
+     "title": "Puttin' On 2nite",
+     "disambiguation": null,
+     "length_ms": 222000,
+     "first_release_date": "2005-01-05",
+     "artist_credit": "Lumberjacks",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Livin' Life as Lumberjacks"
+     ]
+    },
+    "search_score": 87,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "212ec15f-8b7c-4505-9844-78a88b0efc4e",
+     "title": "Party on 2nite",
+     "disambiguation": null,
+     "length_ms": 208506,
+     "first_release_date": "2003-10-08",
+     "artist_credit": "Tymes 4",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "4Story"
+     ]
+    },
+    "search_score": 87,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "b9485209-8396-4ed9-97be-84bf3760f7e5",
+     "title": "Itz on 2nite",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "2006",
+     "artist_credit": "Uce Duce",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Usociated"
+     ]
+    },
+    "search_score": 87,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8075cea4-a491-4a18-9407-4df21276ae55",
+     "title": "On 2nite (Dusky remix)",
+     "disambiguation": null,
+     "length_ms": 172667,
+     "first_release_date": "2026-07-31",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [
+      "GBARL2601058"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "On 2nite (Dusky remix)"
+     ]
+    },
+    "search_score": 78,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "68e07af2-584a-47e4-a45f-96d90c5efd4d",
+     "title": "On 2nite (extended mix)",
+     "disambiguation": null,
+     "length_ms": 270025,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "On 2nite (extended mix)"
+     ]
+    },
+    "search_score": 78,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5fe654d7-4436-468e-8f96-61adff898711",
+     "title": "Naida It's on 2nite",
+     "disambiguation": "part of “Private Party” DJ-mix",
+     "length_ms": 413000,
+     "first_release_date": "1999",
+     "artist_credit": "Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Private Party"
+     ]
+    },
+    "search_score": 78,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "3072d4b3-8cfd-4a98-8151-cdf279e36769",
+     "title": "It's On 2Nite (Mobb dub)",
+     "disambiguation": null,
+     "length_ms": 357000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite (Limited Edition Remixes)"
+     ]
+    },
+    "search_score": 70,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5c9ea65c-5ffb-4c96-af3c-5acd33d40f07",
+     "title": "It's on 2nite (Bumpin' Dubb)",
+     "disambiguation": null,
+     "length_ms": 351000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite"
+     ]
+    },
+    "search_score": 70,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "ea631528-d21c-4a85-a112-0860373d421e",
+     "title": "It's On 2Nite (Supadubb #51)",
+     "disambiguation": null,
+     "length_ms": 372000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite (Limited Edition Remixes)"
+     ]
+    },
+    "search_score": 70,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "42b531bc-d341-46ed-8bd0-3f7b074e698d",
+     "title": "It's on 2nite (Romix #48)",
+     "disambiguation": null,
+     "length_ms": 575000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite"
+     ]
+    },
+    "search_score": 70,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5354d37b-4966-45de-bd59-6c76ee845f5d",
+     "title": "It's On 2Nite (Mobb vocal #2)",
+     "disambiguation": null,
+     "length_ms": 357000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite (Limited Edition Remixes)"
+     ]
+    },
+    "search_score": 64,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "3f9eca22-fd58-4624-bf1c-f77d14d66de2",
+     "title": "It's On 2Nite (Underground vocal mix)",
+     "disambiguation": null,
+     "length_ms": 482000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite (Limited Edition Remixes)"
+     ]
+    },
+    "search_score": 64,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "4f9c93e7-4f63-4897-998a-4b5d1f9cb82e",
+     "title": "It's on 2nite (Bumpin' vocal #1)",
+     "disambiguation": null,
+     "length_ms": 351000,
+     "first_release_date": "1998-12",
+     "artist_credit": "Romanthony presents Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "It's On 2Nite"
+     ]
+    },
+    "search_score": 64,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "0e446c82-ed82-4345-a586-2bf3542d8886",
+     "title": "It's on 2nite (Bumpin' vocal #1 2015 remaster)",
+     "disambiguation": null,
+     "length_ms": 351252,
+     "first_release_date": "2017-12-22",
+     "artist_credit": "Romanthony & Naida",
+     "isrcs": [
+      "GBPQS1500029"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Glasgow Underground 1997-2017"
+     ]
+    },
+    "search_score": 54,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5ebb0312-b6e9-4366-8573-6fc9cc7c9a0d",
+     "title": "It's On 2Nite (Bumpin' Vocal #1) (2015 Re-Master)",
+     "disambiguation": null,
+     "length_ms": 351000,
+     "first_release_date": "2015-02-16",
+     "artist_credit": "Romanthony Featuring Naida",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Glasgow Underground 97/07"
+     ]
+    },
+    "search_score": 50,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   }
+  ],
+  "recordings": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/5270618691ee1d9d4b4cefdc.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158000,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "artists": [
+      {
+       "credited_as": "Silva Bumpa",
+       "artist_name": "Silva Bumpa",
+       "artist_mbid": "980604d4-fc2b-4778-8fc5-a7d28e52ab85",
+       "disambiguation": "Sheffield, UK DJ"
+      }
+     ],
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "60f21746-c5db-4779-b4dc-a29cffdc439d",
+       "title": "On 2nite",
+       "date": "2026-05-29",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee"
+      },
+      {
+       "mbid": "a4c1c135-23fc-4505-855c-15e792fccd19",
+       "title": "On 2nite",
+       "date": "2026",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee"
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/8ec04357-daed-492d-a4af-2b193768554d?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/67a19e6f14f3e21a1edff9b9.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "8ec04357-daed-492d-a4af-2b193768554d",
+     "title": "On 2nite",
+     "disambiguation": null,
+     "length_ms": 158848,
+     "first_release_date": "2026-08-14",
+     "artist_credit": "Silva Bumpa",
+     "artists": [
+      {
+       "credited_as": "Silva Bumpa",
+       "artist_name": "Silva Bumpa",
+       "artist_mbid": "980604d4-fc2b-4778-8fc5-a7d28e52ab85",
+       "disambiguation": "Sheffield, UK DJ"
+      }
+     ],
+     "isrcs": [
+      "GBARL2600782"
+     ],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "47486b46-e9a7-481d-8e59-8dca2698f117",
+       "title": "Fantasy (Baby if u know me)",
+       "date": "2026-08-14",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "cefabd4b-1e05-455e-b2ff-5ea00529fb55"
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/68e07af2-584a-47e4-a45f-96d90c5efd4d?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/5d3b669e2ffd484c5ba1189f.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "68e07af2-584a-47e4-a45f-96d90c5efd4d",
+     "title": "On 2nite (extended mix)",
+     "disambiguation": null,
+     "length_ms": 270025,
+     "first_release_date": "2026-05-29",
+     "artist_credit": "Silva Bumpa",
+     "artists": [
+      {
+       "credited_as": "Silva Bumpa",
+       "artist_name": "Silva Bumpa",
+       "artist_mbid": "980604d4-fc2b-4778-8fc5-a7d28e52ab85",
+       "disambiguation": "Sheffield, UK DJ"
+      }
+     ],
+     "isrcs": [],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [
+      {
+       "name": "speed garage",
+       "votes": 1
+      },
+      {
+       "name": "uk garage",
+       "votes": 1
+      }
+     ],
+     "tags": [
+      {
+       "name": "aggressive",
+       "votes": 1
+      },
+      {
+       "name": "speed garage",
+       "votes": 1
+      },
+      {
+       "name": "uk garage",
+       "votes": 1
+      }
+     ],
+     "releases": [
+      {
+       "mbid": "be233bcb-ed7a-4a80-9014-e6fc1a46e147",
+       "title": "On 2nite (extended mix)",
+       "date": "2026-05-29",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee"
+      }
+     ]
+    }
+   }
+  ],
+  "releases": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/a4c1c135-23fc-4505-855c-15e792fccd19?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/a461b1bed48a092d9c2d4dac.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "a4c1c135-23fc-4505-855c-15e792fccd19",
+     "title": "On 2nite",
+     "date": "2026",
+     "country": "XW",
+     "status": "Official",
+     "barcode": null,
+     "artist_credit": "Silva Bumpa",
+     "labels": [],
+     "formats": [],
+     "release_group": {
+      "mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee",
+      "title": "On 2nite",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [],
+     "genres": [],
+     "tags": []
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/60f21746-c5db-4779-b4dc-a29cffdc439d?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/bac78fd36f3b91ee663b4a0a.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "60f21746-c5db-4779-b4dc-a29cffdc439d",
+     "title": "On 2nite",
+     "date": "2026-05-29",
+     "country": "XW",
+     "status": "Official",
+     "barcode": "196874442296",
+     "artist_credit": "Silva Bumpa",
+     "labels": [
+      {
+       "name": "Room Two Recordings",
+       "label_mbid": "0f3d7e7a-12db-4633-ae5b-6d165e390914",
+       "catalog_number": null
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee",
+      "title": "On 2nite",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "free streaming",
+       "url": "https://open.spotify.com/album/46NWiHTOxSLHBGJIT6J73N"
+      },
+      {
+       "type": "free streaming",
+       "url": "https://www.deezer.com/album/989201011"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://music.apple.com/gb/album/6772312874"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://www.qobuz.com/gb-en/album/on-2nite-silva-bumpa/qgrhsrjo23482"
+      },
+      {
+       "type": "streaming",
+       "url": "https://music.apple.com/gb/album/6772312874"
+      },
+      {
+       "type": "streaming",
+       "url": "https://www.qobuz.com/gb-en/album/on-2nite-silva-bumpa/qgrhsrjo23482"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/be233bcb-ed7a-4a80-9014-e6fc1a46e147?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/9ac2b8219a10d0e0650f6015.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "be233bcb-ed7a-4a80-9014-e6fc1a46e147",
+     "title": "On 2nite (extended mix)",
+     "date": "2026-05-29",
+     "country": "XW",
+     "status": "Official",
+     "barcode": "196874442302",
+     "artist_credit": "Silva Bumpa",
+     "labels": [
+      {
+       "name": "Room Two Recordings",
+       "label_mbid": "0f3d7e7a-12db-4633-ae5b-6d165e390914",
+       "catalog_number": "G010005833291B"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee",
+      "title": "On 2nite",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "purchase for download",
+       "url": "https://www.beatport.com/release/on-2nite-extended-mix/6990211"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "release_groups": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release-group/626c2c01-baaf-4c33-b61b-de2c329da2ee?fmt=json&inc=genres%2Btags%2Burl-rels%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/bdf4028f5a005c8ba35f909c.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "626c2c01-baaf-4c33-b61b-de2c329da2ee",
+     "title": "On 2nite",
+     "primary_type": "Single",
+     "secondary_types": [],
+     "first_release_date": "2026-05-29",
+     "url_relations": [],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "wikidata_search": {
+   "request": {
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=On%202nite&type=item",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/d0342453a2a8442fcc430397.json",
+    "from_cache": true
+   },
+   "observed": []
+  },
+  "interpretation": {
+   "status": "found_exact_input",
+   "matching_recordings_in_search": 4,
+   "recordings_looked_up": 3,
+   "artist_mbids_in_matches": [
+    "980604d4-fc2b-4778-8fc5-a7d28e52ab85"
+   ],
+   "same_name_artists_in_mb": 1,
+   "distinct_lengths_ms": [
+    158000,
+    158848,
+    270025
+   ],
+   "title_only_hits_other_artists": [
+    "Stick Figure"
+   ],
+   "genres_mb": [
+    "speed garage",
+    "uk garage"
+   ],
+   "tags_mb": [
+    "aggressive",
+    "speed garage",
+    "uk garage"
+   ],
+   "electronic_specific_terms": [
+    "uk garage"
+   ],
+   "wikidata_linked_from_mb": [],
+   "discogs_ids_from_mb": []
+  },
+  "artist_search": {
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Silva%20Bumpa%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/afd537de7caf535c868f22a3.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "mbid": "980604d4-fc2b-4778-8fc5-a7d28e52ab85",
+     "name": "Silva Bumpa",
+     "disambiguation": "Sheffield, UK DJ",
+     "country": null,
+     "score": 100
+    }
+   ]
+  },
+  "fuzzy_diagnostic": null
+ },
+ {
+  "case": {
+   "id": "S2",
+   "title": "Vinotinto",
+   "artist": "Luciano",
+   "candidate_corrections": []
+  },
+  "searches": [
+   {
+    "via": "original_input",
+    "artist_query": "Luciano",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Vinotinto%22%20AND%20artist%3A%22Luciano%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/7643c337fb8b880c9ef64ac1.json",
+     "from_cache": true
+    },
+    "total_hits": 0,
+    "results_returned": 0
+   },
+   {
+    "via": "title_only",
+    "artist_query": null,
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Vinotinto%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/fc949e79b156464d58e48e6b.json",
+     "from_cache": true
+    },
+    "total_hits": 5,
+    "results_returned": 5
+   }
+  ],
+  "candidates": [
+   {
+    "observed": {
+     "mbid": "254cc492-ff9d-486f-b710-1418a5281a8d",
+     "title": "La Vinotinto",
+     "disambiguation": null,
+     "length_ms": 196000,
+     "first_release_date": "2005",
+     "artist_credit": "Los Mentas",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Masacre en el Pin 5!!"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "69ebb8a8-98f0-41f3-aec9-222b593a6d9a",
+     "title": "La Vinotinto",
+     "disambiguation": null,
+     "length_ms": 199000,
+     "first_release_date": "2009",
+     "artist_credit": "Los Mentas",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Reserva Añeja"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "0d5e2dfe-12df-46ce-b991-e328dca515fd",
+     "title": "La Vinotinto*",
+     "disambiguation": null,
+     "length_ms": 195000,
+     "first_release_date": "2005",
+     "artist_credit": "Los Mentas",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Masacre en el Pin 5!!"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "9fd866a8-d345-4243-a9eb-d5a209d405bb",
+     "title": "La Vinotinto",
+     "disambiguation": null,
+     "length_ms": 198000,
+     "first_release_date": "2013",
+     "artist_credit": "Los Mentas",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Arriba Carajo 15 Años En Vivo"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "33fc5f03-e187-4d15-bcea-84170e12cb62",
+     "title": "Vinotinto y oro",
+     "disambiguation": null,
+     "length_ms": 214157,
+     "first_release_date": "2022-02-18",
+     "artist_credit": "Santiago Cruz",
+     "isrcs": [
+      "QM4TW2263625"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Vinotinto y oro"
+     ]
+    },
+    "search_score": 87,
+    "interpretation": {
+     "title_match": "different",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   }
+  ],
+  "recordings": [],
+  "releases": [],
+  "release_groups": [],
+  "wikidata_search": {
+   "request": {
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Vinotinto&type=item",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/bc342aa9ae48175af0cd53c1.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "qid": "Q113754294",
+     "label": "Vinotinto F.C.",
+     "description": "Ecuadorian football club"
+    }
+   ]
+  },
+  "interpretation": {
+   "status": "not_found_in_musicbrainz",
+   "matching_recordings_in_search": 0,
+   "recordings_looked_up": 0,
+   "artist_mbids_in_matches": [],
+   "same_name_artists_in_mb": 3,
+   "distinct_lengths_ms": [],
+   "title_only_hits_other_artists": [],
+   "genres_mb": [],
+   "tags_mb": [],
+   "electronic_specific_terms": [],
+   "wikidata_linked_from_mb": [],
+   "discogs_ids_from_mb": []
+  },
+  "artist_search": {
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Luciano%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/0136da380777f62d29f955d6.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "mbid": "b298ab55-7633-4015-a05c-0d333a8540e3",
+     "name": "Luciano",
+     "disambiguation": "Jamaican roots reggae singer Jepther McClymont",
+     "country": "JM",
+     "score": 95
+    },
+    {
+     "mbid": "4600b3b7-57ad-410d-b65d-ca0df36822dd",
+     "name": "Luciano",
+     "disambiguation": "German rapper",
+     "country": "DE",
+     "score": 86
+    },
+    {
+     "mbid": "6f8d9d66-24a0-4faf-97c7-81cd22cb1c7e",
+     "name": "Luciano",
+     "disambiguation": "Chilean-Swiss DJ, techno & house producer",
+     "country": "CL",
+     "score": 80
+    }
+   ]
+  },
+  "fuzzy_diagnostic": [
+   {
+    "artist_mbid": "b298ab55-7633-4015-a05c-0d333a8540e3",
+    "artist_disambiguation": "Jamaican roots reggae singer Jepther McClymont",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=10&query=arid%3Ab298ab55-7633-4015-a05c-0d333a8540e3%20AND%20%28recording%3Avinotinto~%20OR%20recording%3Avino%2A%29",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/e49f2fd2b951c504441e60dc.json",
+     "from_cache": true
+    },
+    "note": "búsqueda aproximada; no es correspondencia",
+    "observed": []
+   },
+   {
+    "artist_mbid": "4600b3b7-57ad-410d-b65d-ca0df36822dd",
+    "artist_disambiguation": "German rapper",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=10&query=arid%3A4600b3b7-57ad-410d-b65d-ca0df36822dd%20AND%20%28recording%3Avinotinto~%20OR%20recording%3Avino%2A%29",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/0d789d408a976694e8d49721.json",
+     "from_cache": true
+    },
+    "note": "búsqueda aproximada; no es correspondencia",
+    "observed": []
+   },
+   {
+    "artist_mbid": "6f8d9d66-24a0-4faf-97c7-81cd22cb1c7e",
+    "artist_disambiguation": "Chilean-Swiss DJ, techno & house producer",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=10&query=arid%3A6f8d9d66-24a0-4faf-97c7-81cd22cb1c7e%20AND%20%28recording%3Avinotinto~%20OR%20recording%3Avino%2A%29",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/ae7b434b242b190cb81a6910.json",
+     "from_cache": true
+    },
+    "note": "búsqueda aproximada; no es correspondencia",
+    "observed": []
+   }
+  ]
+ },
+ {
+  "case": {
+   "id": "S3",
+   "title": "Lovelee Dae",
+   "artist": "Blaze",
+   "candidate_corrections": []
+  },
+  "searches": [
+   {
+    "via": "original_input",
+    "artist_query": "Blaze",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Lovelee%20Dae%22%20AND%20artist%3A%22Blaze%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/feb9deb5bfdf510b5c6afe67.json",
+     "from_cache": true
+    },
+    "total_hits": 124,
+    "results_returned": 25
+   },
+   {
+    "via": "title_only",
+    "artist_query": null,
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Lovelee%20Dae%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/fb2390fe112dbc94ef3dc1dd.json",
+     "from_cache": true
+    },
+    "total_hits": 132,
+    "results_returned": 25
+   }
+  ],
+  "candidates": [
+   {
+    "observed": {
+     "mbid": "fb2a1e72-92c8-4888-8957-e1c1c484b708",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “I Love The 90’s: The Home Party Edition” DJ‐mix",
+     "length_ms": 100800,
+     "first_release_date": "2021",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "I Love The 90’s: The Home Party Edition"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "6c12cd9a-cf5c-4a20-a5b4-93f2e8dd12db",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209733,
+     "first_release_date": "2000-01-21",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Mega House 100% Club"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "a2eef52f-9c5f-4175-bafa-230867373285",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209946,
+     "first_release_date": "1999-12-01",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Remix Magazine DJ Mix",
+      "Studio Ibiza 2016"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "1845c025-a3dc-4f1b-ba7b-6e19e5474bd6",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Palladium - Party Mix, Chapter 4” DJ-mix",
+     "length_ms": 164493,
+     "first_release_date": "1998",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Palladium - Party Mix - Chapter 4"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "8edae321-48fc-4ae6-add1-bc976cb1a823",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 456000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "DED579706570"
+     ],
+     "release_count": 10,
+     "release_titles": [
+      "Bargrooves Deluxe",
+      "Defected Presents For the Love of House, Volume Three",
+      "Distillery: Five.Yrs.Old",
+      "Lovelee Dae",
+      "Lovelee Dae (Part One)",
+      "My House, Volume 03",
+      "My House: The Collection"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "d9d10d20-dc83-4179-8ce0-7b449eca3c88",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “BBC Essential mix” DJ-mix",
+     "length_ms": 316520,
+     "first_release_date": "1998",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "BBC Essential Mix 2001-12-9",
+      "Ravenation 2"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "537686bf-c609-4022-90a3-fa9fcc52869b",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Bargrooves: Lounge” DJ-mix",
+     "length_ms": 370000,
+     "first_release_date": "2016-08-26",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Bargrooves: Lounge"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "55cb80e1-fb5b-4684-a12e-42948cce3074",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 456533,
+     "first_release_date": "2016-08-26",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "GBCPZ1104910"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "4 To the Floor Presents Classic Music Company",
+      "Bargrooves Après Ski 7.0",
+      "Bargrooves: Lounge"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "e547195f-c06d-4298-b126-2d3baca47e90",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 327000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Teknoville Volume Five"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "a177bfaa-0c8a-44b9-999c-22e1d2c0ab7d",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 208840,
+     "first_release_date": "1997-10-31",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Club Rotation, Volume 1",
+      "Just the Best, Vol. 14"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209613,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Groove: The Compilation Volume 2",
+      "Romantic House V: The Sound of Dreams"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "ebb3f369-36fb-4b9d-b281-1afc87c7ea22",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Catch Me If You Can: 3rd Time Lucky” DJ-mix",
+     "length_ms": null,
+     "first_release_date": "2008-02-01",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Lady Lea Presents Catch Me If You Can: Third Time Lucky"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "b7561440-5d43-4ab0-b9b3-9c21fd1e5093",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 454000,
+     "first_release_date": "1999-10-11",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Blaze Productions"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "def6997e-078a-4244-8c5a-8bb606915ef2",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “MoS: Throwback Chillout” DJ-mix",
+     "length_ms": 216600,
+     "first_release_date": "2019-08-23",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Throwback: Chillout"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "4a7204f2-db8d-43db-9a79-b3265664b430",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 212440,
+     "first_release_date": "2021",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "I Love The 90’s: The Home Party Edition"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "7898cb96-cd22-4a0c-9926-e3eed5319562",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Bargrooves: Après Ski 7.0” DJ-mix",
+     "length_ms": 294000,
+     "first_release_date": "2018-01-12",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "GBCPZ1712782"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Bargrooves Après Ski 7.0"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "f66dd684-0378-4941-8795-57a685722fa2",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Kontor Top of the Clubs: The Ultimate House Collection II” DJ‐mix",
+     "length_ms": 214973,
+     "first_release_date": "2018-07-06",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Kontor Top of the Clubs: The Ultimate House Collection II"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "4db2d671-ed31-4db8-b57a-7690bb348dec",
+     "title": "Lovelee Dae (original)",
+     "disambiguation": null,
+     "length_ms": 457000,
+     "first_release_date": "1998",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Basic Blaze",
+      "Lovelee Dae"
+     ]
+    },
+    "search_score": 91,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "fac4fc65-6412-413f-abc4-da7354809177",
+     "title": "Lovelee Dae (original)",
+     "disambiguation": null,
+     "length_ms": 425000,
+     "first_release_date": "2010-10-18",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Bargrooves Deluxe"
+     ]
+    },
+    "search_score": 91,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "40f0af42-b364-4bba-a3b2-9e8665b6d68e",
+     "title": "Lovelee Dae (original)",
+     "disambiguation": "part of “House Club Hottest. 003” DJ‐mix",
+     "length_ms": 136360,
+     "first_release_date": "2003-04-07",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "house club hottest 003"
+     ]
+    },
+    "search_score": 91,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "78e0f47f-8bac-4bde-9eb3-703f9c254e5c",
+     "title": "Lovelee Dae (original)",
+     "disambiguation": "part of “Strand House 2: Clubbing on the Beach” DJ-mix",
+     "length_ms": 276853,
+     "first_release_date": "2000-06-30",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Strand House 2: Clubbing on the Beach"
+     ]
+    },
+    "search_score": 91,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "9d3a252d-6f87-4de7-88d4-faba027d48a7",
+     "title": "Lovelee Dae (Mixed)",
+     "disambiguation": null,
+     "length_ms": 282573,
+     "first_release_date": "2017-12-29",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "GBCPZ1712892"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Defected Radio Episode 083 (Hosted by Roger Sanchez) (Mixed)"
+     ]
+    },
+    "search_score": 91,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "511dae4c-f716-46b0-bd3f-000b176a36ad",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Kontor: Top of the Clubs, Volume 78” DJ‐mix",
+     "length_ms": 217000,
+     "first_release_date": "2018-04-13",
+     "artist_credit": "Amine Edge &DANCE vs. Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Kontor: Top of the Clubs, Volume 78"
+     ]
+    },
+    "search_score": 86,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "ca68219a-0086-470e-851a-58a8fe3cd52c",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "2025-07-31",
+     "artist_credit": "Amine Edge & DANCE & Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Defected In The House Ibiza 2025"
+     ]
+    },
+    "search_score": 85,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "b0e82282-1dd0-4586-9a46-abbe1fcc7d78",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 382720,
+     "first_release_date": "2022-11-25",
+     "artist_credit": "Amine Edge & DANCE vs Blaze",
+     "isrcs": [
+      "GBCPZ1712198"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "Serious Beats 100 (Anniversary Edition) (The Ultimate Saga of House - Box Set I)",
+      "Serious Beats 100 Anniversary Edition"
+     ]
+    },
+    "search_score": 85,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "4854bbb8-8ec7-4a7a-aa58-ed5ee7626564",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Ministry of Sound: Sleepin Is Cheatin, Volume 2” DJ‐mix",
+     "length_ms": 232253,
+     "first_release_date": "2018-02-16",
+     "artist_credit": "Amine Edge & DANCE vs. Blaze (Kevin Hedge)",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Ministry of Sound: Sleepin Is Cheatin, Volume 2"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "b7561440-5d43-4ab0-b9b3-9c21fd1e5093",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 454000,
+     "first_release_date": "1999-10-11",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Blaze Productions"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "def6997e-078a-4244-8c5a-8bb606915ef2",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “MoS: Throwback Chillout” DJ-mix",
+     "length_ms": 216600,
+     "first_release_date": "2019-08-23",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Throwback: Chillout"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "4a7204f2-db8d-43db-9a79-b3265664b430",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 212440,
+     "first_release_date": "2021",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "I Love The 90’s: The Home Party Edition"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8f702fec-0585-4d85-b00e-6314ccc33d0b",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 362000,
+     "first_release_date": "2015-07-17",
+     "artist_credit": "Blank & Jones with Jason Caesar",
+     "isrcs": [
+      "DEGE91500042"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Relax: Edition Nine"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "7898cb96-cd22-4a0c-9926-e3eed5319562",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Bargrooves: Après Ski 7.0” DJ-mix",
+     "length_ms": 294000,
+     "first_release_date": "2018-01-12",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "GBCPZ1712782"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Bargrooves Après Ski 7.0"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "f66dd684-0378-4941-8795-57a685722fa2",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Kontor Top of the Clubs: The Ultimate House Collection II” DJ‐mix",
+     "length_ms": 214973,
+     "first_release_date": "2018-07-06",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Kontor Top of the Clubs: The Ultimate House Collection II"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "ca68219a-0086-470e-851a-58a8fe3cd52c",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "2025-07-31",
+     "artist_credit": "Amine Edge & DANCE & Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Defected In The House Ibiza 2025"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "511dae4c-f716-46b0-bd3f-000b176a36ad",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Kontor: Top of the Clubs, Volume 78” DJ‐mix",
+     "length_ms": 217000,
+     "first_release_date": "2018-04-13",
+     "artist_credit": "Amine Edge &DANCE vs. Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Kontor: Top of the Clubs, Volume 78"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "b0e82282-1dd0-4586-9a46-abbe1fcc7d78",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 382720,
+     "first_release_date": "2022-11-25",
+     "artist_credit": "Amine Edge & DANCE vs Blaze",
+     "isrcs": [
+      "GBCPZ1712198"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "Serious Beats 100 (Anniversary Edition) (The Ultimate Saga of House - Box Set I)",
+      "Serious Beats 100 Anniversary Edition"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8edae321-48fc-4ae6-add1-bc976cb1a823",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 456000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "DED579706570"
+     ],
+     "release_count": 10,
+     "release_titles": [
+      "Bargrooves Deluxe",
+      "Defected Presents For the Love of House, Volume Three",
+      "Distillery: Five.Yrs.Old",
+      "Lovelee Dae",
+      "Lovelee Dae (Part One)",
+      "My House, Volume 03",
+      "My House: The Collection"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d9d10d20-dc83-4179-8ce0-7b449eca3c88",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “BBC Essential mix” DJ-mix",
+     "length_ms": 316520,
+     "first_release_date": "1998",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "BBC Essential Mix 2001-12-9",
+      "Ravenation 2"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8e6abc2b-a7d7-4774-8bf7-bc09be9b8a92",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 382278,
+     "first_release_date": "2017-10-05",
+     "artist_credit": "Amine Edge, DANCE & Blaze (Kevin Hedge)",
+     "isrcs": [
+      "GBCPZ1712198"
+     ],
+     "release_count": 10,
+     "release_titles": [
+      "Defected Amsterdam 2017",
+      "Defected Presents Most Rated 2018",
+      "Serious Beats 88"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "contained_in_credit"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d1b31da7-2050-4fcb-9fba-b3450e0ae47b",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 607067,
+     "first_release_date": "2003-06",
+     "artist_credit": "Balze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Ten Years Ongaku"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "fb2a1e72-92c8-4888-8957-e1c1c484b708",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “I Love The 90’s: The Home Party Edition” DJ‐mix",
+     "length_ms": 100800,
+     "first_release_date": "2021",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "I Love The 90’s: The Home Party Edition"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "6c12cd9a-cf5c-4a20-a5b4-93f2e8dd12db",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209733,
+     "first_release_date": "2000-01-21",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Mega House 100% Club"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "0b883a57-ac38-4195-b03a-11a04a3d9d43",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Defected Presents Most Rated 2018” DJ-mix",
+     "length_ms": 295000,
+     "first_release_date": "2017-12-01",
+     "artist_credit": "Amine Edge, Dance & Blaze (Kevin Hedge)",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Defected Presents Most Rated 2018"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "contained_in_credit"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "8bfb9422-9dc6-43e9-977d-70881d16abd8",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Defected Amsterdam 2017” DJ-mix",
+     "length_ms": 249000,
+     "first_release_date": "2017-10-06",
+     "artist_credit": "Amine Edge & Dance & Blaze (Kevin Hedge)",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Defected Amsterdam 2017"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "contained_in_credit"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "a2eef52f-9c5f-4175-bafa-230867373285",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209946,
+     "first_release_date": "1999-12-01",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Remix Magazine DJ Mix",
+      "Studio Ibiza 2016"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "1845c025-a3dc-4f1b-ba7b-6e19e5474bd6",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Palladium - Party Mix, Chapter 4” DJ-mix",
+     "length_ms": 164493,
+     "first_release_date": "1998",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Palladium - Party Mix - Chapter 4"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "537686bf-c609-4022-90a3-fa9fcc52869b",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Bargrooves: Lounge” DJ-mix",
+     "length_ms": 370000,
+     "first_release_date": "2016-08-26",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Bargrooves: Lounge"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "55cb80e1-fb5b-4684-a12e-42948cce3074",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 456533,
+     "first_release_date": "2016-08-26",
+     "artist_credit": "Blaze",
+     "isrcs": [
+      "GBCPZ1104910"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "4 To the Floor Presents Classic Music Company",
+      "Bargrooves Après Ski 7.0",
+      "Bargrooves: Lounge"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "e547195f-c06d-4298-b126-2d3baca47e90",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 327000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Teknoville Volume Five"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "a177bfaa-0c8a-44b9-999c-22e1d2c0ab7d",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 208840,
+     "first_release_date": "1997-10-31",
+     "artist_credit": "Blaze",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Club Rotation, Volume 1",
+      "Just the Best, Vol. 14"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "aa2ca8c6-79d7-4d38-bcac-c33f635408a8",
+     "title": "Lovelee Dae",
+     "disambiguation": "part of “Hed Kandi: Ibiza 2018” DJ‐mix",
+     "length_ms": 238986,
+     "first_release_date": "2018-06-29",
+     "artist_credit": "Amine Edge & DANCE vs. Blaze (Kevin Hedge)",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Hed Kandi: Ibiza 2018"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "contained_in_credit"
+    },
+    "via": "title_only"
+   }
+  ],
+  "recordings": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/8edae321-48fc-4ae6-add1-bc976cb1a823?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/e9089b9679b87217322f2655.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "8edae321-48fc-4ae6-add1-bc976cb1a823",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 456000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "artists": [
+      {
+       "credited_as": "Blaze",
+       "artist_name": "Blaze",
+       "artist_mbid": "65e331ed-ab1b-475a-81d1-4dad7e55043b",
+       "disambiguation": "New Jersey-based house duo"
+      }
+     ],
+     "isrcs": [
+      "DED579706570"
+     ],
+     "url_relations": [],
+     "other_relations": [
+      {
+       "type": "performance",
+       "direction": "forward",
+       "target_type": "work",
+       "target_name": "Lovelee Dae",
+       "target_mbid": "3678b0c4-7b61-4c6c-b28e-4c90683d1bb6",
+       "begin": null,
+       "end": null,
+       "attributes": []
+      }
+     ],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "a1d37088-8f8b-4e5c-9b46-4968fba4b538",
+       "title": "Lovelee Dae",
+       "date": "1997",
+       "country": "GB",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c"
+      },
+      {
+       "mbid": "2848ed85-6144-437c-9d0f-3d84b08c4dd4",
+       "title": "Lovelee Dae",
+       "date": "1997",
+       "country": "DE",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c"
+      },
+      {
+       "mbid": "8823a7ae-b4fd-4784-ac2f-c43ad5da3c12",
+       "title": "Distillery: Five.Yrs.Old",
+       "date": "1998-02-23",
+       "country": "DE",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "f9b213f0-0c80-3cf2-939f-ffd31a032f4b"
+      },
+      {
+       "mbid": "33e37fc4-21ff-4fa5-a754-76b233114812",
+       "title": "Lovelee Dae",
+       "date": "1998",
+       "country": "FR",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c"
+      },
+      {
+       "mbid": "fce2c6d4-8aa1-4e33-9777-7779cf02b76c",
+       "title": "Lovelee Dae",
+       "date": "1998",
+       "country": "BE",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c"
+      },
+      {
+       "mbid": "64b1cafa-54b8-4327-bff1-f57b10a94447",
+       "title": "Lovelee Dae (Part One)",
+       "date": "1998",
+       "country": "DE",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c"
+      },
+      {
+       "mbid": "0268216f-23b6-4ed3-8328-3d17957b03ee",
+       "title": "My House, Volume 03",
+       "date": "1998",
+       "country": "FR",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "6a2d62ce-a4cc-3e3c-9622-b5be64f7a6d2"
+      },
+      {
+       "mbid": "e535f470-b07f-3015-80e8-cd8ba3648be8",
+       "title": "My House: The Collection",
+       "date": "1999-08-13",
+       "country": "FR",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "666f62b9-05b7-46eb-85eb-8e0b8054c1a2"
+      },
+      {
+       "mbid": "dfbec1e3-1036-4fe1-af7d-b1796d757795",
+       "title": "Bargrooves Deluxe",
+       "date": "2012-12-12",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation",
+        "DJ-mix"
+       ],
+       "release_group_mbid": "a066b119-a6c2-4f09-bd96-3d320af79815"
+      },
+      {
+       "mbid": "44143c2b-0cf2-406b-ba09-42101356919e",
+       "title": "Defected Presents For the Love of House, Volume Three",
+       "date": "2013-03-29",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation",
+        "DJ-mix"
+       ],
+       "release_group_mbid": "d07adb7e-2e43-4c29-8947-f061b69d941e"
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/cea50316d2763af29f004281.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 209613,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "artists": [
+      {
+       "credited_as": "Blaze",
+       "artist_name": "Blaze",
+       "artist_mbid": "65e331ed-ab1b-475a-81d1-4dad7e55043b",
+       "disambiguation": "New Jersey-based house duo"
+      }
+     ],
+     "isrcs": [],
+     "url_relations": [],
+     "other_relations": [
+      {
+       "type": "performance",
+       "direction": "forward",
+       "target_type": "work",
+       "target_name": "Lovelee Dae",
+       "target_mbid": "3678b0c4-7b61-4c6c-b28e-4c90683d1bb6",
+       "begin": null,
+       "end": null,
+       "attributes": []
+      }
+     ],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "22ec5ee9-b38b-49c0-a265-5adf1790718b",
+       "title": "Groove: The Compilation Volume 2",
+       "date": "1997",
+       "country": "XE",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "47cce7d8-c9d4-4ad4-a070-6d0e3912ab76"
+      },
+      {
+       "mbid": "2f86e33a-28e0-4938-9d30-bc20be7a51f8",
+       "title": "Romantic House V: The Sound of Dreams",
+       "date": "1998",
+       "country": "DE",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "325d5953-4f16-4f77-9d7d-4c85cc933fd2"
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/e547195f-c06d-4298-b126-2d3baca47e90?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/8bb04274f4f8c632e447edf0.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "e547195f-c06d-4298-b126-2d3baca47e90",
+     "title": "Lovelee Dae",
+     "disambiguation": null,
+     "length_ms": 327000,
+     "first_release_date": "1997",
+     "artist_credit": "Blaze",
+     "artists": [
+      {
+       "credited_as": "Blaze",
+       "artist_name": "Blaze",
+       "artist_mbid": "65e331ed-ab1b-475a-81d1-4dad7e55043b",
+       "disambiguation": "New Jersey-based house duo"
+      }
+     ],
+     "isrcs": [],
+     "url_relations": [],
+     "other_relations": [
+      {
+       "type": "performance",
+       "direction": "forward",
+       "target_type": "work",
+       "target_name": "Lovelee Dae",
+       "target_mbid": "3678b0c4-7b61-4c6c-b28e-4c90683d1bb6",
+       "begin": null,
+       "end": null,
+       "attributes": []
+      }
+     ],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "b3fffb4a-c6c1-4692-99e0-2be9eb0bcabb",
+       "title": "Teknoville Volume Five",
+       "date": "1997",
+       "country": "BE",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "d89aa303-b018-4820-ad77-15b219889d78"
+      }
+     ]
+    }
+   }
+  ],
+  "releases": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/2848ed85-6144-437c-9d0f-3d84b08c4dd4?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/b8605ac7befc5e99c8c8ca5b.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "2848ed85-6144-437c-9d0f-3d84b08c4dd4",
+     "title": "Lovelee Dae",
+     "date": "1997",
+     "country": "DE",
+     "status": "Official",
+     "barcode": "731457191729",
+     "artist_credit": "Blaze",
+     "labels": [
+      {
+       "name": "Urban Tracks",
+       "label_mbid": "9b915248-37b5-40f8-8caa-0f945867b625",
+       "catalog_number": "571 917-2"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c",
+      "title": "Lovelee Dae",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/release/170459"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/a1d37088-8f8b-4e5c-9b46-4968fba4b538?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/07f90da66c6689d57f90f130.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "a1d37088-8f8b-4e5c-9b46-4968fba4b538",
+     "title": "Lovelee Dae",
+     "date": "1997",
+     "country": "GB",
+     "status": "Official",
+     "barcode": null,
+     "artist_credit": "Blaze",
+     "labels": [
+      {
+       "name": "Classic",
+       "label_mbid": "e616b773-fc89-4b3e-91e9-efc33a853882",
+       "catalog_number": "CMC 90"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c",
+      "title": "Lovelee Dae",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/release/17669"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/33e37fc4-21ff-4fa5-a754-76b233114812?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/4d9c28251c731544c33fde30.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "33e37fc4-21ff-4fa5-a754-76b233114812",
+     "title": "Lovelee Dae",
+     "date": "1998",
+     "country": "FR",
+     "status": "Official",
+     "barcode": null,
+     "artist_credit": "Blaze",
+     "labels": [
+      {
+       "name": "Substance",
+       "label_mbid": "0a1c9b89-749d-42b2-b0f7-02d4b8cfc0f3",
+       "catalog_number": "SUB 4891.2"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c",
+      "title": "Lovelee Dae",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/release/26621"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "release_groups": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release-group/0057a2f6-3501-3980-8de8-d8271fd2805c?fmt=json&inc=genres%2Btags%2Burl-rels%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/7eea237a2983c11b4c1e237e.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "0057a2f6-3501-3980-8de8-d8271fd2805c",
+     "title": "Lovelee Dae",
+     "primary_type": "Single",
+     "secondary_types": [],
+     "first_release_date": "1997",
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/master/73016"
+      }
+     ],
+     "genres": [
+      {
+       "name": "deep house",
+       "votes": 3
+      },
+      {
+       "name": "electronic",
+       "votes": 2
+      },
+      {
+       "name": "house",
+       "votes": 2
+      }
+     ],
+     "tags": [
+      {
+       "name": "deep house",
+       "votes": 3
+      },
+      {
+       "name": "electronic",
+       "votes": 2
+      },
+      {
+       "name": "house",
+       "votes": 2
+      }
+     ]
+    }
+   }
+  ],
+  "wikidata_search": {
+   "request": {
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Lovelee%20Dae&type=item",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/3a31965fc93b4cb445551c0f.json",
+    "from_cache": true
+   },
+   "observed": []
+  },
+  "interpretation": {
+   "status": "found_exact_input",
+   "matching_recordings_in_search": 25,
+   "recordings_looked_up": 3,
+   "artist_mbids_in_matches": [
+    "65e331ed-ab1b-475a-81d1-4dad7e55043b"
+   ],
+   "same_name_artists_in_mb": 4,
+   "distinct_lengths_ms": [
+    209613,
+    327000,
+    456000
+   ],
+   "title_only_hits_other_artists": [
+    "Balze",
+    "Blank & Jones with Jason Caesar"
+   ],
+   "genres_mb": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "tags_mb": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "electronic_specific_terms": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "wikidata_linked_from_mb": [],
+   "discogs_ids_from_mb": [
+    {
+     "kind": "release",
+     "id": "170459",
+     "url": "https://www.discogs.com/release/170459"
+    },
+    {
+     "kind": "release",
+     "id": "17669",
+     "url": "https://www.discogs.com/release/17669"
+    },
+    {
+     "kind": "release",
+     "id": "26621",
+     "url": "https://www.discogs.com/release/26621"
+    },
+    {
+     "kind": "master",
+     "id": "73016",
+     "url": "https://www.discogs.com/master/73016"
+    }
+   ]
+  },
+  "artist_search": {
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Blaze%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/083031d2311926bfd8b1a9b0.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "mbid": "65e331ed-ab1b-475a-81d1-4dad7e55043b",
+     "name": "Blaze",
+     "disambiguation": "New Jersey-based house duo",
+     "country": "US",
+     "score": 100
+    },
+    {
+     "mbid": "d564168f-eefb-4841-afa1-0e84074d53e8",
+     "name": "Blaze",
+     "disambiguation": "UK heavy metal band",
+     "country": "GB",
+     "score": 84
+    },
+    {
+     "mbid": "8667f91b-a2cc-4283-b5d6-02b8395b55ae",
+     "name": "Blaze",
+     "disambiguation": "German rapper",
+     "country": "DE",
+     "score": 83
+    },
+    {
+     "mbid": "5bc5a8c7-3ccf-4986-8c9b-85b027aa1720",
+     "name": "Blaze",
+     "disambiguation": "Osaka metal band",
+     "country": null,
+     "score": 79
+    }
+   ]
+  },
+  "fuzzy_diagnostic": null
+ },
+ {
+  "case": {
+   "id": "S4",
+   "title": "Dirty Cash",
+   "artist": "PAWSA",
+   "candidate_corrections": []
+  },
+  "searches": [
+   {
+    "via": "original_input",
+    "artist_query": "PAWSA",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Dirty%20Cash%22%20AND%20artist%3A%22PAWSA%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/076c42aa52e3324c4d9033f0.json",
+     "from_cache": true
+    },
+    "total_hits": 2,
+    "results_returned": 2
+   },
+   {
+    "via": "title_only",
+    "artist_query": null,
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Dirty%20Cash%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/1d934a6a2e115eb1049eb4a7.json",
+     "from_cache": true
+    },
+    "total_hits": 246,
+    "results_returned": 25
+   }
+  ],
+  "candidates": [
+   {
+    "observed": {
+     "mbid": "f2399817-454b-4c24-8af4-b7c1b17dc00a",
+     "title": "Dirty Cash (Money Talks)",
+     "disambiguation": null,
+     "length_ms": 220653,
+     "first_release_date": "2024-11-15",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "isrcs": [
+      "NLML62400170"
+     ],
+     "release_count": 2,
+     "release_titles": [
+      "Dirty Cash (Money Talks)",
+      "Now That’s What I Call Music! 120"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "89fbe5e3-b2e9-492d-a83c-4b4c18eb723d",
+     "title": "Dirty Cash (Money Talks) (extended mix)",
+     "disambiguation": null,
+     "length_ms": 279846,
+     "first_release_date": "2024-11-15",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "isrcs": [
+      "NLML62400169"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Dirty Cash (Money Talks) (extended mix)"
+     ]
+    },
+    "search_score": 88,
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "via": "original_input"
+   },
+   {
+    "observed": {
+     "mbid": "46e04cc5-f3a1-435e-bc4a-d93ab0df1726",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 445360,
+     "first_release_date": "1990-07-16",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Now Dance 902"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5eb9b0a4-f0cc-40e3-ae84-6951b918e2a2",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 222693,
+     "first_release_date": "1997-09-08",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Club Hits 97/98: Soundtrack to a Season"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "dbb8e4fc-c1d4-48b4-a45c-c2fb1005f72b",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 176000,
+     "first_release_date": null,
+     "artist_credit": "Alan Gold",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Inna London Style"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "c9ccddcf-fced-483b-b98b-378d6aaffc32",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 158946,
+     "first_release_date": "2003-10-14",
+     "artist_credit": "DBAS(S)ED",
+     "isrcs": [
+      "USA371023673"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "This Is Trance 3.0"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "389de079-c31c-4ad3-a345-3d626fca9e2b",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 213187,
+     "first_release_date": "2019-05-17",
+     "artist_credit": "Psychotool",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Rotten Paradise"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "230fdaad-98ea-47fc-9ca5-338d0d779ef6",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 55000,
+     "first_release_date": null,
+     "artist_credit": "James Newton Howard",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "The Dark Knight (complete score)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d089e37a-f493-4724-bd1a-380e4c1a4305",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "2016",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Groove Is In The Heart (57 Old Skool Club Classics)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "54914748-40ea-4e63-9117-dff27ded305c",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 124000,
+     "first_release_date": "2004",
+     "artist_credit": "Future World Music",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Volume 2 - Dramatic Techno, Dance & World Beats"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "95a7845f-f157-49a7-8bc3-bc4c607a1aa8",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 249000,
+     "first_release_date": "2006",
+     "artist_credit": "Antonio & Cristiano",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Furious Bass 2006"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "1fdb0510-010e-465b-9b4c-11a5f9577735",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 221000,
+     "first_release_date": "2014-05-28",
+     "artist_credit": "The Upsessions",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Shake It!"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "086809df-3f20-4671-a57a-1893c05c1d7a",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 242000,
+     "first_release_date": "1996",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "The 80's Collection: 1990: The Next Generation, Volume Two"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "38c69264-4da2-423f-b654-112075db9aa8",
+     "title": "Dirty Cash",
+     "disambiguation": "part of “MoS: Old Skool Ravers” DJ-mix",
+     "length_ms": 233493,
+     "first_release_date": "2017-10-06",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Ministry of Sound: Old Skool Ravers"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "cc651c30-5797-42ca-8ff4-8664d4b0f523",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 208889,
+     "first_release_date": "1998",
+     "artist_credit": "The Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Dance Connexion 17"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "fc741b8b-8f50-474d-a6a9-71dd320e29d2",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 364000,
+     "first_release_date": "2006-09",
+     "artist_credit": "Antonio & Cristiano",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Dirty Cash"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "167999ed-5bd2-4f47-a869-64fd0acd5847",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 54450,
+     "first_release_date": "2008",
+     "artist_credit": "Hans Zimmer",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "The Dark Knight"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "666f38ee-ce42-4edd-b5c4-28d5d3221235",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 198466,
+     "first_release_date": null,
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Hit Mix 4"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "7c6ecc58-3e5a-4016-8271-9b0e47bdce03",
+     "title": "Dirty Cash",
+     "disambiguation": "part of the \"Explosive Car Tuning: Live on Tour\" DJ-mix by DJ Marcky feat. MC Villain",
+     "length_ms": 253000,
+     "first_release_date": "2006",
+     "artist_credit": "Antonio & Cristiano",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Explosive Car Tuning: Live on Tour"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "6d2d5424-eef3-4922-b77f-325500ca5414",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 442840,
+     "first_release_date": null,
+     "artist_credit": "Dollars & Dimes",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Retro Arena"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "41fbb7fa-028e-4de6-8d66-4bb2d07bae34",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 221000,
+     "first_release_date": "2005-10-10",
+     "artist_credit": "Liberty X",
+     "isrcs": [
+      "GBDLQ0500034"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "X",
+      "X (+Bonus Track)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "775bbbf8-553b-415b-82ed-1035057087c4",
+     "title": "dirty cash",
+     "disambiguation": null,
+     "length_ms": 284160,
+     "first_release_date": "2026-03-25",
+     "artist_credit": "Loner Vista",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "dirty cash"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "388aaf9c-ab3c-435e-b47d-aff094c87553",
+     "title": "Dirty Cash",
+     "disambiguation": "part of a “MoS: Back to the Old Skool: Indie Dance Classics” DJ‐mix",
+     "length_ms": 232506,
+     "first_release_date": "2013-06-10",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Back to the Old Skool: Indie Dance Classics"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "bbac66ec-dd15-4dd1-9e59-b50422686557",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 242026,
+     "first_release_date": "1990",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [
+      "GBF088900001"
+     ],
+     "release_count": 9,
+     "release_titles": [
+      "100 Mega Summer Hits 2011",
+      "Celebrate the 90’s",
+      "Kontor - Top of the Clubs - Electric 80s Vol. 2",
+      "Now! That’s What I Call Music 18",
+      "Pop Classics Top 100",
+      "The All Time Greatest Hits of Dance 2",
+      "The Best Dance Album in the World… Ever!",
+      "The Hits Album 90 Volume 2"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d913d83b-9752-4c9a-b0e8-b98bb1656faa",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 163000,
+     "first_release_date": null,
+     "artist_credit": "DJ Inphinity",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Downtown 7"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "019d4604-920a-4dd9-a4d2-479653acb566",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 244000,
+     "first_release_date": "1996-11-12",
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Strip Jointz: Hot Songs for Sexy Dancers"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "e5ff004d-3308-4167-a49c-a83bafea8700",
+     "title": "Dirty Cash",
+     "disambiguation": null,
+     "length_ms": 241800,
+     "first_release_date": null,
+     "artist_credit": "Adventures of Stevie V",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Hits Explosion 13, 14"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   }
+  ],
+  "recordings": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/f2399817-454b-4c24-8af4-b7c1b17dc00a?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/3e78f4871eaa530284569a05.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "f2399817-454b-4c24-8af4-b7c1b17dc00a",
+     "title": "Dirty Cash (Money Talks)",
+     "disambiguation": null,
+     "length_ms": 220653,
+     "first_release_date": "2024-11-15",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "artists": [
+      {
+       "credited_as": "PAWSA",
+       "artist_name": "PAWSA",
+       "artist_mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+       "disambiguation": "David Esekhile"
+      },
+      {
+       "credited_as": "Adventures of Stevie V",
+       "artist_name": "Adventures of Stevie V",
+       "artist_mbid": "6500ea06-c13b-4bbe-8a48-65c2fddfdc21",
+       "disambiguation": null
+      }
+     ],
+     "isrcs": [
+      "NLML62400170"
+     ],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ],
+     "tags": [
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ],
+     "releases": [
+      {
+       "mbid": "9b39f364-0972-4251-a560-102884dd10b6",
+       "title": "Dirty Cash (Money Talks)",
+       "date": "2024-11-15",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "69976fce-3515-480c-af52-16baff797d2a"
+      },
+      {
+       "mbid": "f9c5e5d8-48f3-49fb-a093-b217f93d7842",
+       "title": "Now That’s What I Call Music! 120",
+       "date": "2025-04-04",
+       "country": "GB",
+       "status": "Official",
+       "release_group_type": "Album",
+       "release_group_secondary": [
+        "Compilation"
+       ],
+       "release_group_mbid": "e3f6477a-745c-4664-aaa7-9f8c43342c06"
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/89fbe5e3-b2e9-492d-a83c-4b4c18eb723d?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/3197e1d582297cc073c8650c.json",
+     "from_cache": true
+    },
+    "via": "original_input",
+    "interpretation": {
+     "title_match": "base_title_plus_version",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "89fbe5e3-b2e9-492d-a83c-4b4c18eb723d",
+     "title": "Dirty Cash (Money Talks) (extended mix)",
+     "disambiguation": null,
+     "length_ms": 279846,
+     "first_release_date": "2024-11-15",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "artists": [
+      {
+       "credited_as": "PAWSA",
+       "artist_name": "PAWSA",
+       "artist_mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+       "disambiguation": "David Esekhile"
+      },
+      {
+       "credited_as": "Adventures of Stevie V",
+       "artist_name": "Adventures of Stevie V",
+       "artist_mbid": "6500ea06-c13b-4bbe-8a48-65c2fddfdc21",
+       "disambiguation": null
+      }
+     ],
+     "isrcs": [
+      "NLML62400169"
+     ],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "5f4ba50c-a66c-4b25-9795-e5daa46e2af1",
+       "title": "Dirty Cash (Money Talks) (extended mix)",
+       "date": "2024-11-15",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "Single",
+       "release_group_secondary": [],
+       "release_group_mbid": "69976fce-3515-480c-af52-16baff797d2a"
+      }
+     ]
+    }
+   }
+  ],
+  "releases": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/5f4ba50c-a66c-4b25-9795-e5daa46e2af1?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/e80642d44eecf39ee2f7b8ac.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "5f4ba50c-a66c-4b25-9795-e5daa46e2af1",
+     "title": "Dirty Cash (Money Talks) (extended mix)",
+     "date": "2024-11-15",
+     "country": "XW",
+     "status": "Official",
+     "barcode": "8718274967456",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "labels": [
+      {
+       "name": "Altra Moda Music",
+       "label_mbid": "009b95ba-0313-404d-b2c7-18fdf7d6303e",
+       "catalog_number": "AMM945"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "69976fce-3515-480c-af52-16baff797d2a",
+      "title": "Dirty Cash (Money Talks)",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/release/32377602"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://www.beatport.com/release/dirty-cash-money-talks-extended-mix/4809201"
+      },
+      {
+       "type": "streaming",
+       "url": "https://www.beatport.com/release/dirty-cash-money-talks-extended-mix/4809201"
+      }
+     ],
+     "genres": [
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ],
+     "tags": [
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/9b39f364-0972-4251-a560-102884dd10b6?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/e8bc452bd2955db54d3c2c9c.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "9b39f364-0972-4251-a560-102884dd10b6",
+     "title": "Dirty Cash (Money Talks)",
+     "date": "2024-11-15",
+     "country": "XW",
+     "status": "Official",
+     "barcode": "8718274967463",
+     "artist_credit": "PAWSA & Adventures of Stevie V",
+     "labels": [
+      {
+       "name": "Altra Moda Music",
+       "label_mbid": "009b95ba-0313-404d-b2c7-18fdf7d6303e",
+       "catalog_number": "AMM946"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "69976fce-3515-480c-af52-16baff797d2a",
+      "title": "Dirty Cash (Money Talks)",
+      "primary_type": "Single",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "discogs",
+       "url": "https://www.discogs.com/release/33994485"
+      },
+      {
+       "type": "free streaming",
+       "url": "https://open.spotify.com/album/2d9NxyCSygtJcvsAmBtXOj"
+      },
+      {
+       "type": "free streaming",
+       "url": "https://www.deezer.com/album/666095981"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://music.apple.com/gb/album/1778288335"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://www.beatport.com/release/dirty-cash-money-talks/5750987"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://www.qobuz.com/fr-fr/album/dirty-cash-money-talks-pawsa-and-adventures-of-stevie-v/jfsrtjan7lckb"
+      },
+      {
+       "type": "streaming",
+       "url": "https://music.apple.com/gb/album/1778288335"
+      },
+      {
+       "type": "streaming",
+       "url": "https://open.qobuz.com/album/jfsrtjan7lckb"
+      },
+      {
+       "type": "streaming",
+       "url": "https://tidal.com/album/397824939"
+      },
+      {
+       "type": "streaming",
+       "url": "https://www.beatport.com/release/dirty-cash-money-talks/5750987"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/f9c5e5d8-48f3-49fb-a093-b217f93d7842?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/f12c8d3b8ecdb87bbdb8da2b.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "f9c5e5d8-48f3-49fb-a093-b217f93d7842",
+     "title": "Now That’s What I Call Music! 120",
+     "date": "2025-04-04",
+     "country": "GB",
+     "status": "Official",
+     "barcode": "198028775021",
+     "artist_credit": "Various Artists",
+     "labels": [
+      {
+       "name": "EMI",
+       "label_mbid": "c029628b-6633-439e-bcee-ed02e8a338f7",
+       "catalog_number": "CDNOW120"
+      },
+      {
+       "name": "Sony Music",
+       "label_mbid": "9e6b4d7f-4958-4db7-8504-d89e315836af",
+       "catalog_number": "CDNOW120"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "e3f6477a-745c-4664-aaa7-9f8c43342c06",
+      "title": "Now That’s What I Call Music! 120",
+      "primary_type": "Album",
+      "secondary_types": [
+       "Compilation"
+      ]
+     },
+     "url_relations": [
+      {
+       "type": "amazon asin",
+       "url": "https://www.amazon.co.uk/gp/product/B0DZ5LRTTC"
+      },
+      {
+       "type": "download for free",
+       "url": "https://archive.org/download/2025.-now-thats-what-i-call-music-120"
+      },
+      {
+       "type": "free streaming",
+       "url": "https://archive.org/details/2025.-now-thats-what-i-call-music-120"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "release_groups": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release-group/69976fce-3515-480c-af52-16baff797d2a?fmt=json&inc=genres%2Btags%2Burl-rels%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/02d7ba889fc86c08b52d8c11.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "69976fce-3515-480c-af52-16baff797d2a",
+     "title": "Dirty Cash (Money Talks)",
+     "primary_type": "Single",
+     "secondary_types": [],
+     "first_release_date": "2024-11-15",
+     "url_relations": [],
+     "genres": [
+      {
+       "name": "electronic",
+       "votes": 1
+      },
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ],
+     "tags": [
+      {
+       "name": "electronic",
+       "votes": 1
+      },
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ]
+    }
+   },
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release-group/e3f6477a-745c-4664-aaa7-9f8c43342c06?fmt=json&inc=genres%2Btags%2Burl-rels%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/2b85c42a57aa2adb6079e72c.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "e3f6477a-745c-4664-aaa7-9f8c43342c06",
+     "title": "Now That’s What I Call Music! 120",
+     "primary_type": "Album",
+     "secondary_types": [
+      "Compilation"
+     ],
+     "first_release_date": "2025-04-04",
+     "url_relations": [
+      {
+       "type": "allmusic",
+       "url": "https://www.allmusic.com/album/mw0004493010"
+      },
+      {
+       "type": "lyrics",
+       "url": "https://genius.com/albums/Now-thats-what-i-call-music/Now-thats-what-i-call-music-120-uk"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "wikidata_search": {
+   "request": {
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Dirty%20Cash&type=item",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/6d425087f5aab55990ebabfd.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "qid": "Q126186915",
+     "label": "Dirty Cash",
+     "description": "1991 video game"
+    },
+    {
+     "qid": "Q2002632",
+     "label": "Dirty Cash (Money Talks)",
+     "description": "1989 song by The Adventures of Stevie V"
+    },
+    {
+     "qid": "Q131742646",
+     "label": "Dirty Cash",
+     "description": null
+    }
+   ]
+  },
+  "interpretation": {
+   "status": "found_title_variant_only",
+   "matching_recordings_in_search": 2,
+   "recordings_looked_up": 2,
+   "artist_mbids_in_matches": [
+    "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+    "6500ea06-c13b-4bbe-8a48-65c2fddfdc21"
+   ],
+   "same_name_artists_in_mb": 1,
+   "distinct_lengths_ms": [
+    220653,
+    279846
+   ],
+   "title_only_hits_other_artists": [
+    "Adventures of Stevie V",
+    "Alan Gold",
+    "Antonio & Cristiano",
+    "DBAS(S)ED",
+    "DJ Inphinity",
+    "Dollars & Dimes",
+    "Future World Music",
+    "Hans Zimmer",
+    "James Newton Howard",
+    "Liberty X",
+    "Loner Vista",
+    "Psychotool",
+    "The Adventures of Stevie V",
+    "The Upsessions"
+   ],
+   "genres_mb": [
+    "electronic",
+    "house"
+   ],
+   "tags_mb": [
+    "electronic",
+    "house"
+   ],
+   "electronic_specific_terms": [
+    "electronic",
+    "house"
+   ],
+   "wikidata_linked_from_mb": [],
+   "discogs_ids_from_mb": [
+    {
+     "kind": "release",
+     "id": "32377602",
+     "url": "https://www.discogs.com/release/32377602"
+    },
+    {
+     "kind": "release",
+     "id": "33994485",
+     "url": "https://www.discogs.com/release/33994485"
+    }
+   ]
+  },
+  "artist_search": {
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22PAWSA%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/1761a347c2851e9dc08442e0.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+     "name": "PAWSA",
+     "disambiguation": "David Esekhile",
+     "country": null,
+     "score": 100
+    }
+   ]
+  },
+  "fuzzy_diagnostic": null
+ },
+ {
+  "case": {
+   "id": "S5",
+   "title": "Breather",
+   "artist": "Chris Stassy",
+   "candidate_corrections": [
+    "Chris Stussy"
+   ]
+  },
+  "searches": [
+   {
+    "via": "original_input",
+    "artist_query": "Chris Stassy",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Breather%22%20AND%20artist%3A%22Chris%20Stassy%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/324f39bffdb6bf970319b8a2.json",
+     "from_cache": true
+    },
+    "total_hits": 0,
+    "results_returned": 0
+   },
+   {
+    "via": "candidate_correction:Chris Stussy",
+    "artist_query": "Chris Stussy",
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Breather%22%20AND%20artist%3A%22Chris%20Stussy%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/224d65f01a9e8a079c9a1c07.json",
+     "from_cache": true
+    },
+    "total_hits": 1,
+    "results_returned": 1
+   },
+   {
+    "via": "title_only",
+    "artist_query": null,
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording?fmt=json&limit=25&query=recording%3A%22Breather%22",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/5124799a894aa63a16773e19.json",
+     "from_cache": true
+    },
+    "total_hits": 438,
+    "results_returned": 25
+   }
+  ],
+  "candidates": [
+   {
+    "observed": {
+     "mbid": "e0ee17b8-17d3-4514-8579-9a1fd127b57f",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 465323,
+     "first_release_date": "2021-06-08",
+     "artist_credit": "Chris Stussy & S.A.M.",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Get Together"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "via": "candidate_correction:Chris Stussy"
+   },
+   {
+    "observed": {
+     "mbid": "d2b51174-ab6f-4897-8e0f-0a5138a66537",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 147787,
+     "first_release_date": "1999-08-03",
+     "artist_credit": "Bovine",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Customline"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "f31e144b-7a4a-4eb0-8c50-e766644210eb",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 85000,
+     "first_release_date": "2002",
+     "artist_credit": "Mark McAdam",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Boy Wonder"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "ec40f9bd-ddbc-4d63-9116-1eb9a978fcb9",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "1998-08-24",
+     "artist_credit": "UNKLE",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Psyence Fiction"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "08cee842-d3f4-48ee-b45c-18885c13f959",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 267506,
+     "first_release_date": "1999-07-29",
+     "artist_credit": "Stellar*",
+     "isrcs": [],
+     "release_count": 5,
+     "release_titles": [
+      "Mix"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "653bacc4-2232-45b2-8ad3-55bc1bbd6ac1",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 270000,
+     "first_release_date": "2009-04-13",
+     "artist_credit": "Chapterhouse",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Whirlpool - The Original Recordings"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "3506d345-4cdf-4cc2-b69e-24f29bf931a3",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": null,
+     "first_release_date": "2000",
+     "artist_credit": "Shadowbug 4",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Soleilmoon Sampler"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "b8c41801-61bd-40d4-86f9-4bb68d1a3c11",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 352000,
+     "first_release_date": "2015-03-10",
+     "artist_credit": "Genix",
+     "isrcs": [
+      "GBEWA1401051"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Anjunabeats in Miami 2015"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "6b734510-5112-42a6-956f-b4d6cf6c04e5",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 104000,
+     "first_release_date": "2015-01-20",
+     "artist_credit": "Six-Pack Sunday",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "And The Timber Went Downstream"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "3c34d081-736d-465c-bb25-1eba43fc9655",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 212149,
+     "first_release_date": "2015-03-06",
+     "artist_credit": "Charlie Cunningham",
+     "isrcs": [
+      "UK8V21500003"
+     ],
+     "release_count": 4,
+     "release_titles": [
+      "Breather EP",
+      "EPs 2014 - 2016",
+      "Lines"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "be60055f-f575-4372-a7e7-c3ba02f9860e",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 308146,
+     "first_release_date": "2016-07-05",
+     "artist_credit": "Roger van Lunteren",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Satori"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "adf1bd06-d68b-4d4c-b7b0-9f698d2ad94b",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 246000,
+     "first_release_date": "2017-10-20",
+     "artist_credit": "Mortimur",
+     "isrcs": [],
+     "release_count": 2,
+     "release_titles": [
+      "Nasty Disasty"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d086fa8c-d571-4fe6-b1c2-7886c7a3c362",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 293468,
+     "first_release_date": "2018-04-13",
+     "artist_credit": "Secret of Elements",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Odesea"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "e5125e54-d84d-4d0b-9c04-67e681282612",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 282467,
+     "first_release_date": "2016-07-19",
+     "artist_credit": "The Capitol City Dusters",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Simplicity"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "a2dfe8dd-221f-4de6-ad23-1438199e8976",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 84716,
+     "first_release_date": "2022-08-19",
+     "artist_credit": "Thorn.vii",
+     "isrcs": [
+      "US3DF2271715"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "Altitude"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "7f9318e9-1a19-4a00-ace5-b83720d10d0c",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 293617,
+     "first_release_date": "2016-05-27",
+     "artist_credit": "Ice_Eyes",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Loom"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "143238a0-47d7-499e-8fd5-8113fd9b5872",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 259000,
+     "first_release_date": "2008-04-03",
+     "artist_credit": "Chapterhouse",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Pearls and Treasures"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "5ee40c8e-36fd-4e6f-b7c9-1951052786d9",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 115000,
+     "first_release_date": "2021-08-20",
+     "artist_credit": "RiverKinn",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Kintsugi"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d4c3b32c-808b-424c-8216-e6064a89c5fe",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 66000,
+     "first_release_date": "2012",
+     "artist_credit": "John Samuel Hanson, Yoav Goren & Jeffrey Fayman",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Violations"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "139e8e78-1b8f-4fd4-b877-4042cdc80aef",
+     "title": "BREATHER",
+     "disambiguation": null,
+     "length_ms": 123771,
+     "first_release_date": "2024-10-25",
+     "artist_credit": "R4ID",
+     "isrcs": [
+      "QT2VB2481152"
+     ],
+     "release_count": 2,
+     "release_titles": [
+      "DATA BREACH"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "eff3d35b-f56a-485d-94a2-ac5bc149765a",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 150000,
+     "first_release_date": "2024-03-25",
+     "artist_credit": "James Spence",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Suzerain: Rizia (Original Soundtrack)"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "2e2904cc-cb44-4e92-b8ae-f380a36eabd7",
+     "title": "breather",
+     "disambiguation": null,
+     "length_ms": 182000,
+     "first_release_date": "2020-04-23",
+     "artist_credit": "tiny yawn",
+     "isrcs": [
+      "TCJPK2081946"
+     ],
+     "release_count": 1,
+     "release_titles": [
+      "swimmy / breather"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d538f170-b89d-4212-a535-765cdaf223af",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 280640,
+     "first_release_date": "1997",
+     "artist_credit": "Laika",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Spring 97"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "e0ee17b8-17d3-4514-8579-9a1fd127b57f",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 465323,
+     "first_release_date": "2021-06-08",
+     "artist_credit": "Chris Stussy & S.A.M.",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "Get Together"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "50ea9c30-d19a-4391-825f-f8b505177afa",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 166000,
+     "first_release_date": "2021-12-22",
+     "artist_credit": "伊賀拓郎",
+     "isrcs": [
+      "JPD732100415"
+     ],
+     "release_count": 3,
+     "release_titles": [
+      "TV series “SELECTION PROJECT” Original Sound Track",
+      "TVアニメ「SELECTION PROJECT」オリジナルサウンドトラック",
+      "TVアニメ「SELECTION PROJECT」オリジナルサウンドトラックCD"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   },
+   {
+    "observed": {
+     "mbid": "d1f5cbd1-9836-4949-bb31-1d8333a04392",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 786000,
+     "first_release_date": "2025-06-25",
+     "artist_credit": "Alien D",
+     "isrcs": [],
+     "release_count": 1,
+     "release_titles": [
+      "For the Early Hours of a World in Bloom"
+     ]
+    },
+    "search_score": 100,
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "none"
+    },
+    "via": "title_only"
+   }
+  ],
+  "recordings": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/recording/e0ee17b8-17d3-4514-8579-9a1fd127b57f?fmt=json&inc=artist-credits%2Breleases%2Brelease-groups%2Bisrcs%2Burl-rels%2Bgenres%2Btags%2Bartist-rels%2Bwork-rels",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/9e870570ddc08d55c7556f93.json",
+     "from_cache": true
+    },
+    "via": "candidate_correction:Chris Stussy",
+    "interpretation": {
+     "title_match": "exact",
+     "artist_match": "exact"
+    },
+    "observed": {
+     "mbid": "e0ee17b8-17d3-4514-8579-9a1fd127b57f",
+     "title": "Breather",
+     "disambiguation": null,
+     "length_ms": 465323,
+     "first_release_date": "2021-06-08",
+     "artist_credit": "Chris Stussy & S.A.M.",
+     "artists": [
+      {
+       "credited_as": "Chris Stussy",
+       "artist_name": "Chris Stussy",
+       "artist_mbid": "5b7f4511-1764-4d80-83b5-8c150f4636c5",
+       "disambiguation": "NL | electronic"
+      },
+      {
+       "credited_as": "S.A.M.",
+       "artist_name": "S.A.M.",
+       "artist_mbid": "a5a83f14-1709-4245-a70a-5f65e336d225",
+       "disambiguation": "Samuel André Madsen, Denmark"
+      }
+     ],
+     "isrcs": [],
+     "url_relations": [],
+     "other_relations": [],
+     "genres": [],
+     "tags": [],
+     "releases": [
+      {
+       "mbid": "5bc6e44a-02e4-4499-ab5c-2449c67a1b4f",
+       "title": "Get Together",
+       "date": "2021-06-08",
+       "country": "XW",
+       "status": "Official",
+       "release_group_type": "EP",
+       "release_group_secondary": [],
+       "release_group_mbid": "d3bb7439-9a72-4549-bf11-ea893f6a6807"
+      }
+     ]
+    }
+   }
+  ],
+  "releases": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release/5bc6e44a-02e4-4499-ab5c-2449c67a1b4f?fmt=json&inc=labels%2Brelease-groups%2Burl-rels%2Bgenres%2Btags%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/33c6e498f0a3685426f0a2e8.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "5bc6e44a-02e4-4499-ab5c-2449c67a1b4f",
+     "title": "Get Together",
+     "date": "2021-06-08",
+     "country": "XW",
+     "status": "Official",
+     "barcode": null,
+     "artist_credit": "Chris Stussy & S.A.M.",
+     "labels": [
+      {
+       "name": "Up the Stuss",
+       "label_mbid": "0ed35423-a124-4ac9-9941-3a7b41e6dd94",
+       "catalog_number": "UTS04"
+      }
+     ],
+     "formats": [],
+     "release_group": {
+      "mbid": "d3bb7439-9a72-4549-bf11-ea893f6a6807",
+      "title": "Get Together",
+      "primary_type": "EP",
+      "secondary_types": []
+     },
+     "url_relations": [
+      {
+       "type": "free streaming",
+       "url": "https://chrisstussy.bandcamp.com/album/uts04-chris-stussy-s-a-m"
+      },
+      {
+       "type": "purchase for download",
+       "url": "https://chrisstussy.bandcamp.com/album/uts04-chris-stussy-s-a-m"
+      }
+     ],
+     "genres": [],
+     "tags": []
+    }
+   }
+  ],
+  "release_groups": [
+   {
+    "request": {
+     "url": "https://musicbrainz.org/ws/2/release-group/d3bb7439-9a72-4549-bf11-ea893f6a6807?fmt=json&inc=genres%2Btags%2Burl-rels%2Bartist-credits",
+     "status": 200,
+     "error": null,
+     "raw_file": "raw/musicbrainz/517d45eca64ea6e3ffb9d2d6.json",
+     "from_cache": true
+    },
+    "observed": {
+     "mbid": "d3bb7439-9a72-4549-bf11-ea893f6a6807",
+     "title": "Get Together",
+     "primary_type": "EP",
+     "secondary_types": [],
+     "first_release_date": "2021-06-08",
+     "url_relations": [],
+     "genres": [
+      {
+       "name": "deep house",
+       "votes": 1
+      },
+      {
+       "name": "electronic",
+       "votes": 1
+      },
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ],
+     "tags": [
+      {
+       "name": "deep house",
+       "votes": 1
+      },
+      {
+       "name": "electronic",
+       "votes": 1
+      },
+      {
+       "name": "house",
+       "votes": 1
+      }
+     ]
+    }
+   }
+  ],
+  "wikidata_search": {
+   "request": {
+    "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Breather&type=item",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/6a0a66b7ce85db497fce39a6.json",
+    "from_cache": true
+   },
+   "observed": [
+    {
+     "qid": "Q16164680",
+     "label": "Breather",
+     "description": "Swedish musical group"
+    },
+    {
+     "qid": "Q5254599",
+     "label": "Breather",
+     "description": "nonlinear wave in which energy concentrates in a localized and oscillatory fashion"
+    },
+    {
+     "qid": "Q4408171",
+     "label": "breather",
+     "description": "device through which a container communicates with the atmosphere to maintain equal pressure"
+    },
+    {
+     "qid": "Q25203022",
+     "label": "Breather",
+     "description": "Breather is a flexible workspace provider."
+    },
+    {
+     "qid": "Q140434793",
+     "label": "breather",
+     "description": "location (LOC) for predicate \"hyperventilate.01\": breathe too quickly"
+    }
+   ]
+  },
+  "interpretation": {
+   "status": "found_only_via_candidate_correction",
+   "matching_recordings_in_search": 1,
+   "recordings_looked_up": 1,
+   "artist_mbids_in_matches": [
+    "5b7f4511-1764-4d80-83b5-8c150f4636c5",
+    "a5a83f14-1709-4245-a70a-5f65e336d225"
+   ],
+   "same_name_artists_in_mb": 0,
+   "distinct_lengths_ms": [
+    465323
+   ],
+   "title_only_hits_other_artists": [
+    "Alien D",
+    "Bovine",
+    "Chapterhouse",
+    "Charlie Cunningham",
+    "Chris Stussy & S.A.M.",
+    "Genix",
+    "Ice_Eyes",
+    "James Spence",
+    "John Samuel Hanson, Yoav Goren & Jeffrey Fayman",
+    "Laika",
+    "Mark McAdam",
+    "Mortimur",
+    "R4ID",
+    "RiverKinn",
+    "Roger van Lunteren"
+   ],
+   "genres_mb": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "tags_mb": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "electronic_specific_terms": [
+    "deep house",
+    "electronic",
+    "house"
+   ],
+   "wikidata_linked_from_mb": [],
+   "discogs_ids_from_mb": []
+  },
+  "artist_search": {
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Chris%20Stassy%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/7606d1883652f1a4a6fd0ec4.json",
+    "from_cache": true
+   },
+   "observed": []
+  },
+  "fuzzy_diagnostic": null
+ }
+]

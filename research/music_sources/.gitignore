@@ -1,0 +1,4 @@
+# Datos regenerables del experimento (se conservan en local, no se versionan).
+# data/results/ sí se versiona: resultados interpretados que respaldan el informe.
+data/raw/
+data/logs/

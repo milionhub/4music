@@ -1,0 +1,55 @@
+{
+ "run_id": "2026-10-16T112810Z",
+ "executed_at": "2026-10-16T11:28:10+00:00",
+ "aborted": null,
+ "python": "3.11.2",
+ "platform": "Windows-10-10.0.26200-SP0",
+ "user_agent_format": "music-discovery-coverage-research/0.1 ( <contacto en .env, no se registra> )",
+ "endpoints": {
+  "musicbrainz": "https://musicbrainz.org/ws/2/",
+  "wikidata": "https://www.wikidata.org/w/api.php"
+ },
+ "budgets": {
+  "musicbrainz": 130,
+  "wikidata": 30,
+  "discogs": 0
+ },
+ "rate_policy_min_interval_s": {
+  "musicbrainz": 1.5,
+  "wikidata": 1.0
+ },
+ "network_requests": {
+  "musicbrainz": 0,
+  "wikidata": 0
+ },
+ "cache_hits": 78,
+ "network_errors_or_non_200": [],
+ "rate_check": {
+  "musicbrainz": {
+   "network_requests": 0,
+   "min_gap_between_starts_s": null,
+   "mean_rate_per_s": null
+  },
+  "wikidata": {
+   "network_requests": 0,
+   "min_gap_between_starts_s": null,
+   "mean_rate_per_s": null
+  }
+ },
+ "discogs": {
+  "evaluated": false,
+  "reason": "No se realizan llamadas en esta fase. (1) La documentación y las condiciones (discogs.com/developers y support.discogs.com/.../API-Terms-of-Use) devuelven HTTP 403 a clientes automatizados, por lo que no se han podido leer completas de primera mano. (2) Lo verificable por fuentes secundarias indica restricciones relevantes para el producto: contenido mostrado con antigüedad máxima de 6 horas respecto a Discogs, almacenamiento limitado a lo necesario, atribución obligatoria 'Data provided by Discogs' y licencia separada para 'Restricted Data'. (3) Según la documentación conocida (no re-verificada hoy por el 403), /database/search requiere autenticación, y no se dispone (ni se solicita) de token.",
+  "token_env_var": "DISCOGS_TOKEN",
+  "token_present_in_env": false
+ },
+ "log_file": "data/logs/run-2026-10-16T112810Z.jsonl",
+ "all_runs": {
+  "log_files": 3,
+  "network_requests": {
+   "musicbrainz": 74,
+   "wikidata": 10
+  },
+  "retried_or_non_200": 5,
+  "unique_urls": 79
+ }
+}

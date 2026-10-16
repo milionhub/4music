@@ -1,0 +1,18 @@
+{
+  "_nota": "Entradas tal como se proporcionaron. 'candidate_corrections' son hipótesis a comprobar por separado, nunca equivalencias automáticas.",
+  "songs": [
+    {"id": "S1", "title": "On 2nite", "artist": "Silva Bumpa", "candidate_corrections": []},
+    {"id": "S2", "title": "Vinotinto", "artist": "Luciano", "candidate_corrections": []},
+    {"id": "S3", "title": "Lovelee Dae", "artist": "Blaze", "candidate_corrections": []},
+    {"id": "S4", "title": "Dirty Cash", "artist": "PAWSA", "candidate_corrections": []},
+    {"id": "S5", "title": "Breather", "artist": "Chris Stassy", "candidate_corrections": ["Chris Stussy"]}
+  ],
+  "artists": [
+    {"id": "A1", "name": "The Martinez Brothers", "candidate_corrections": []},
+    {"id": "A2", "name": "Adrian Mills", "candidate_corrections": ["Adrián Mills"]},
+    {"id": "A3", "name": "Ilario Alicante", "candidate_corrections": []},
+    {"id": "A4", "name": "Sven Vath", "candidate_corrections": ["Sven Väth"]},
+    {"id": "A5", "name": "Mochackk", "candidate_corrections": ["Mochakk"]},
+    {"id": "A6", "name": "Michael Bibi", "candidate_corrections": []}
+  ]
+}

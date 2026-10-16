@@ -1,0 +1,3090 @@
+{
+ "musicbrainz": [
+  {
+   "case": {
+    "id": "A1",
+    "name": "The Martinez Brothers",
+    "candidate_corrections": []
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "The Martinez Brothers",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22The%20Martinez%20Brothers%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/ddb2d7154d54fec7d229f141.json",
+      "from_cache": true
+     },
+     "total_hits": 3
+    }
+   ],
+   "candidates": [
+    {
+     "via": "original_input",
+     "search_score": 100,
+     "observed": {
+      "mbid": "c9c65c94-27b4-4eca-82f0-80055ac4f8a7",
+      "name": "The Martinez Brothers",
+      "sort_name": "Martinez Brothers, The",
+      "disambiguation": "Chris Martinez and Steve Jr. Martinez",
+      "type": "Group",
+      "country": null,
+      "area": null,
+      "life_span": {
+       "begin": "2007",
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    },
+    {
+     "via": "original_input",
+     "search_score": 90,
+     "observed": {
+      "mbid": "b709fb91-ab74-436e-a96e-9d066058dbd7",
+      "name": "The Martinez Brothers",
+      "sort_name": "Martinez Brothers, The",
+      "disambiguation": "Jaron Martinez, Marc Martinez, often associated with DJ Robert",
+      "type": "Group",
+      "country": null,
+      "area": null,
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    },
+    {
+     "via": "original_input",
+     "search_score": 79,
+     "observed": {
+      "mbid": "20fed1d9-f1f1-4142-92b8-c0b39c82937c",
+      "name": "Argy & The Martinez Brothers",
+      "sort_name": "Argy & The Martinez Brothers",
+      "disambiguation": null,
+      "type": null,
+      "country": null,
+      "area": null,
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "none"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/c9c65c94-27b4-4eca-82f0-80055ac4f8a7?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/278d0f7838b6761494d5b194.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": []
+     },
+     "observed": {
+      "mbid": "c9c65c94-27b4-4eca-82f0-80055ac4f8a7",
+      "name": "The Martinez Brothers",
+      "sort_name": "Martinez Brothers, The",
+      "disambiguation": "Chris Martinez and Steve Jr. Martinez",
+      "type": "Group",
+      "gender": null,
+      "country": null,
+      "area": null,
+      "begin_area": "New York",
+      "life_span": {
+       "begin": "2007",
+       "end": null,
+       "ended": false
+      },
+      "ipis": [],
+      "isnis": [],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/715291"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://open.spotify.com/artist/7B1LLuCQk13H4Mb6CFBftU"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://www.deezer.com/artist/399667"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://itunes.apple.com/us/artist/id78321382"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://open.qobuz.com/artist/537081"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://www.beatport.com/artist/the-martinez-brothers/30928"
+       },
+       {
+        "type": "social network",
+        "url": "https://twitter.com/themartinezbros"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/themartinezbrothers"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.instagram.com/thembros/"
+       },
+       {
+        "type": "soundcloud",
+        "url": "https://soundcloud.com/themartinezbros"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/gb/artist/78321382"
+       },
+       {
+        "type": "streaming",
+        "url": "https://open.qobuz.com/artist/537081"
+       },
+       {
+        "type": "streaming",
+        "url": "https://tidal.com/artist/3937672"
+       },
+       {
+        "type": "wikidata",
+        "url": "https://www.wikidata.org/wiki/Q20687342"
+       },
+       {
+        "type": "youtube",
+        "url": "https://www.youtube.com/c/themartinezbrostv"
+       }
+      ],
+      "other_relations": [
+       {
+        "type": "recording contract",
+        "direction": "forward",
+        "target_type": "label",
+        "target_name": "Independent Co.",
+        "target_mbid": "73964243-ecd9-436d-a021-df5dbb3ef083",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       }
+      ],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=c9c65c94-27b4-4eca-82f0-80055ac4f8a7&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/0d57aaf23283f33c344161aa.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 46,
+       "releases_returned": 46,
+       "labels_by_release_count": {
+        "Defected": 7,
+        "EMPIRE": 6,
+        "Cuttin' Headz": 5,
+        "Turbo Recordings": 2,
+        "100 Keep it": 2,
+        "Objektivity": 2,
+        "fabric": 2,
+        "Asylum Records": 2,
+        "Land of the Good Groove Records": 2,
+        "Ultra Records, LLC": 1,
+        "Hot Creations": 1,
+        "The Martinez Brothers": 1,
+        "Roses & Wine Music": 1,
+        "Virgin": 1,
+        "One House X Limited": 1,
+        "Rosebud Recordings": 1,
+        "Vega Records": 1,
+        "BBC Radio 1": 1,
+        "[no label]": 1,
+        "Tuskegee Music": 1,
+        "Everybody Knows": 1,
+        "Above Board Projects": 1,
+        "Warner Bros. Records": 1,
+        "Atlantic Records UK": 1
+       },
+       "release_group_types": {
+        "Single": 22,
+        "EP": 13,
+        "Album": 6,
+        "Broadcast": 4,
+        "sin tipo": 1
+       }
+      }
+     }
+    },
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/b709fb91-ab74-436e-a96e-9d066058dbd7?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/076136320e3f62361217b9be.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": [
+       "dj"
+      ]
+     },
+     "observed": {
+      "mbid": "b709fb91-ab74-436e-a96e-9d066058dbd7",
+      "name": "The Martinez Brothers",
+      "sort_name": "Martinez Brothers, The",
+      "disambiguation": "Jaron Martinez, Marc Martinez, often associated with DJ Robert",
+      "type": "Group",
+      "gender": null,
+      "country": null,
+      "area": null,
+      "begin_area": null,
+      "life_span": {
+       "end": null,
+       "begin": null,
+       "ended": false
+      },
+      "ipis": [],
+      "isnis": [],
+      "aliases": [],
+      "url_relations": [],
+      "other_relations": [],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=b709fb91-ab74-436e-a96e-9d066058dbd7&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/6701aa6474e4910567e515ba.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 1,
+       "releases_returned": 1,
+       "labels_by_release_count": {
+        "Asylum Records UK": 1
+       },
+       "release_group_types": {
+        "Single": 1
+       }
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_exact_input",
+    "rule_ranked_first_mbid": "c9c65c94-27b4-4eca-82f0-80055ac4f8a7",
+    "ambiguous_homonyms": true,
+    "name_matching_candidates": 2,
+    "homonyms": [
+     [
+      "The Martinez Brothers",
+      "Chris Martinez and Steve Jr. Martinez",
+      "c9c65c94-27b4-4eca-82f0-80055ac4f8a7"
+     ],
+     [
+      "The Martinez Brothers",
+      "Jaron Martinez, Marc Martinez, often associated with DJ Robert",
+      "b709fb91-ab74-436e-a96e-9d066058dbd7"
+     ]
+    ],
+    "wikidata_qids_from_mb": [
+     "Q20687342"
+    ],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "715291",
+      "url": "https://www.discogs.com/artist/715291",
+      "artist_mbid": "c9c65c94-27b4-4eca-82f0-80055ac4f8a7"
+     }
+    ]
+   }
+  },
+  {
+   "case": {
+    "id": "A2",
+    "name": "Adrian Mills",
+    "candidate_corrections": [
+     "Adrián Mills"
+    ]
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "Adrian Mills",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Adrian%20Mills%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/46bb3183212cbfcaa10bd4c1.json",
+      "from_cache": true
+     },
+     "total_hits": 2
+    },
+    {
+     "via": "candidate_correction:Adrián Mills",
+     "query": "Adrián Mills",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Adri%C3%A1n%20Mills%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/0527a448fa4cdbe41559d7dd.json",
+      "from_cache": true
+     },
+     "total_hits": 2
+    }
+   ],
+   "candidates": [
+    {
+     "via": "original_input",
+     "search_score": 100,
+     "observed": {
+      "mbid": "24b97924-39eb-4e1d-a817-b2622fdeb339",
+      "name": "Adrian Mills",
+      "sort_name": "Mills, Adrian",
+      "disambiguation": null,
+      "type": "Person",
+      "country": null,
+      "area": null,
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    },
+    {
+     "via": "original_input",
+     "search_score": 99,
+     "observed": {
+      "mbid": "e4243e21-8b1a-4060-a5e4-f8001989afe1",
+      "name": "Adrián Mills",
+      "sort_name": "Mills, Adrián",
+      "disambiguation": "techno",
+      "type": "Person",
+      "country": "DE",
+      "area": "Germany",
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact_ignoring_diacritics"
+     }
+    },
+    {
+     "via": "candidate_correction:Adrián Mills",
+     "search_score": 100,
+     "observed": {
+      "mbid": "24b97924-39eb-4e1d-a817-b2622fdeb339",
+      "name": "Adrian Mills",
+      "sort_name": "Mills, Adrian",
+      "disambiguation": null,
+      "type": "Person",
+      "country": null,
+      "area": null,
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact_ignoring_diacritics"
+     }
+    },
+    {
+     "via": "candidate_correction:Adrián Mills",
+     "search_score": 99,
+     "observed": {
+      "mbid": "e4243e21-8b1a-4060-a5e4-f8001989afe1",
+      "name": "Adrián Mills",
+      "sort_name": "Mills, Adrián",
+      "disambiguation": "techno",
+      "type": "Person",
+      "country": "DE",
+      "area": "Germany",
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/24b97924-39eb-4e1d-a817-b2622fdeb339?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/2735e8a57ccbe86348d7c857.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": []
+     },
+     "observed": {
+      "mbid": "24b97924-39eb-4e1d-a817-b2622fdeb339",
+      "name": "Adrian Mills",
+      "sort_name": "Mills, Adrian",
+      "disambiguation": null,
+      "type": "Person",
+      "gender": "Male",
+      "country": null,
+      "area": null,
+      "begin_area": null,
+      "life_span": {
+       "begin": null,
+       "end": null,
+       "ended": false
+      },
+      "ipis": [],
+      "isnis": [],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/671778"
+       }
+      ],
+      "other_relations": [
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Diamond Head",
+        "target_mbid": "d3dd86df-2f57-4a97-8100-d09915343f60",
+        "begin": "2003",
+        "end": "2006",
+        "attributes": [
+         "guitar"
+        ]
+       }
+      ],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=24b97924-39eb-4e1d-a817-b2622fdeb339&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/2c3657b9480ee09db9f07bd2.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 0,
+       "releases_returned": 0,
+       "labels_by_release_count": {},
+       "release_group_types": {}
+      }
+     }
+    },
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/e4243e21-8b1a-4060-a5e4-f8001989afe1?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/02eca86975495891c4a95d51.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact_ignoring_diacritics",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": [
+       "techno"
+      ]
+     },
+     "observed": {
+      "mbid": "e4243e21-8b1a-4060-a5e4-f8001989afe1",
+      "name": "Adrián Mills",
+      "sort_name": "Mills, Adrián",
+      "disambiguation": "techno",
+      "type": "Person",
+      "gender": null,
+      "country": "DE",
+      "area": "Germany",
+      "begin_area": null,
+      "life_span": {
+       "begin": null,
+       "end": null,
+       "ended": false
+      },
+      "ipis": [],
+      "isnis": [],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "social network",
+        "url": "https://www.instagram.com/adrianxmills/"
+       },
+       {
+        "type": "soundcloud",
+        "url": "https://soundcloud.com/adrianxmills"
+       }
+      ],
+      "other_relations": [],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=e4243e21-8b1a-4060-a5e4-f8001989afe1&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/e9ae5fb046dccf62569cdfcb.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 0,
+       "releases_returned": 0,
+       "labels_by_release_count": {},
+       "release_group_types": {}
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_exact_input",
+    "rule_ranked_first_mbid": "24b97924-39eb-4e1d-a817-b2622fdeb339",
+    "ambiguous_homonyms": true,
+    "name_matching_candidates": 2,
+    "homonyms": [
+     [
+      "Adrian Mills",
+      "",
+      "24b97924-39eb-4e1d-a817-b2622fdeb339"
+     ],
+     [
+      "Adrián Mills",
+      "techno",
+      "e4243e21-8b1a-4060-a5e4-f8001989afe1"
+     ]
+    ],
+    "wikidata_qids_from_mb": [],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "671778",
+      "url": "https://www.discogs.com/artist/671778",
+      "artist_mbid": "24b97924-39eb-4e1d-a817-b2622fdeb339"
+     }
+    ]
+   }
+  },
+  {
+   "case": {
+    "id": "A3",
+    "name": "Ilario Alicante",
+    "candidate_corrections": []
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "Ilario Alicante",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Ilario%20Alicante%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/41c2c6d3e4bccc57197ab679.json",
+      "from_cache": true
+     },
+     "total_hits": 1
+    }
+   ],
+   "candidates": [
+    {
+     "via": "original_input",
+     "search_score": 100,
+     "observed": {
+      "mbid": "f1ea7840-95a4-4798-945f-140b8af5b208",
+      "name": "Ilario Alicante",
+      "sort_name": "Alicante, Ilario",
+      "disambiguation": null,
+      "type": "Person",
+      "country": "IT",
+      "area": "Italy",
+      "life_span": {
+       "begin": "1988",
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/f1ea7840-95a4-4798-945f-140b8af5b208?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/e3fc7256cc002649265daf0f.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": []
+     },
+     "observed": {
+      "mbid": "f1ea7840-95a4-4798-945f-140b8af5b208",
+      "name": "Ilario Alicante",
+      "sort_name": "Alicante, Ilario",
+      "disambiguation": null,
+      "type": "Person",
+      "gender": "Male",
+      "country": "IT",
+      "area": "Italy",
+      "begin_area": "Livorno",
+      "life_span": {
+       "ended": false,
+       "end": null,
+       "begin": "1988"
+      },
+      "ipis": [
+       "00538678305"
+      ],
+      "isnis": [
+       "0000000372668598"
+      ],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/862287"
+       },
+       {
+        "type": "social network",
+        "url": "https://twitter.com/ilarioalicante"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/ILARIOALICANTEOFFICIAL"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/pages/Ilario-Alicante/59329455352"
+       },
+       {
+        "type": "soundcloud",
+        "url": "https://soundcloud.com/ilario-alicante"
+       }
+      ],
+      "other_relations": [
+       {
+        "type": "label founder",
+        "direction": "forward",
+        "target_type": "label",
+        "target_name": "Virgo",
+        "target_mbid": "f4c1ca6d-90a2-41f4-8905-7e8ec402a017",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       }
+      ],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=f1ea7840-95a4-4798-945f-140b8af5b208&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/8443158f3a7349aa83f37c00.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 10,
+       "releases_returned": 10,
+       "labels_by_release_count": {
+        "Drumcode": 3,
+        "SCI + TEC Digital Audio": 2,
+        "Cocoon Recordings": 1,
+        "Tenax Recordings": 1,
+        "Nervous Records": 1,
+        "Virgo": 1,
+        "Cécille Records": 1
+       },
+       "release_group_types": {
+        "Single": 4,
+        "EP": 6
+       }
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_exact_input",
+    "rule_ranked_first_mbid": "f1ea7840-95a4-4798-945f-140b8af5b208",
+    "ambiguous_homonyms": false,
+    "name_matching_candidates": 1,
+    "homonyms": [
+     [
+      "Ilario Alicante",
+      "",
+      "f1ea7840-95a4-4798-945f-140b8af5b208"
+     ]
+    ],
+    "wikidata_qids_from_mb": [],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "862287",
+      "url": "https://www.discogs.com/artist/862287",
+      "artist_mbid": "f1ea7840-95a4-4798-945f-140b8af5b208"
+     }
+    ]
+   }
+  },
+  {
+   "case": {
+    "id": "A4",
+    "name": "Sven Vath",
+    "candidate_corrections": [
+     "Sven Väth"
+    ]
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "Sven Vath",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Sven%20Vath%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/40103283055740f1129a7bfe.json",
+      "from_cache": true
+     },
+     "total_hits": 1
+    },
+    {
+     "via": "candidate_correction:Sven Väth",
+     "query": "Sven Väth",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Sven%20V%C3%A4th%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/295b729dd829b90a26e0883a.json",
+      "from_cache": true
+     },
+     "total_hits": 1
+    }
+   ],
+   "candidates": [
+    {
+     "via": "original_input",
+     "search_score": 100,
+     "observed": {
+      "mbid": "14008378-5900-4370-831e-3d17f9749caf",
+      "name": "Sven Väth",
+      "sort_name": "Väth, Sven",
+      "disambiguation": null,
+      "type": "Person",
+      "country": "DE",
+      "area": "Germany",
+      "life_span": {
+       "begin": "1964-10-26",
+       "ended": null
+      },
+      "tags": [
+       "trance",
+       "electronic",
+       "techno"
+      ]
+     },
+     "interpretation": {
+      "name_match": "exact_ignoring_diacritics"
+     }
+    },
+    {
+     "via": "candidate_correction:Sven Väth",
+     "search_score": 100,
+     "observed": {
+      "mbid": "14008378-5900-4370-831e-3d17f9749caf",
+      "name": "Sven Väth",
+      "sort_name": "Väth, Sven",
+      "disambiguation": null,
+      "type": "Person",
+      "country": "DE",
+      "area": "Germany",
+      "life_span": {
+       "begin": "1964-10-26",
+       "ended": null
+      },
+      "tags": [
+       "trance",
+       "electronic",
+       "techno"
+      ]
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/14008378-5900-4370-831e-3d17f9749caf?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/868c24ece4df420cc80cbda2.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact_ignoring_diacritics",
+      "electronic_signal_genres_tags": [
+       "electronic",
+       "techno",
+       "trance"
+      ],
+      "electronic_signal_disambiguation": []
+     },
+     "observed": {
+      "mbid": "14008378-5900-4370-831e-3d17f9749caf",
+      "name": "Sven Väth",
+      "sort_name": "Väth, Sven",
+      "disambiguation": null,
+      "type": "Person",
+      "gender": "Male",
+      "country": "DE",
+      "area": "Germany",
+      "begin_area": "Obertshausen",
+      "life_span": {
+       "begin": "1964-10-26",
+       "end": null,
+       "ended": false
+      },
+      "ipis": [
+       "00215046210"
+      ],
+      "isnis": [
+       "0000000117506137"
+      ],
+      "aliases": [
+       {
+        "name": "Svan Väth",
+        "type": "Search hint",
+        "locale": null
+       },
+       {
+        "name": "Sven Vaeth",
+        "type": null,
+        "locale": null
+       },
+       {
+        "name": "Sven Vath",
+        "type": null,
+        "locale": null
+       }
+      ],
+      "url_relations": [
+       {
+        "type": "allmusic",
+        "url": "https://www.allmusic.com/artist/mn0000031717"
+       },
+       {
+        "type": "bandcamp",
+        "url": "https://svenvaeth.bandcamp.com/"
+       },
+       {
+        "type": "discography page",
+        "url": "http://www.tursa.franken.de/SvenVaeth_discog.html"
+       },
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/1328"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://open.spotify.com/artist/5TQaBSTOSypp7S4jfSnN3F"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://www.deezer.com/artist/6567"
+       },
+       {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/File:V%C3%A4th_0047.jpg"
+       },
+       {
+        "type": "IMDb",
+        "url": "https://www.imdb.com/name/nm0904886/"
+       },
+       {
+        "type": "official homepage",
+        "url": "http://www.sven-vaeth.de/"
+       },
+       {
+        "type": "other databases",
+        "url": "https://ra.co/dj/svenvath"
+       },
+       {
+        "type": "other databases",
+        "url": "https://rateyourmusic.com/artist/sven_vath"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://www.beatport.com/artist/sven-vath/8624"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/SvenVaethOfficial"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.instagram.com/svenvaeth_official/"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.tiktok.com/@svenvaeth_official"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/gb/artist/1422506"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/us/artist/1422506"
+       },
+       {
+        "type": "streaming",
+        "url": "https://tidal.com/artist/4031192"
+       },
+       {
+        "type": "VIAF",
+        "url": "http://viaf.org/viaf/22335446"
+       },
+       {
+        "type": "wikidata",
+        "url": "https://www.wikidata.org/wiki/Q61011"
+       },
+       {
+        "type": "youtube music",
+        "url": "https://music.youtube.com/channel/UC65i9IyVAW59S9C428ou8RA"
+       }
+      ],
+      "other_relations": [
+       {
+        "type": "is person",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "R U Ready",
+        "target_mbid": "6b998d16-0273-41b9-b775-8a24175a0f66",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "is person",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Sam Vision",
+        "target_mbid": "572bfb9a-383d-45b4-b042-462a3593cfdb",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "is person",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "D.F.F.",
+        "target_mbid": "ed27c6ef-7496-4c2a-997d-70fd72b2d373",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Mosaic",
+        "target_mbid": "f47c2786-9dd0-4929-8f93-2d51be6e9989",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Astral Pilot",
+        "target_mbid": "aa2b4464-95e5-41b2-a5eb-b1a46380afcb",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Metalmaster",
+        "target_mbid": "c769336d-5efa-4fc3-af6e-f0263863469a",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Barbarella",
+        "target_mbid": "6cf2e792-8b6d-48db-957b-490295d31984",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "Off",
+        "target_mbid": "ea0c1b2c-59de-4fee-934e-997e8e987127",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "The Essence of Nature",
+        "target_mbid": "7b052161-d6cd-44bd-95c3-983479a6ca71",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "member of band",
+        "direction": "forward",
+        "target_type": "artist",
+        "target_name": "16 BIT",
+        "target_mbid": "6d56e6a3-ffe3-4425-b65d-52704de5acb1",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "sibling",
+        "direction": "backward",
+        "target_type": "artist",
+        "target_name": "Mike Väth",
+        "target_mbid": "187dd33b-a467-4a81-ab3c-69b3be441af9",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "label founder",
+        "direction": "forward",
+        "target_type": "label",
+        "target_name": "Cocoon Recordings",
+        "target_mbid": "b544ec39-2d71-4c70-be2b-4b3f2f98295a",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       },
+       {
+        "type": "label founder",
+        "direction": "forward",
+        "target_type": "label",
+        "target_name": "Eye Q Records",
+        "target_mbid": "cf8942d4-44e8-4323-9d6e-bac40699476b",
+        "begin": null,
+        "end": null,
+        "attributes": []
+       }
+      ],
+      "genres": [
+       {
+        "name": "electronic",
+        "votes": 1
+       },
+       {
+        "name": "techno",
+        "votes": 1
+       },
+       {
+        "name": "trance",
+        "votes": 1
+       }
+      ],
+      "tags": [
+       {
+        "name": "electronic",
+        "votes": 1
+       },
+       {
+        "name": "techno",
+        "votes": 1
+       },
+       {
+        "name": "trance",
+        "votes": 1
+       }
+      ]
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=14008378-5900-4370-831e-3d17f9749caf&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/cfa27ed40ddab87edffb333e.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 120,
+       "releases_returned": 100,
+       "labels_by_release_count": {
+        "Cocoon Recordings": 22,
+        "Eye Q Records": 18,
+        "Virgin": 16,
+        "Virgin Schallplatten GmbH": 9,
+        "Warner Bros. Records": 8,
+        "Ultra Records": 5,
+        "Mixmag": 3,
+        "Club Culture": 3,
+        "[no label]": 2,
+        "DMC": 2,
+        "Cocoon Digital": 2,
+        "Eye Q UK": 1,
+        "novamute": 1,
+        "Datapunk": 1,
+        "Boiler Room": 1,
+        "Eye Q America": 1,
+        "Ministry Magazine UK": 1,
+        "Moonshine Music": 1,
+        "wea": 1
+       },
+       "release_group_types": {
+        "Album": 57,
+        "Single": 30,
+        "Broadcast": 7,
+        "EP": 5,
+        "sin tipo": 1
+       }
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_via_exact_ignoring_diacritics",
+    "rule_ranked_first_mbid": "14008378-5900-4370-831e-3d17f9749caf",
+    "ambiguous_homonyms": false,
+    "name_matching_candidates": 1,
+    "homonyms": [
+     [
+      "Sven Väth",
+      "",
+      "14008378-5900-4370-831e-3d17f9749caf"
+     ]
+    ],
+    "wikidata_qids_from_mb": [
+     "Q61011"
+    ],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "1328",
+      "url": "https://www.discogs.com/artist/1328",
+      "artist_mbid": "14008378-5900-4370-831e-3d17f9749caf"
+     }
+    ]
+   }
+  },
+  {
+   "case": {
+    "id": "A5",
+    "name": "Mochackk",
+    "candidate_corrections": [
+     "Mochakk"
+    ]
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "Mochackk",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Mochackk%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/95a8cb4516df5239de9aa0cc.json",
+      "from_cache": true
+     },
+     "total_hits": 0
+    },
+    {
+     "via": "candidate_correction:Mochakk",
+     "query": "Mochakk",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Mochakk%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/07ac8a7c60f0d1085f283766.json",
+      "from_cache": true
+     },
+     "total_hits": 1
+    }
+   ],
+   "candidates": [
+    {
+     "via": "candidate_correction:Mochakk",
+     "search_score": 100,
+     "observed": {
+      "mbid": "35321b91-98ca-4a78-b34f-cb113722eab9",
+      "name": "Mochakk",
+      "sort_name": "Mochakk",
+      "disambiguation": "Brazilian DJ and producer",
+      "type": "Person",
+      "country": "BR",
+      "area": "Brazil",
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/35321b91-98ca-4a78-b34f-cb113722eab9?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/8acfb08772d81364849fb23b.json",
+      "from_cache": true
+     },
+     "via": "candidate_correction:Mochakk",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": [
+       "dj",
+       "producer"
+      ]
+     },
+     "observed": {
+      "mbid": "35321b91-98ca-4a78-b34f-cb113722eab9",
+      "name": "Mochakk",
+      "sort_name": "Mochakk",
+      "disambiguation": "Brazilian DJ and producer",
+      "type": "Person",
+      "gender": "Male",
+      "country": "BR",
+      "area": "Brazil",
+      "begin_area": "Sorocaba",
+      "life_span": {
+       "ended": false,
+       "begin": null,
+       "end": null
+      },
+      "ipis": [],
+      "isnis": [
+       "0000000512107814"
+      ],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "bandcamp",
+        "url": "https://mochakk.bandcamp.com/"
+       },
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/7725928"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://open.spotify.com/artist/0rTh1tAdrEbdKZBTiiAQSo"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://www.deezer.com/artist/13698309"
+       },
+       {
+        "type": "last.fm",
+        "url": "https://www.last.fm/music/Mochakk"
+       },
+       {
+        "type": "official homepage",
+        "url": "https://mochakk.com/"
+       },
+       {
+        "type": "other databases",
+        "url": "https://ra.co/dj/mochakk"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://music.apple.com/us/artist/1230228889"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://www.beatport.com/artist/mochakk/660408"
+       },
+       {
+        "type": "social network",
+        "url": "https://twitter.com/mochakkmusic"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/MochakkMusic"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.instagram.com/mochakk/"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.tiktok.com/@mochakk"
+       },
+       {
+        "type": "soundcloud",
+        "url": "https://soundcloud.com/mochakkmusic"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.amazon.com/artists/B077P18WQQ"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/br/artist/1230228889"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/us/artist/1230228889"
+       },
+       {
+        "type": "streaming",
+        "url": "https://tidal.com/artist/9303766"
+       },
+       {
+        "type": "wikidata",
+        "url": "https://www.wikidata.org/wiki/Q124125060"
+       },
+       {
+        "type": "youtube",
+        "url": "https://www.youtube.com/channel/UCsujoYVwvARUAiAgSLwiIIw"
+       }
+      ],
+      "other_relations": [],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=35321b91-98ca-4a78-b34f-cb113722eab9&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/4a7f5d132b3e5ae01e8a12d3.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 18,
+       "releases_returned": 18,
+       "labels_by_release_count": {
+        "CircoLoco Records": 5,
+        "[no label]": 3,
+        "Nervous Records": 2,
+        "Elevation Music": 1,
+        "Cercle Records": 1,
+        "Ninja Tune": 1,
+        "Disorder Artist & Label Services": 1,
+        "Disorder": 1,
+        "Warner Records UK": 1
+       },
+       "release_group_types": {
+        "Single": 10,
+        "Album": 4,
+        "EP": 4
+       }
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_via_exact_of_candidate_correction",
+    "rule_ranked_first_mbid": "35321b91-98ca-4a78-b34f-cb113722eab9",
+    "ambiguous_homonyms": false,
+    "name_matching_candidates": 1,
+    "homonyms": [
+     [
+      "Mochakk",
+      "Brazilian DJ and producer",
+      "35321b91-98ca-4a78-b34f-cb113722eab9"
+     ]
+    ],
+    "wikidata_qids_from_mb": [
+     "Q124125060"
+    ],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "7725928",
+      "url": "https://www.discogs.com/artist/7725928",
+      "artist_mbid": "35321b91-98ca-4a78-b34f-cb113722eab9"
+     }
+    ]
+   }
+  },
+  {
+   "case": {
+    "id": "A6",
+    "name": "Michael Bibi",
+    "candidate_corrections": []
+   },
+   "searches": [
+    {
+     "via": "original_input",
+     "query": "Michael Bibi",
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=10&query=artist%3A%22Michael%20Bibi%22",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/261d1d71d04e78c9e739de37.json",
+      "from_cache": true
+     },
+     "total_hits": 1
+    }
+   ],
+   "candidates": [
+    {
+     "via": "original_input",
+     "search_score": 100,
+     "observed": {
+      "mbid": "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8",
+      "name": "Michael Bibi",
+      "sort_name": "Bibi, Michael",
+      "disambiguation": "electronic",
+      "type": "Person",
+      "country": null,
+      "area": null,
+      "life_span": {
+       "ended": null
+      },
+      "tags": []
+     },
+     "interpretation": {
+      "name_match": "exact"
+     }
+    }
+   ],
+   "lookups": [
+    {
+     "request": {
+      "url": "https://musicbrainz.org/ws/2/artist/a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8?fmt=json&inc=aliases%2Bgenres%2Btags%2Burl-rels%2Blabel-rels%2Bartist-rels",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/68906e06b425600e523f7031.json",
+      "from_cache": true
+     },
+     "via": "original_input",
+     "interpretation": {
+      "name_match": "exact",
+      "electronic_signal_genres_tags": [],
+      "electronic_signal_disambiguation": [
+       "electronic"
+      ]
+     },
+     "observed": {
+      "mbid": "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8",
+      "name": "Michael Bibi",
+      "sort_name": "Bibi, Michael",
+      "disambiguation": "electronic",
+      "type": "Person",
+      "gender": "Male",
+      "country": null,
+      "area": null,
+      "begin_area": null,
+      "life_span": {
+       "begin": null,
+       "ended": false,
+       "end": null
+      },
+      "ipis": [],
+      "isnis": [],
+      "aliases": [],
+      "url_relations": [
+       {
+        "type": "discogs",
+        "url": "https://www.discogs.com/artist/6016798"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://open.spotify.com/artist/4cvdQRyHmkSQSakUrW2oxv"
+       },
+       {
+        "type": "free streaming",
+        "url": "https://www.deezer.com/artist/5767953"
+       },
+       {
+        "type": "other databases",
+        "url": "https://ra.co/dj/michaelbibi"
+       },
+       {
+        "type": "purchase for download",
+        "url": "https://www.beatport.com/artist/michael-bibi/350292"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.facebook.com/MichaelBibi1"
+       },
+       {
+        "type": "social network",
+        "url": "https://www.instagram.com/michael_bibi_/"
+       },
+       {
+        "type": "soundcloud",
+        "url": "https://soundcloud.com/bibi-87"
+       },
+       {
+        "type": "streaming",
+        "url": "https://music.apple.com/gb/artist/685311477"
+       },
+       {
+        "type": "streaming",
+        "url": "https://tidal.com/artist/5833034"
+       }
+      ],
+      "other_relations": [],
+      "genres": [],
+      "tags": []
+     },
+     "release_browse": {
+      "request": {
+       "url": "https://musicbrainz.org/ws/2/release?artist=a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8&fmt=json&inc=labels%2Brelease-groups&limit=100",
+       "status": 200,
+       "error": null,
+       "raw_file": "raw/musicbrainz/176c06c9998987bddc4c6cb0.json",
+       "from_cache": true
+      },
+      "observed": {
+       "release_count_total": 34,
+       "releases_returned": 34,
+       "labels_by_release_count": {
+        "Solid Grooves Records": 9,
+        "Solid Grooves Raw": 3,
+        "Lost Records": 2,
+        "Repopulate Mars": 2,
+        "CircoLoco Records": 2,
+        "Electronique": 2,
+        "Big Beat": 1,
+        "Krafted Underground": 1,
+        "Snatch! Records": 1,
+        "Criminal Records": 1,
+        "FFRR": 1,
+        "Rumors": 1,
+        "Drag City": 1,
+        "EMPIRE": 1,
+        "Iso:lation Tank": 1
+       },
+       "release_group_types": {
+        "Single": 24,
+        "EP": 9,
+        "Broadcast": 1
+       }
+      }
+     }
+    }
+   ],
+   "interpretation": {
+    "status": "found_exact_input",
+    "rule_ranked_first_mbid": "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8",
+    "ambiguous_homonyms": false,
+    "name_matching_candidates": 1,
+    "homonyms": [
+     [
+      "Michael Bibi",
+      "electronic",
+      "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8"
+     ]
+    ],
+    "wikidata_qids_from_mb": [],
+    "discogs_ids_from_mb": [
+     {
+      "kind": "artist",
+      "id": "6016798",
+      "url": "https://www.discogs.com/artist/6016798",
+      "artist_mbid": "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8"
+     }
+    ]
+   }
+  }
+ ],
+ "wikidata": {
+  "requests": [
+   {
+    "url": "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=Q115631706%7CQ124125060%7CQ20687342%7CQ4685220%7CQ61011&languages=en%7Ces&maxlag=5&props=labels%7Cdescriptions%7Cclaims%7Csitelinks",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/ef4822ccd4dd75f4fc59ede8.json",
+    "from_cache": true
+   },
+   {
+    "url": "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=Q10000%7CQ107305639%7CQ10816969%7CQ108896850%7CQ11921%7CQ130857%7CQ13590141%7CQ14005%7CQ145%7CQ155%7CQ1551807%7CQ170435%7CQ170611%7CQ183%7CQ183945%7CQ188901%7CQ1933566%7CQ19938912%7CQ20502%7CQ215380%7CQ328%7CQ36578%7CQ36834%7CQ3922505%7CQ48183%7CQ5%7CQ50358336%7CQ504063%7CQ55960555%7CQ569628%7CQ598593%7CQ60%7CQ639669%7CQ786%7CQ843402%7CQ8447%7CQ947873&languages=en%7Ces&maxlag=5&props=labels",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/wikidata/5a9f9ec7ad363ebe6aeeac10.json",
+    "from_cache": true
+   }
+  ],
+  "per_artist": {
+   "A1": {
+    "items": [
+     {
+      "qid": "Q20687342",
+      "link": "from_musicbrainz",
+      "source_url": "https://www.wikidata.org/wiki/Q20687342",
+      "observed": {
+       "label_en": "The Martinez Brothers",
+       "label_es": "The Martinez Brothers",
+       "description_en": "American duo of disc jockeys, music producers, and remixers",
+       "description_es": null,
+       "sitelinks": [
+        "dewiki",
+        "enwiki",
+        "eswiki",
+        "frwiki"
+       ],
+       "claims": {
+        "P31": {
+         "label": "instancia de",
+         "values": [
+          {
+           "value": {
+            "item": "Q215380",
+            "label": "grupo musical"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P495": {
+         "label": "país de origen",
+         "values": [
+          {
+           "value": {
+            "item": "Q786",
+            "label": "República Dominicana"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q328",
+               "label": "Wikipedia en inglés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P740": {
+         "label": "lugar de formación",
+         "values": [
+          {
+           "value": {
+            "item": "Q60",
+            "label": "Nueva York"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P136": {
+         "label": "género",
+         "values": [
+          {
+           "value": {
+            "item": "Q20502",
+            "label": "música house"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q8447",
+               "label": "Wikipedia en francés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P434": {
+         "label": "MusicBrainz artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "c9c65c94-27b4-4eca-82f0-80055ac4f8a7"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P1953": {
+         "label": "Discogs artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "715291"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q8447",
+               "label": "Wikipedia en francés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P2002": {
+         "label": "X/Twitter",
+         "values": [
+          {
+           "value": {
+            "string": "themartinezbros"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P2003": {
+         "label": "Instagram",
+         "values": [
+          {
+           "value": {
+            "string": "thembros"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q14005",
+               "label": "MusicBrainz"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2021-08-10T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "string": "themartinezbros"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q504063",
+               "label": "Discogs"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2021-10-26T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P3040": {
+         "label": "SoundCloud ID",
+         "values": [
+          {
+           "value": {
+            "string": "themartinezbros"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        }
+       }
+      },
+      "interpretation": {
+       "status": "validated_bidirectional",
+       "wikidata_mbids": [
+        "c9c65c94-27b4-4eca-82f0-80055ac4f8a7"
+       ],
+       "matches_mb_mbids_reviewed": [
+        "c9c65c94-27b4-4eca-82f0-80055ac4f8a7"
+       ]
+      }
+     }
+    ],
+    "unlinked_text_search": null
+   },
+   "A2": {
+    "items": [
+     {
+      "qid": "Q4685220",
+      "link": "text_search_candidate",
+      "source_url": "https://www.wikidata.org/wiki/Q4685220",
+      "observed": {
+       "label_en": "Adrian Mills",
+       "label_es": "Adrian Mills",
+       "description_en": "British television presenter",
+       "description_es": null,
+       "sitelinks": [
+        "arwiki",
+        "enwiki"
+       ],
+       "claims": {
+        "P31": {
+         "label": "instancia de",
+         "values": [
+          {
+           "value": {
+            "item": "Q5",
+            "label": "ser humano"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q328",
+               "label": "Wikipedia en inglés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P106": {
+         "label": "ocupación",
+         "values": [
+          {
+           "value": {
+            "item": "Q13590141",
+            "label": "presentador"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q328",
+               "label": "Wikipedia en inglés"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q947873",
+            "label": "presentador de televisión"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q328",
+               "label": "Wikipedia en inglés"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2019-06-14T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P27": {
+         "label": "ciudadanía",
+         "values": [
+          {
+           "value": {
+            "item": "Q145",
+            "label": "Reino Unido"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P569": {
+         "label": "fecha de nacimiento",
+         "values": [
+          {
+           "value": {
+            "time": "+1956-07-16T00:00:00Z",
+            "precision": 11,
+            "formatted": "1956-07-16"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q328",
+               "label": "Wikipedia en inglés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      "interpretation": {
+       "status": "unvalidated_text_candidate",
+       "wikidata_mbids": [],
+       "matches_mb_mbids_reviewed": []
+      }
+     }
+    ],
+    "unlinked_text_search": {
+     "request": {
+      "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Adrian%20Mills&type=item",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/wikidata/910623722bebbe94da0db3b2.json",
+      "from_cache": true
+     },
+     "query": "Adrian Mills",
+     "observed": [
+      {
+       "qid": "Q4685220",
+       "label": "Adrian Mills",
+       "description": "British television presenter"
+      }
+     ]
+    }
+   },
+   "A3": {
+    "items": [],
+    "unlinked_text_search": {
+     "request": {
+      "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Ilario%20Alicante&type=item",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/wikidata/f5eb5e5fbe9d8819abd4b403.json",
+      "from_cache": true
+     },
+     "query": "Ilario Alicante",
+     "observed": []
+    }
+   },
+   "A4": {
+    "items": [
+     {
+      "qid": "Q61011",
+      "link": "from_musicbrainz",
+      "source_url": "https://www.wikidata.org/wiki/Q61011",
+      "observed": {
+       "label_en": "Sven Väth",
+       "label_es": "Sven Väth",
+       "description_en": "German DJ and record producer",
+       "description_es": "DJ de música techno minimal",
+       "sitelinks": [
+        "arwiki",
+        "arzwiki",
+        "azbwiki",
+        "bgwiki",
+        "cawiki",
+        "commonswiki",
+        "cswiki",
+        "dewiki",
+        "dewikiquote",
+        "enwiki",
+        "eswiki",
+        "fawiki",
+        "fiwiki",
+        "frwiki",
+        "hrwiki",
+        "huwiki",
+        "itwiki",
+        "nlwiki",
+        "plwiki",
+        "ptwiki",
+        "rowiki",
+        "ruwiki",
+        "srwiki",
+        "svwiki"
+       ],
+       "claims": {
+        "P31": {
+         "label": "instancia de",
+         "values": [
+          {
+           "value": {
+            "item": "Q5",
+            "label": "ser humano"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q19938912",
+               "label": "data.bnf.fr"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2015-10-10T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            },
+            {
+             "P248": [
+              {
+               "item": "Q50358336",
+               "label": "datos.bne.es"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2024-05-11T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P106": {
+         "label": "ocupación",
+         "values": [
+          {
+           "value": {
+            "item": "Q10816969",
+            "label": "disc-jockey de club"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q10000",
+               "label": "Wikipedia en neerlandés"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q130857",
+            "label": "disc-jockey"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q36578",
+               "label": "Gemeinsame Normdatei"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2026-04-20T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q183945",
+            "label": "productor discográfico"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q1551807",
+               "label": "Wikipedia en polaco"
+              },
+              {
+               "item": "Q10000",
+               "label": "Wikipedia en neerlandés"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2019-06-20T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q55960555",
+            "label": "artista discográfico"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          },
+          {
+           "value": {
+            "item": "Q36834",
+            "label": "compositor"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q36578",
+               "label": "Gemeinsame Normdatei"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2026-04-20T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q639669",
+            "label": "músico"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q36578",
+               "label": "Gemeinsame Normdatei"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2026-04-20T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P27": {
+         "label": "ciudadanía",
+         "values": [
+          {
+           "value": {
+            "item": "Q183",
+            "label": "Alemania"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P19": {
+         "label": "lugar de nacimiento",
+         "values": [
+          {
+           "value": {
+            "item": "Q569628",
+            "label": "Obertshausen"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q8447",
+               "label": "Wikipedia en francés"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P569": {
+         "label": "fecha de nacimiento",
+         "values": [
+          {
+           "value": {
+            "time": "+1964-10-26T00:00:00Z",
+            "precision": 11,
+            "formatted": "1964-10-26"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q36578",
+               "label": "Gemeinsame Normdatei"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2014-04-09T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            },
+            {
+             "P248": [
+              {
+               "item": "Q504063",
+               "label": "Discogs"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2017-10-09T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P2031": {
+         "label": "inicio de actividad",
+         "values": [
+          {
+           "value": {
+            "time": "+1982-00-00T00:00:00Z",
+            "precision": 9,
+            "formatted": "1982"
+           },
+           "rank": "normal",
+           "reference_status": "wikimedia_import_only",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q11921",
+               "label": "Wikipedia en portugués"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P136": {
+         "label": "género",
+         "values": [
+          {
+           "value": {
+            "item": "Q170611",
+            "label": "techno"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          },
+          {
+           "value": {
+            "item": "Q170435",
+            "label": "trance"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P264": {
+         "label": "sello discográfico",
+         "values": [
+          {
+           "value": {
+            "item": "Q843402",
+            "label": "Warner Bros. Records"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P3373": {
+         "label": "hermano/a",
+         "values": [
+          {
+           "value": {
+            "item": "Q1933566",
+            "label": "Mike Väth"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P143": [
+              {
+               "item": "Q48183",
+               "label": "Wikipedia en alemán"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2020-08-22T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P434": {
+         "label": "MusicBrainz artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "14008378-5900-4370-831e-3d17f9749caf"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q14005",
+               "label": "MusicBrainz"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P1953": {
+         "label": "Discogs artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "1328"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q14005",
+               "label": "MusicBrainz"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2015-07-25T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P1902": {
+         "label": "Spotify artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "5TQaBSTOSypp7S4jfSnN3F"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q14005",
+               "label": "MusicBrainz"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2021-08-20T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P2002": {
+         "label": "X/Twitter",
+         "values": [
+          {
+           "value": {
+            "string": "svenvaeth"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q504063",
+               "label": "Discogs"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2021-10-19T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P2003": {
+         "label": "Instagram",
+         "values": [
+          {
+           "value": {
+            "string": "svenvaeth_official"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q504063",
+               "label": "Discogs"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2021-10-19T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      "interpretation": {
+       "status": "validated_bidirectional",
+       "wikidata_mbids": [
+        "14008378-5900-4370-831e-3d17f9749caf"
+       ],
+       "matches_mb_mbids_reviewed": [
+        "14008378-5900-4370-831e-3d17f9749caf"
+       ]
+      }
+     }
+    ],
+    "unlinked_text_search": null
+   },
+   "A5": {
+    "items": [
+     {
+      "qid": "Q124125060",
+      "link": "from_musicbrainz",
+      "source_url": "https://www.wikidata.org/wiki/Q124125060",
+      "observed": {
+       "label_en": "Mochakk",
+       "label_es": "Mochakk",
+       "description_en": "musical artist",
+       "description_es": "DJ y productor brasileño",
+       "sitelinks": [
+        "enwiki",
+        "eswiki",
+        "frwiki",
+        "ptwiki"
+       ],
+       "claims": {
+        "P31": {
+         "label": "instancia de",
+         "values": [
+          {
+           "value": {
+            "item": "Q5",
+            "label": "ser humano"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P106": {
+         "label": "ocupación",
+         "values": [
+          {
+           "value": {
+            "item": "Q183945",
+            "label": "productor discográfico"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          },
+          {
+           "value": {
+            "item": "Q639669",
+            "label": "músico"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P27": {
+         "label": "ciudadanía",
+         "values": [
+          {
+           "value": {
+            "item": "Q155",
+            "label": "Brasil"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P19": {
+         "label": "lugar de nacimiento",
+         "values": [
+          {
+           "value": {
+            "item": "Q188901",
+            "label": "Sorocaba"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://technobeatscloud.com/escena/deejays/mochakk"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P569": {
+         "label": "fecha de nacimiento",
+         "values": [
+          {
+           "value": {
+            "time": "+1999-09-21T00:00:00Z",
+            "precision": 11,
+            "formatted": "1999-09-21"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://technobeatscloud.com/escena/deejays/mochakk"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P136": {
+         "label": "género",
+         "values": [
+          {
+           "value": {
+            "item": "Q20502",
+            "label": "música house"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://es.ra.co/dj/mochakk/biography"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q598593",
+            "label": "tech house"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://madmenmagazine.com/mochakk-motraxx-volume-4-electronica-brasilena/"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P264": {
+         "label": "sello discográfico",
+         "values": [
+          {
+           "value": {
+            "item": "Q107305639",
+            "label": null
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          },
+          {
+           "value": {
+            "item": "Q108896850",
+            "label": "Cercle Records"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P434": {
+         "label": "MusicBrainz artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "35321b91-98ca-4a78-b34f-cb113722eab9"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P248": [
+              {
+               "item": "Q14005",
+               "label": "MusicBrainz"
+              }
+             ],
+             "P813": [
+              {
+               "time": "+2024-11-04T00:00:00Z",
+               "precision": 11
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P1953": {
+         "label": "Discogs artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "7725928"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P2003": {
+         "label": "Instagram",
+         "values": [
+          {
+           "value": {
+            "string": "mochakk"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.youtube.com/@mochakk/about"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      "interpretation": {
+       "status": "validated_bidirectional",
+       "wikidata_mbids": [
+        "35321b91-98ca-4a78-b34f-cb113722eab9"
+       ],
+       "matches_mb_mbids_reviewed": [
+        "35321b91-98ca-4a78-b34f-cb113722eab9"
+       ]
+      }
+     }
+    ],
+    "unlinked_text_search": null
+   },
+   "A6": {
+    "items": [
+     {
+      "qid": "Q115631706",
+      "link": "text_search_candidate",
+      "source_url": "https://www.wikidata.org/wiki/Q115631706",
+      "observed": {
+       "label_en": "Michael Bibi",
+       "label_es": null,
+       "description_en": "electronic musician and DJ",
+       "description_es": "musico de electronica y dj",
+       "sitelinks": [
+        "commonswiki",
+        "enwiki"
+       ],
+       "claims": {
+        "P31": {
+         "label": "instancia de",
+         "values": [
+          {
+           "value": {
+            "item": "Q5",
+            "label": "ser humano"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P106": {
+         "label": "ocupación",
+         "values": [
+          {
+           "value": {
+            "item": "Q3922505",
+            "label": "productor musical"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P27": {
+         "label": "ciudadanía",
+         "values": [
+          {
+           "value": {
+            "item": "Q145",
+            "label": "Reino Unido"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.insomniac.com/music/artists/michael-bibi/"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P569": {
+         "label": "fecha de nacimiento",
+         "values": [
+          {
+           "value": {
+            "time": "+1990-06-23T00:00:00Z",
+            "precision": 11,
+            "formatted": "1990-06-23"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.famousbirthdays.com/people/michael-bibi.html"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P136": {
+         "label": "género",
+         "values": [
+          {
+           "value": {
+            "item": "Q20502",
+            "label": "música house"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://djmag.com/top100djs/2026/37/michael-bibi"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "value": {
+            "item": "Q598593",
+            "label": "tech house"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.insomniac.com/music/artists/michael-bibi/"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P434": {
+         "label": "MusicBrainz artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P1953": {
+         "label": "Discogs artist ID",
+         "values": [
+          {
+           "value": {
+            "string": "6016798"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        },
+        "P2002": {
+         "label": "X/Twitter",
+         "values": [
+          {
+           "value": {
+            "string": "MichaelBibi1"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.youtube.com/c/MichaelBibi/about"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P2003": {
+         "label": "Instagram",
+         "values": [
+          {
+           "value": {
+            "string": "michael_bibi_"
+           },
+           "rank": "normal",
+           "reference_status": "referenced",
+           "references": [
+            {
+             "P854": [
+              {
+               "string": "https://www.youtube.com/c/MichaelBibi/about"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        "P3040": {
+         "label": "SoundCloud ID",
+         "values": [
+          {
+           "value": {
+            "string": "bibi-87"
+           },
+           "rank": "normal",
+           "reference_status": "unreferenced",
+           "references": []
+          }
+         ]
+        }
+       }
+      },
+      "interpretation": {
+       "status": "validated_reverse_link_only",
+       "wikidata_mbids": [
+        "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8"
+       ],
+       "matches_mb_mbids_reviewed": [
+        "a5cce1aa-b8eb-4592-a0d9-a021be3bdcf8"
+       ]
+      }
+     }
+    ],
+    "unlinked_text_search": {
+     "request": {
+      "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&maxlag=5&search=Michael%20Bibi&type=item",
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/wikidata/9a17f6f6d45214d6747eac0a.json",
+      "from_cache": true
+     },
+     "query": "Michael Bibi",
+     "observed": [
+      {
+       "qid": "Q115631706",
+       "label": "Michael Bibi",
+       "description": "electronic musician and DJ"
+      }
+     ]
+    }
+   }
+  }
+ }
+}
