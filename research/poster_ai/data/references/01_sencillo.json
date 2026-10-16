@@ -1,0 +1,72 @@
+{
+ "_dificultad": "sencillo",
+ "_review": [
+  "event_name: el cartel dice 'NOW HERE' y debajo 'BY PACO OSUNA'; se acepta cualquiera de las dos formas.",
+  "location: la línea inferior 'JARDÍN BOTÁNICO | CL. 73 #51D-14, ARANJUEZ' es pequeña y la imagen tiene baja resolución (387x516); '#51D-14' se lee pero debe confirmarse. Solo afecta a location_variants.",
+  "SCENE y FREQUENCY son logotipos de promotores, no artistas."
+ ],
+ "event_name": "NOW HERE BY PACO OSUNA",
+ "event_name_variants": [
+  "NOW HERE"
+ ],
+ "dates": [
+  {
+   "text": "SATURDAY NOV 28, 2026",
+   "iso": "2026-11-28"
+  }
+ ],
+ "location": "MEDELLÍN, COLOMBIA",
+ "location_variants": [
+  "JARDÍN BOTÁNICO, MEDELLÍN, COLOMBIA",
+  "JARDÍN BOTÁNICO | CL. 73 #51D-14, ARANJUEZ, MEDELLÍN, COLOMBIA",
+  "MEDELLÍN, COLOMBIA, JARDÍN BOTÁNICO | CL. 73 #51D-14, ARANJUEZ"
+ ],
+ "stages": [],
+ "artists": [
+  {
+   "name": "PACO OSUNA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "NIC FANCIULLI",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "HECTOR COUTO",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "WHEATS",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "FER BR",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CHRIS DI PERRI",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  }
+ ],
+ "unreadable_text": [],
+ "sessions": [],
+ "b2b": []
+}

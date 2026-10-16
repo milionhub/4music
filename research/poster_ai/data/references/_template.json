@@ -1,0 +1,46 @@
+{
+ "_instrucciones": "Copia este archivo como <nombre de la imagen sin extensión>.json (p. ej. 01_sencillo.json) y transcribe a mano SOLO lo visible en el cartel, con su grafía original. Usa null o [] si no aparece. 'accepted_variants' (opcional) lista grafías alternativas que una persona acepta como correctas. Borra esta clave _instrucciones y las de ejemplo. Opcionales: 'event_name_variants' y 'location_variants' (formas aceptadas), '_review' (notas para revisión humana) y 'sessions' (solo si el cartel agrupa artistas por día/escenario/franja; 'time' es la hora impresa del bloque, nunca la de cada DJ) y 'b2b' (actuaciones conjuntas impresas: cada miembro va también por separado en 'artists'; no se deduce orden de actuación, duración ni horario). Las fechas solo llevan 'iso' si día, mes y año están impresos juntos; no se deducen años.",
+ "_dificultad": "sencillo | muchos_artistas | diseño_complejo | horarios_escenarios | dificil_de_leer",
+ "event_name": null,
+ "dates": [
+  {
+   "text": "SAT 12 JULY 2025",
+   "iso": "2025-07-12"
+  }
+ ],
+ "location": null,
+ "stages": [],
+ "artists": [
+  {
+   "name": "Nombre tal como aparece",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  }
+ ],
+ "unreadable_text": [],
+ "event_name_variants": [],
+ "location_variants": [],
+ "sessions": [
+  {
+   "date": {
+    "text": "03.09",
+    "iso": null
+   },
+   "label": null,
+   "stage": null,
+   "time": null,
+   "artists": []
+  }
+ ],
+ "b2b": [
+  {
+   "artists": [
+    "Nombre A",
+    "Nombre B"
+   ],
+   "text": "NOMBRE A B2B NOMBRE B"
+  }
+ ]
+}

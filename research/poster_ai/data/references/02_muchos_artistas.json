@@ -1,0 +1,165 @@
+{
+ "_dificultad": "muchos_artistas",
+ "_review": [
+  "Criterio: [A:RPIA:R] es UN acto colectivo; los miembros entre paréntesis (PETRE INSPIRESCU, RARESH, RHADOO) no cuentan como artistas aparte ni como B2B. Si el modelo los separa, contarán como inventados.",
+  "Criterio: 'ROSSI.' se transcribe con el punto; 'ROSSI' se acepta como variante.",
+  "El cartel no muestra año: 'NEW YEAR'S DAY' queda con iso null (no se deduce).",
+  "El horario '4AM - 6PM' es del evento, no de los artistas; el esquema no tiene campo de hora de evento y no se evalúa.",
+  "Tipografía manuscrita, pendiente de confirmar por una persona: 'JNJS', 'SEDEF ADASÏ' (diéresis) y 'DEMI RIQUÍSIMO' (tilde). Se dejan como se leen."
+ ],
+ "event_name": "CIRCO LOCO",
+ "event_name_variants": [
+  "CIRCOLOCO",
+  "CIRCO LOCO NEW YEAR'S DAY",
+  "CIRCO LOCO - NEW YEAR'S DAY",
+  "CIRCOLOCO NEW YEAR'S DAY"
+ ],
+ "dates": [
+  {
+   "text": "NEW YEAR'S DAY",
+   "iso": null
+  }
+ ],
+ "location": "DC-10 IBIZA",
+ "location_variants": [
+  "DC-10, IBIZA",
+  "DC-10"
+ ],
+ "stages": [],
+ "artists": [
+  {
+   "name": "[A:RPIA:R]",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": [
+    "[A:RPIA:R] (PETRE INSPIRESCU RARESH - RHADOO)",
+    "[A:RPIA:R] (PETRE INSPIRESCU, RARESH - RHADOO)"
+   ]
+  },
+  {
+   "name": "ARAPU",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "BAMBOUNOU",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CARL CRAIG",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "DEMI RIQUÍSIMO",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ELLEN ALIEN",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ENZO SIRAGUSA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ISAAC CARTER",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JAMBACK",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JNJS",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "NYRA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ROSSI.",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": [
+    "ROSSI"
+   ]
+  },
+  {
+   "name": "RYAN ELLIOTT",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SEDEF ADASÏ",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SONJA MOONEAR",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SOSSA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "TANIA VULCANO",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "YOUNG MARCO",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  }
+ ],
+ "unreadable_text": [],
+ "sessions": [],
+ "b2b": []
+}

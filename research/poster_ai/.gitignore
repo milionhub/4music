@@ -1,0 +1,6 @@
+# Carteles e imágenes locales: no se versionan (derechos de terceros).
+data/posters/*
+!data/posters/README.md
+# Salidas del modelo, registro de llamadas y evaluación: solo local.
+data/outputs/
+__pycache__/

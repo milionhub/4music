@@ -1,0 +1,103 @@
+{
+ "_dificultad": "diseño_complejo",
+ "_review": [
+  "Imagen: el original era AVIF (se conserva en local); se analiza 03_diseno_complejo.png, convertido sin pérdida con ffmpeg (1920x1920).",
+  "Criterio: la firma vertical 'FELIPE PANTONE' es del artista visual y no forma parte del lineup de DJs. Si el modelo la incluye, contará como inventada.",
+  "'MUSIC MADE VISIBLE' es un lema; 'IBIZA26' es la marca de temporada, no una fecha.",
+  "location: solo se ven 'IBIZA26' y el logotipo 'DC-10'; se aceptan las combinaciones indicadas."
+ ],
+ "event_name": "SOLID GROOVES",
+ "event_name_variants": [
+  "SOLID GROOVES IBIZA26",
+  "SOLID GROOVES IBIZA 26"
+ ],
+ "dates": [
+  {
+   "text": "SEPTEMBER 10 2026",
+   "iso": "2026-09-10"
+  }
+ ],
+ "location": "DC-10",
+ "location_variants": [
+  "DC-10 IBIZA",
+  "DC-10, IBIZA",
+  "DC-10, IBIZA26",
+  "DC-10 IBIZA26"
+ ],
+ "stages": [],
+ "artists": [
+  {
+   "name": "ALINE UMBER",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ANOTR",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CARLITA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "DAN GHENACIA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "DJEBALI",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MAHER DANIEL",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MARCO CAROLA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "PAWSA",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "REELOW",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ROSSKO",
+   "stage": null,
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  }
+ ],
+ "unreadable_text": [],
+ "sessions": [],
+ "b2b": []
+}

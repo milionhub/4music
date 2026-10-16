@@ -1,0 +1,634 @@
+{
+ "_dificultad": "horarios_escenarios",
+ "_review": [
+  "Escenarios: el cartel solo muestra columnas '1' y '2', sin nombre.",
+  "Fechas: se conserva el rango general '3-7 SEPTEMBER 2026' (iso null). Los bloques solo muestran día y mes ('03.09'), así que su iso es null: el año no se deduce de la cabecera.",
+  "Bloques: solo los 12 que aparecen (03.09 a 06.09). No hay fila del día 07 y no se inventa.",
+  "Horas: '22:00' es la hora de INICIO del bloque y solo aparece en 4 bloques (03.09 noche en ambos escenarios; 04.09 y 05.09 noche en el escenario 1). Ningún DJ tiene horario individual: artists[].time = null en todos.",
+  "Bloques vacíos: el escenario 1 no tiene artistas el 04.09 DAYTIME ni el 05.09 DAYTIME.",
+  "Criterio B2B: cada miembro figura por separado en artists y en su bloque, y la relación se guarda en 'b2b' con el orden impreso. No se deduce quién empieza, duración ni horario. 'JAMIE JONES' + 'B2B JOSEPH CAPRIATI' y 'SERA DE VILLALTA' + 'B2B FELIPE BRAVO' ocupan dos líneas.",
+  "'5UNIVERSOS': el primer carácter parece un 5 y no una S (comparado con la S de 'SUBLEE'). Dudoso: no se corrige ni se acepta 'SUNIVERSOS'; el evaluador marcará la variante como 'needs_review'.",
+  "'ION LUDWIG' y 'ALEXIS CABRERA' llevan un superíndice 'LIVE'; se acepta el nombre con o sin LIVE.",
+  "Grafías poco comunes, pendientes de confirmar por una persona (se dejan como se leen): 'DYED SOUNDOROM', 'CRISTIAN MARTLANDED', 'MIN8', 'GOJNEA76', 'BLIEZT', 'GEOUSHY', 'MIHIGH', 'JOËLLA JACKSON' (diéresis).",
+  "Logotipos: KRISTAL (patrocinador), escudo con texto diminuto debajo (posible 'Ayuntamiento de Roquetas de Mar', no legible con seguridad: queda en unreadable_text) y logotipo abajo a la derecha. No son artistas."
+ ],
+ "event_name": "SW38",
+ "dates": [
+  {
+   "text": "3-7 SEPTEMBER 2026",
+   "iso": null
+  }
+ ],
+ "location": "ROQUETAS DE MAR, SPAIN",
+ "stages": [
+  "1",
+  "2"
+ ],
+ "artists": [
+  {
+   "name": "CUKY",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "PERSIC",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "PACO OSUNA",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MANDA MOOR",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "GAGA",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "DYED SOUNDOROM",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "TRAUMER",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "NU ZAU",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "IGNACIO MORALES",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "5UNIVERSOS",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "COSMINA",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CRISTIAN MARTLANDED",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MIN8",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "HERODOT",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "GEOUSHY",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "BLIEZT",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "AJ CHRISTOU",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MARCO FARAONE",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ION LUDWIG",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": [
+    "ION LUDWIG LIVE",
+    "ION LUDWIG (LIVE)"
+   ]
+  },
+  {
+   "name": "PRIKU",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "PETRE INSPIRESCU",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "GESCU",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SUBLEE",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MAKS",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CALLY",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ZYA",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "BILA",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JOE VANDITTI",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MAHONY",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JAMIE JONES",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JOSEPH CAPRIATI",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MIHNEA ROG",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "DAN ANDREI",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "RHADOO",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MAAYAN NIDAM",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "KIDOO",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ROBER PEINADO",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "GABI",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SERA DE VILLALTA",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "FELIPE BRAVO",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SARAGA",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ALEXIS CABRERA",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": [
+    "ALEXIS CABRERA LIVE",
+    "ALEXIS CABRERA (LIVE)"
+   ]
+  },
+  {
+   "name": "CRISTI CONS",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "GOJNEA76",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SUCIU",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "SHONKY",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CHARLIE",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JEAN PIERRE",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MELANIE RIBBE",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "JOËLLA JACKSON",
+   "stage": "1",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "MIHIGH",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CAP",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "CEZAR",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  },
+  {
+   "name": "ANDREI CIUBUC",
+   "stage": "2",
+   "day": null,
+   "time": null,
+   "accepted_variants": []
+  }
+ ],
+ "unreadable_text": [
+  "texto diminuto bajo el escudo, abajo a la izquierda"
+ ],
+ "sessions": [
+  {
+   "date": {
+    "text": "03.09",
+    "iso": null
+   },
+   "label": "THURSDAY NIGHTTIME",
+   "stage": "1",
+   "time": "22:00",
+   "artists": [
+    "CUKY",
+    "PERSIC",
+    "PACO OSUNA",
+    "MANDA MOOR"
+   ]
+  },
+  {
+   "date": {
+    "text": "03.09",
+    "iso": null
+   },
+   "label": "THURSDAY NIGHTTIME",
+   "stage": "2",
+   "time": "22:00",
+   "artists": [
+    "GAGA",
+    "DYED SOUNDOROM",
+    "TRAUMER",
+    "NU ZAU"
+   ]
+  },
+  {
+   "date": {
+    "text": "04.09",
+    "iso": null
+   },
+   "label": "FRIDAY DAYTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "IGNACIO MORALES",
+    "5UNIVERSOS",
+    "COSMINA",
+    "CRISTIAN MARTLANDED",
+    "MIN8",
+    "HERODOT"
+   ]
+  },
+  {
+   "date": {
+    "text": "04.09",
+    "iso": null
+   },
+   "label": "FRIDAY NIGHTTIME",
+   "stage": "1",
+   "time": "22:00",
+   "artists": [
+    "GEOUSHY",
+    "BLIEZT",
+    "AJ CHRISTOU",
+    "MARCO FARAONE"
+   ]
+  },
+  {
+   "date": {
+    "text": "04.09",
+    "iso": null
+   },
+   "label": "FRIDAY NIGHTTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "ION LUDWIG",
+    "PRIKU",
+    "PETRE INSPIRESCU",
+    "GESCU"
+   ]
+  },
+  {
+   "date": {
+    "text": "05.09",
+    "iso": null
+   },
+   "label": "SATURDAY DAYTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "SUBLEE",
+    "MAKS",
+    "CALLY",
+    "ZYA",
+    "BILA"
+   ]
+  },
+  {
+   "date": {
+    "text": "05.09",
+    "iso": null
+   },
+   "label": "SATURDAY NIGHTTIME",
+   "stage": "1",
+   "time": "22:00",
+   "artists": [
+    "JOE VANDITTI",
+    "MAHONY",
+    "JAMIE JONES",
+    "JOSEPH CAPRIATI"
+   ]
+  },
+  {
+   "date": {
+    "text": "05.09",
+    "iso": null
+   },
+   "label": "SATURDAY NIGHTTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "MIHNEA ROG",
+    "DAN ANDREI",
+    "RHADOO",
+    "MAAYAN NIDAM"
+   ]
+  },
+  {
+   "date": {
+    "text": "06.09",
+    "iso": null
+   },
+   "label": "SUNDAY DAYTIME",
+   "stage": "1",
+   "time": null,
+   "artists": [
+    "KIDOO",
+    "ROBER PEINADO",
+    "GABI",
+    "SERA DE VILLALTA",
+    "FELIPE BRAVO",
+    "SARAGA"
+   ]
+  },
+  {
+   "date": {
+    "text": "06.09",
+    "iso": null
+   },
+   "label": "SUNDAY DAYTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "ALEXIS CABRERA",
+    "CRISTI CONS",
+    "GOJNEA76",
+    "SUCIU",
+    "SHONKY",
+    "CHARLIE"
+   ]
+  },
+  {
+   "date": {
+    "text": "06.09",
+    "iso": null
+   },
+   "label": "SUNDAY NIGHTTIME",
+   "stage": "1",
+   "time": null,
+   "artists": [
+    "JEAN PIERRE",
+    "MELANIE RIBBE",
+    "JOËLLA JACKSON"
+   ]
+  },
+  {
+   "date": {
+    "text": "06.09",
+    "iso": null
+   },
+   "label": "SUNDAY NIGHTTIME",
+   "stage": "2",
+   "time": null,
+   "artists": [
+    "MIHIGH",
+    "CAP",
+    "CEZAR",
+    "ANDREI CIUBUC"
+   ]
+  }
+ ],
+ "b2b": [
+  {
+   "artists": [
+    "CUKY",
+    "PERSIC"
+   ],
+   "text": "CUKY B2B PERSIC"
+  },
+  {
+   "artists": [
+    "JAMIE JONES",
+    "JOSEPH CAPRIATI"
+   ],
+   "text": "JAMIE JONES / B2B JOSEPH CAPRIATI"
+  },
+  {
+   "artists": [
+    "ROBER PEINADO",
+    "GABI"
+   ],
+   "text": "ROBER PEINADO B2B GABI"
+  },
+  {
+   "artists": [
+    "SERA DE VILLALTA",
+    "FELIPE BRAVO"
+   ],
+   "text": "SERA DE VILLALTA / B2B FELIPE BRAVO"
+  }
+ ]
+}
