@@ -1,7 +1,7 @@
 # music-discovery
 
 Proyecto móvil de descubrimiento de música electrónica (nombre provisional).
-Estado actual: **fase 0 (preparación del entorno) completada** — app Expo que comprueba la conexión con un backend FastAPI mínimo. Sin funciones musicales todavía.
+Estado actual: **fase 0 (entorno) y fase 1 (investigación de fuentes) completadas** — app Expo que comprueba la conexión con un backend FastAPI mínimo. Sin funciones musicales todavía; la Fase 2 (diseño) parte de [docs/fase-1-conclusiones.md](docs/fase-1-conclusiones.md).
 
 ```
 mobile/    App Expo SDK 57 (TypeScript, Expo Router), probada con Expo Go
@@ -138,20 +138,26 @@ Estado de `npm audit` y seguimiento: [docs/dependencias.md](docs/dependencias.md
 
 ## Fase 1: fuentes musicales (investigación) ✅ cerrada
 
-Experimentos en [`research/music_sources/`](research/music_sources/README.md). Informes: [cobertura (1.2)](docs/fase-1-cobertura-musical.md), [géneros electrónicos (1.3A)](docs/fase-1-generos-electronicos.md) y [volcados de Discogs (1.3B)](docs/fase-1-discogs-dumps.md).
+**Documento maestro: [conclusiones de la Fase 1](docs/fase-1-conclusiones.md)** (matriz de fuentes, viabilidad demostrada frente a deseada, riesgos y decisiones pendientes para la Fase 2).
 
-Decisiones provisionales:
+Experimentos en [`research/music_sources/`](research/music_sources/README.md) y [`research/poster_ai/`](research/poster_ai/README.md). Informes: [cobertura (1.2)](docs/fase-1-cobertura-musical.md), [géneros electrónicos (1.3A)](docs/fase-1-generos-electronicos.md), [volcados de Discogs (1.3B)](docs/fase-1-discogs-dumps.md), [IA para carteles (1.4)](docs/fase-1-ia-carteles.md) y [ListenBrainz (1.5)](docs/fase-1-listenbrainz.md). La Fase 1.1 no tiene informe en el repositorio.
 
-- **MusicBrainz**: fuente principal de identidad. Solo datos centrales CC0; sus géneros y tags son CC BY-NC-SA.
+Decisiones:
+
+- **MusicBrainz**: fuente principal de identidad (MBID). Solo datos centrales CC0; sus géneros y tags son CC BY-NC-SA.
 - **Volcados CC0 de Discogs**: fuente candidata de géneros y estilos (por lanzamiento y con procedencia). Antes de llevarlos a producción faltan un piloto de integración y una revisión legal.
 - **API de Discogs**: solo investigación; no es dependencia de producción.
 - **Wikidata**: enriquecimiento opcional de artistas, solo con el ID validado por MBID.
 - **AcousticBrainz**: descartado.
+- **Carteles (Groq `qwen/qwen3.8-27b`)**: seleccionado provisionalmente para extraer artistas, con revisión humana obligatoria; modelo en *preview*.
+- **ListenBrainz Labs**: fuente complementaria y opcional de artistas similares; LB Radio y la cuenta de ListenBrainz, aplazados.
+- **Personalización V1**: preferencias, favoritos e interacciones propias; sin aprendizaje automático propio ni Spotify.
 
 ## Pendientes
 
 - **Fuentes musicales**: piloto con los volcados de Discogs (primero *masters*, luego *releases*); revisión legal de CC0, cadena de derechos y uso de la marca Discogs; proporción real de lanzamientos electrónicos y tamaño final; alojamiento. Sin pipeline ETL todavía.
 - **BPM y tonalidad para SetLab**: sin fuente válida (AcousticBrainz descartado).
-- **Ejecución de IA a coste cero**: dónde y cómo ejecutar modelos sin coste (local, niveles gratuitos), límites de este hardware.
+- **IA a coste cero**: Groq (plan gratuito) probado para carteles en la Fase 1.4; queda prever un modelo alternativo (el actual está en *preview*) y decidir el alcance del análisis de carteles.
+- **Decisiones de la Fase 2**: ver [docs/fase-1-conclusiones.md §11](docs/fase-1-conclusiones.md).
 - **Nombre y diseño de producto**: nombre definitivo, identidad visual y diseño de pantallas (la pantalla actual es técnica y provisional).
 - **Vulnerabilidades sin arreglo compatible en SDK 57**: ver [docs/dependencias.md](docs/dependencias.md).
