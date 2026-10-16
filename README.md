@@ -1,56 +1,144 @@
-# Welcome to your Expo app 👋
+# music-discovery
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Proyecto móvil de descubrimiento de música electrónica (nombre provisional).
+Estado actual: **fase 0 (preparación del entorno) completada** — app Expo que comprueba la conexión con un backend FastAPI mínimo. Sin funciones musicales todavía.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+mobile/    App Expo SDK 57 (TypeScript, Expo Router), probada con Expo Go
+backend/   API FastAPI (Python 3.11) con GET /health
+docs/      Documentación compartida (dependencias, decisiones)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Requisitos: Node 24 + npm 11, Python 3.11 (`py -3.11`), Android SDK con emulador, Expo Go en el iPhone.
+Todos los comandos son para **PowerShell** y parten de la raíz del repositorio (`C:\dev\music-discovery`).
 
-### Other setup steps
+## Backend
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Instalar
 
-## Learn more
+```powershell
+cd backend
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements-dev.txt   # producción: requirements.txt
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+`requirements.txt` (aplicación) y `requirements-dev.txt` (tests) tienen todas las versiones fijadas, incluidas las transitivas.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Arrancar
 
-## Join the community
+Solo para este PC y el emulador Android:
 
-Join our community of developers creating universal apps.
+```powershell
+.\.venv\Scripts\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Para el iPhone (u otro dispositivo físico), ver [iPhone](#iphone-expo-go).
+
+### Probar
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/health      # -> status: ok
+.\.venv\Scripts\python -m pytest                     # test del contrato de /health
+```
+
+### Actualizar dependencias
+
+Cambia la versión en el archivo correspondiente, reinstala en un venv limpio, ejecuta `pip check` y los tests, y vuelve a fijar las versiones resultantes (`pip freeze`), manteniendo separadas las de aplicación y desarrollo.
+
+## Mobile
+
+### Instalar y configurar
+
+```powershell
+cd mobile
+npm ci
+Copy-Item .env.example .env
+```
+
+`EXPO_PUBLIC_API_URL` en `mobile/.env` indica dónde está el backend. `.env` no se versiona.
+**No pongas secretos en variables `EXPO_PUBLIC_*`**: se incrustan en la app y cualquiera puede leerlas.
+
+> En el móvil, `localhost` / `127.0.0.1` es el propio móvil, no el PC. Nunca uses esas direcciones en `EXPO_PUBLIC_API_URL`.
+
+### Arrancar
+
+```powershell
+npx expo start
+```
+
+En la app, pulsa **Comprobar conexión**. La pantalla muestra la URL usada y el estado (sin comprobar, comprobando, conectado o error con motivo). Si falla (backend parado, timeout de 5 s, respuesta inesperada), corrige y pulsa **Reintentar**.
+
+### Cambiar la URL
+
+Cambia `EXPO_PUBLIC_API_URL` cuando cambies de dispositivo de prueba o cambie la IP LAN del PC (otra red, DHCP). Después:
+
+1. Guarda `mobile/.env` y recarga la app por completo (tecla `r` en la terminal de Expo o menú de desarrollo → Reload).
+2. Si la URL mostrada en pantalla no cambia, detén Expo (`Ctrl+C`) y arranca con caché limpia: `npx expo start --clear`.
+
+### Emulador Android (Pixel_6a)
+
+El emulador ve el `localhost` del PC como `10.0.2.2`.
+
+```powershell
+# Terminal 1
+cd backend; .\.venv\Scripts\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+# Terminal 2
+cd mobile; npx expo start      # pulsa "a" para abrir en el emulador
+```
+
+`mobile/.env`: `EXPO_PUBLIC_API_URL=http://10.0.2.2:8000`
+
+### iPhone (Expo Go)
+
+El iPhone necesita la IP del PC en la red local, y el backend debe escuchar en todas las interfaces (`0.0.0.0`). Hazlo **solo en desarrollo y en una red de confianza** (casa, no Wi-Fi pública): el backend queda accesible para cualquier equipo de esa red.
+
+1. IP LAN del PC (la del adaptador Wi-Fi/Ethernet conectado a la misma red que el iPhone):
+   ```powershell
+   Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.PrefixOrigin -in 'Dhcp','Manual' -and $_.IPAddress -notlike '169.254*' } | Select-Object InterfaceAlias, IPAddress
+   ```
+2. `mobile/.env`: `EXPO_PUBLIC_API_URL=http://<IP-LAN>:8000`
+3. Arranca:
+   ```powershell
+   # Terminal 1
+   cd backend; .\.venv\Scripts\python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   # Terminal 2
+   cd mobile; npx expo start      # escanea el QR con la cámara del iPhone
+   ```
+4. Comprueba primero desde Safari del iPhone: `http://<IP-LAN>:8000/health`.
+
+**Firewall de Windows** (no se modifica automáticamente): la primera vez que el backend escuche en `0.0.0.0`, Windows puede preguntar si permite `python.exe`; permite solo **Redes privadas**. La red Wi-Fi debe estar marcada como *Privada* (Configuración → Red e Internet → propiedades de la red). Si Safari no llega a `/health` pero el PC sí, revisa esto antes que la app.
+
+Con la IP LAN y `0.0.0.0`, el emulador Android también puede usar la misma URL.
+
+## Comprobaciones técnicas
+
+```powershell
+cd backend; .\.venv\Scripts\python -m pytest; cd ..
+cd mobile;  npx tsc --noEmit; npx expo install --check; cd ..
+```
+
+## Fase 0: preparación del entorno ✅ completada
+
+Comprobaciones automáticas:
+
+- [x] Test de contrato `GET /health` (pytest) superado.
+- [x] TypeScript sin errores (`npx tsc --noEmit`).
+- [x] `npx expo install --check`: dependencias compatibles con SDK 57.
+- [x] `npm audit` revisado y documentado (ver pendientes).
+
+Comprobaciones manuales (Expo Go):
+
+- [x] Emulador Android (Pixel_6a, API 35): conexión con `/health` correcta vía `10.0.2.2`.
+- [x] iPhone físico: conexión con `/health` correcta usando la IP LAN del PC y backend en `0.0.0.0`.
+- [x] Estados de error observados y recuperación correcta al pulsar **Reintentar**.
+
+## Dependencias y vulnerabilidades
+
+Estado de `npm audit` y seguimiento: [docs/dependencias.md](docs/dependencias.md).
+
+## Pendientes
+
+- **Fuentes musicales**: qué catálogos/APIs usar, condiciones de uso y licencias.
+- **Ejecución de IA a coste cero**: dónde y cómo ejecutar modelos sin coste (local, niveles gratuitos), límites de este hardware.
+- **Nombre y diseño de producto**: nombre definitivo, identidad visual y diseño de pantallas (la pantalla actual es técnica y provisional).
+- **Vulnerabilidades sin arreglo compatible en SDK 57**: ver [docs/dependencias.md](docs/dependencias.md).

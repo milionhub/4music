@@ -1,43 +1,16 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# Reglas compartidas. mobile/.gitignore cubre lo específico de Expo.
 
-# dependencies
-node_modules/
+# Entornos y secretos locales
+.env
+.env.*
+!.env.example
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
+# Python / backend
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
+# Sistema / editor
 .DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-example
-
-# generated native folders
-/ios
-/android
+Thumbs.db
