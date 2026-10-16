@@ -1,0 +1,50 @@
+{
+ "run_id": "2026-10-16T115748Z",
+ "executed_at": "2026-10-16T11:57:54+00:00",
+ "aborted": null,
+ "python": "3.11.2",
+ "platform": "Windows-10-10.0.26200-SP0",
+ "user_agent_format": "music-discovery-coverage-research/0.2 ( <contacto en .env, no se registra> )",
+ "auth": "Discogs: cabecera Authorization con token personal leído de .env (no se registra)",
+ "budgets": {
+  "discogs": 150,
+  "acousticbrainz": 10
+ },
+ "discogs": {
+  "evaluated": true,
+  "reason": null
+ },
+ "network_requests": {
+  "acousticbrainz": 0,
+  "discogs": 5
+ },
+ "cache_hits": 78,
+ "network_errors_or_non_200": [],
+ "rate_check": {
+  "acousticbrainz": {
+   "network_requests": 0,
+   "min_gap_between_starts_s": null,
+   "min_ratelimit_remaining_seen": null
+  },
+  "discogs": {
+   "network_requests": 5,
+   "min_gap_between_starts_s": 1.203,
+   "min_ratelimit_remaining_seen": 56
+  }
+ },
+ "restricted_keys_removed_before_storage": [
+  "blocked_from_sale",
+  "community",
+  "cover_image",
+  "image",
+  "images",
+  "lowest_price",
+  "num_for_sale",
+  "stats",
+  "submitter",
+  "thumb",
+  "thumbnail_url",
+  "user_data"
+ ],
+ "log_file": "data/logs/phase13-2026-10-16T115748Z.jsonl"
+}

@@ -136,9 +136,22 @@ Comprobaciones manuales (Expo Go):
 
 Estado de `npm audit` y seguimiento: [docs/dependencias.md](docs/dependencias.md).
 
+## Fase 1: fuentes musicales (investigación) ✅ cerrada
+
+Experimentos en [`research/music_sources/`](research/music_sources/README.md). Informes: [cobertura (1.2)](docs/fase-1-cobertura-musical.md), [géneros electrónicos (1.3A)](docs/fase-1-generos-electronicos.md) y [volcados de Discogs (1.3B)](docs/fase-1-discogs-dumps.md).
+
+Decisiones provisionales:
+
+- **MusicBrainz**: fuente principal de identidad. Solo datos centrales CC0; sus géneros y tags son CC BY-NC-SA.
+- **Volcados CC0 de Discogs**: fuente candidata de géneros y estilos (por lanzamiento y con procedencia). Antes de llevarlos a producción faltan un piloto de integración y una revisión legal.
+- **API de Discogs**: solo investigación; no es dependencia de producción.
+- **Wikidata**: enriquecimiento opcional de artistas, solo con el ID validado por MBID.
+- **AcousticBrainz**: descartado.
+
 ## Pendientes
 
-- **Fuentes musicales**: qué catálogos/APIs usar, condiciones de uso y licencias.
+- **Fuentes musicales**: piloto con los volcados de Discogs (primero *masters*, luego *releases*); revisión legal de CC0, cadena de derechos y uso de la marca Discogs; proporción real de lanzamientos electrónicos y tamaño final; alojamiento. Sin pipeline ETL todavía.
+- **BPM y tonalidad para SetLab**: sin fuente válida (AcousticBrainz descartado).
 - **Ejecución de IA a coste cero**: dónde y cómo ejecutar modelos sin coste (local, niveles gratuitos), límites de este hardware.
 - **Nombre y diseño de producto**: nombre definitivo, identidad visual y diseño de pantallas (la pantalla actual es técnica y provisional).
 - **Vulnerabilidades sin arreglo compatible en SDK 57**: ver [docs/dependencias.md](docs/dependencias.md).

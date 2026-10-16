@@ -1,0 +1,151 @@
+{
+ "mbids_queried": [
+  {
+   "mbid": "3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4",
+   "case": "S3"
+  },
+  {
+   "mbid": "68e07af2-584a-47e4-a45f-96d90c5efd4d",
+   "case": "S1"
+  },
+  {
+   "mbid": "89fbe5e3-b2e9-492d-a83c-4b4c18eb723d",
+   "case": "S4"
+  },
+  {
+   "mbid": "8ec04357-daed-492d-a4af-2b193768554d",
+   "case": "S1"
+  },
+  {
+   "mbid": "8edae321-48fc-4ae6-add1-bc976cb1a823",
+   "case": "S3"
+  },
+  {
+   "mbid": "de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d",
+   "case": "S1"
+  },
+  {
+   "mbid": "e0ee17b8-17d3-4514-8579-9a1fd127b57f",
+   "case": "S5"
+  },
+  {
+   "mbid": "e547195f-c06d-4298-b126-2d3baca47e90",
+   "case": "S3"
+  },
+  {
+   "mbid": "f2399817-454b-4c24-8af4-b7c1b17dc00a",
+   "case": "S4"
+  }
+ ],
+ "service_status": "operativo",
+ "count": {
+  "request": {
+   "url": "https://acousticbrainz.org/api/v1/count?recording_ids=3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4%3B68e07af2-584a-47e4-a45f-96d90c5efd4d%3B89fbe5e3-b2e9-492d-a83c-4b4c18eb723d%3B8ec04357-daed-492d-a4af-2b193768554d%3B8edae321-48fc-4ae6-add1-bc976cb1a823%3Bde0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d%3Be0ee17b8-17d3-4514-8579-9a1fd127b57f%3Be547195f-c06d-4298-b126-2d3baca47e90%3Bf2399817-454b-4c24-8af4-b7c1b17dc00a",
+   "status": 200,
+   "error": null,
+   "raw_file": "raw/acousticbrainz/f687f4ffa31c29b8af95e930.json",
+   "from_cache": true
+  },
+  "observed": {
+   "8edae321-48fc-4ae6-add1-bc976cb1a823": {
+    "count": 11
+   },
+   "mbid_mapping": {}
+  }
+ },
+ "low_level": {
+  "request": {
+   "url": "https://acousticbrainz.org/api/v1/low-level?features=rhythm.bpm%3Btonal.key_key%3Btonal.key_scale%3Btonal.key_strength%3Bmetadata.audio_properties.length&recording_ids=8edae321-48fc-4ae6-add1-bc976cb1a823",
+   "status": 200,
+   "error": null,
+   "raw_file": "raw/acousticbrainz/9e2c37b0128af44838211ba1.json",
+   "from_cache": true
+  }
+ },
+ "high_level": {
+  "request": {
+   "url": "https://acousticbrainz.org/api/v1/high-level?map_classes=true&recording_ids=8edae321-48fc-4ae6-add1-bc976cb1a823",
+   "status": 200,
+   "error": null,
+   "raw_file": "raw/acousticbrainz/c339a736dcf48a3a7b1ada85.json",
+   "from_cache": true
+  }
+ },
+ "per_recording": {
+  "3ce8d36c-6ac2-4f03-a2cf-60a6a7a44ee4": {
+   "case": "S3",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "68e07af2-584a-47e4-a45f-96d90c5efd4d": {
+   "case": "S1",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "89fbe5e3-b2e9-492d-a83c-4b4c18eb723d": {
+   "case": "S4",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "8ec04357-daed-492d-a4af-2b193768554d": {
+   "case": "S1",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "8edae321-48fc-4ae6-add1-bc976cb1a823": {
+   "case": "S3",
+   "submissions": 11,
+   "status": "covered",
+   "low_level_estimate": {
+    "bpm": 124.164634705,
+    "key": "B",
+    "scale": "minor",
+    "key_strength": 0.671188235283,
+    "length_s": 456.56817627
+   },
+   "high_level_estimate": {
+    "genre_models": {
+     "genre_electronic": {
+      "value": "House",
+      "probability": 0.395606547594
+     },
+     "genre_dortmund": {
+      "value": "Electronic",
+      "probability": 0.99999910593
+     },
+     "genre_rosamerica": {
+      "value": "Hiphop",
+      "probability": 0.420301735401
+     },
+     "genre_tzanetakis": {
+      "value": "Jazz",
+      "probability": 0.310666948557
+     }
+    },
+    "essentia_version": "2.1-beta1",
+    "model_version": "v2.1_beta1"
+   }
+  },
+  "de0b20c7-0aa0-4ab2-8e4a-52bf9ae54c1d": {
+   "case": "S1",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "e0ee17b8-17d3-4514-8579-9a1fd127b57f": {
+   "case": "S5",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "e547195f-c06d-4298-b126-2d3baca47e90": {
+   "case": "S3",
+   "submissions": 0,
+   "status": "not_found"
+  },
+  "f2399817-454b-4c24-8af4-b7c1b17dc00a": {
+   "case": "S4",
+   "submissions": 0,
+   "status": "not_found"
+  }
+ },
+ "interpretation_note": "Valores estimados por algoritmo (Essentia/SVM) sobre envíos de usuarios hasta 2022; no son datos verificados. MetaBrainz cerró la recogida por la baja calidad de BPM, tonalidad y modelos de género."
+}

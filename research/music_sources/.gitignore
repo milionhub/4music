@@ -2,3 +2,6 @@
 # data/results/ sí se versiona: resultados interpretados que respaldan el informe.
 data/raw/
 data/logs/
+
+# Contenido obtenido de la API de Discogs (API Terms of Use: almacenamiento limitado). Solo local.
+data/results_phase13/discogs_*.json

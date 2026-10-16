@@ -20,6 +20,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
+from typing import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -35,9 +36,15 @@ class SourcePolicy:
     name: str
     min_interval_s: float
     max_requests: int
-    headers: dict[str, str] = field(default_factory=dict)  # nunca se registran
+    headers: dict[str, str] = field(default_factory=dict, repr=False)  # nunca se registran ni se muestran
     timeout_s: float = 20.0
     max_attempts: int = 3
+    # Opcionales (Fase 1.3); los valores por defecto mantienen el comportamiento de la Fase 1.2.
+    sanitize: Callable[[object], object] | None = None  # se aplica antes de cachear (p. ej. quitar datos restringidos)
+    log_headers: tuple[str, ...] = ()                   # cabeceras de respuesta NO sensibles a registrar (límites)
+    remaining_header: str | None = None                 # cabecera con peticiones restantes en la ventana
+    remaining_threshold: int = 2
+    cooldown_s: float = 15.0
 
 
 @dataclass
@@ -63,6 +70,7 @@ class HttpClient:
         self.policies: dict[str, SourcePolicy] = {}
         self.network_requests: dict[str, int] = {}
         self.last_request_at: dict[str, float] = {}
+        self.cooldown_until: dict[str, float] = {}
         self.session_seen: set[str] = set()
         log_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -86,6 +94,9 @@ class HttpClient:
             fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     def _wait_turn(self, source: str, policy: SourcePolicy) -> None:
+        pause = self.cooldown_until.pop(source, 0) - time.monotonic()
+        if pause > 0:
+            time.sleep(pause)
         last = self.last_request_at.get(source)
         if last is not None:
             delay = policy.min_interval_s - (time.monotonic() - last)
@@ -117,11 +128,13 @@ class HttpClient:
             started_at = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
             started = time.monotonic()
             retry_after: float | None = None
+            resp_headers = None
             try:
                 req = urllib.request.Request(url, headers={"Accept": "application/json",
                                                            "Accept-Encoding": "gzip", **policy.headers})
                 with urllib.request.urlopen(req, timeout=policy.timeout_s) as resp:
                     status = resp.status
+                    resp_headers = resp.headers
                     raw = resp.read()
                     if resp.headers.get("Content-Encoding") == "gzip":
                         raw = gzip.decompress(raw)
@@ -134,6 +147,7 @@ class HttpClient:
             except urllib.error.HTTPError as exc:
                 status = exc.code
                 error = f"HTTP {exc.code}"
+                resp_headers = exc.headers
                 ra = exc.headers.get("Retry-After") if exc.headers else None
                 if ra and ra.isdigit():
                     retry_after = float(ra)
@@ -145,15 +159,24 @@ class HttpClient:
                 status = None
                 error = f"error de red: {exc.__class__.__name__}: {getattr(exc, 'reason', exc)}"
             elapsed = round(time.monotonic() - started, 3)
-            self._log({"at": now_iso(), "source": source, "url": url, "from_cache": False,
-                       "started_at": started_at, "started_mono": round(started, 3),
-                       "attempt": attempt, "status": status, "elapsed_s": elapsed, "error": error})
+            entry = {"at": now_iso(), "source": source, "url": url, "from_cache": False,
+                     "started_at": started_at, "started_mono": round(started, 3),
+                     "attempt": attempt, "status": status, "elapsed_s": elapsed, "error": error}
+            if policy.log_headers and resp_headers is not None:
+                entry["headers"] = {h: resp_headers.get(h) for h in policy.log_headers if resp_headers.get(h)}
+            self._log(entry)
+            if policy.remaining_header and resp_headers is not None:
+                remaining = resp_headers.get(policy.remaining_header)
+                if remaining is not None and remaining.isdigit() and int(remaining) <= policy.remaining_threshold:
+                    self.cooldown_until[source] = time.monotonic() + policy.cooldown_s
 
             retryable = status in RETRY_STATUSES or status is None
             if not retryable or attempt == policy.max_attempts:
                 break
             time.sleep(min(retry_after if retry_after is not None else 2.0 * attempt, 30.0))
 
+        if policy.sanitize is not None and body is not None:
+            body = policy.sanitize(body)
         # Se cachean éxitos y errores definitivos de cliente (p. ej. 404, 400),
         # no los fallos transitorios, para que una repetición los reintente.
         if status is not None and (status == 200 or 400 <= status < 500 and status != 429):
