@@ -1,0 +1,40 @@
+{
+ "generated_at": "2026-10-16T16:03:23+00:00",
+ "stage": "radio",
+ "algorithm": null,
+ "network_requests_this_run": {
+  "musicbrainz": 0,
+  "listenbrainz_labs": 0,
+  "listenbrainz_api": 1
+ },
+ "network_requests_all_runs": {
+  "musicbrainz": 13,
+  "listenbrainz_labs": 4,
+  "listenbrainz_api": 1
+ },
+ "budget": {
+  "musicbrainz": 14,
+  "listenbrainz_labs": 4,
+  "listenbrainz_api": 4
+ },
+ "results": [
+  {
+   "id": "L1",
+   "query": "PAWSA",
+   "mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+   "prompt": "artist:(202ed573-bcb9-4686-bc98-6fc96b1f6ae9)",
+   "mode": "easy",
+   "request": {
+    "url": "https://api.listenbrainz.org/1/explore/lb-radio?mode=easy&prompt=artist%3A%28202ed573-bcb9-4686-bc98-6fc96b1f6ae9%29",
+    "status": 401,
+    "error": "HTTP 401",
+    "raw_file": "raw/listenbrainz_api/40967b97fb9267bb5da12054.json",
+    "from_cache": false,
+    "authorization": "ninguna"
+   },
+   "api_error": "Due to bad actors and AI scrapers causing undue traffic on our sites, you need to provide an Auth token for this endpoint. Sorry for this mess.",
+   "total_tracks": 0,
+   "top": []
+  }
+ ]
+}

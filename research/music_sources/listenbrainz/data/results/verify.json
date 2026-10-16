@@ -1,0 +1,147 @@
+{
+ "generated_at": "2026-10-16T15:58:36+00:00",
+ "stage": "verify",
+ "algorithm": null,
+ "network_requests_this_run": {
+  "musicbrainz": 1,
+  "listenbrainz_labs": 0
+ },
+ "network_requests_all_runs": {
+  "musicbrainz": 13,
+  "listenbrainz_labs": 0
+ },
+ "budget": {
+  "musicbrainz": 14,
+  "listenbrainz_labs": 4
+ },
+ "results": [
+  {
+   "id": "L1",
+   "query": "PAWSA",
+   "mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist/202ed573-bcb9-4686-bc98-6fc96b1f6ae9?fmt=json&inc=url-rels",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/843193335e3d27d6dfab998d.json"
+   },
+   "name": "PAWSA",
+   "type": "Person",
+   "country": "GB",
+   "area": "London",
+   "disambiguation": "David Esekhile",
+   "url_rels": [
+    "music.apple.com",
+    "open.spotify.com",
+    "tidal.com",
+    "www.beatport.com",
+    "www.deezer.com",
+    "www.discogs.com",
+    "www.instagram.com"
+   ]
+  },
+  {
+   "id": "L2",
+   "query": "Ricardo Villalobos",
+   "mbid": "bbd79854-df54-4c1b-b7d6-cf7eea2d0afb",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist/bbd79854-df54-4c1b-b7d6-cf7eea2d0afb?fmt=json&inc=url-rels",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/0e10c348b31f87ebf15caf7f.json"
+   },
+   "name": "Ricardo Villalobos",
+   "type": "Person",
+   "country": "DE",
+   "area": "Germany",
+   "disambiguation": "electronic music producer and DJ",
+   "url_rels": [
+    "catalogue.bnf.fr",
+    "commons.wikimedia.org",
+    "d-nb.info",
+    "id.loc.gov",
+    "myspace.com",
+    "open.qobuz.com",
+    "open.spotify.com",
+    "rateyourmusic.com",
+    "tidal.com",
+    "viaf.org",
+    "www.allmusic.com",
+    "www.deezer.com",
+    "www.discogs.com",
+    "www.facebook.com",
+    "www.imdb.com",
+    "www.songkick.com",
+    "www.wikidata.org",
+    "www.worldcat.org"
+   ]
+  },
+  {
+   "id": "L3",
+   "query": "Amelie Lens",
+   "mbid": "67db280d-c3e4-49d9-978e-4050f4e209ef",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist/67db280d-c3e4-49d9-978e-4050f4e209ef?fmt=json&inc=url-rels",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/8702bda1c467b2be4cab8b95.json"
+   },
+   "name": "Amelie Lens",
+   "type": "Person",
+   "country": "BE",
+   "area": "Belgium",
+   "disambiguation": "Belgian techno DJ & producer",
+   "url_rels": [
+    "amelielens.bandcamp.com",
+    "itunes.apple.com",
+    "music.apple.com",
+    "open.qobuz.com",
+    "open.spotify.com",
+    "ra.co",
+    "soundcloud.com",
+    "tidal.com",
+    "twitter.com",
+    "www.amelielens.com",
+    "www.bandsintown.com",
+    "www.beatport.com",
+    "www.deezer.com",
+    "www.discogs.com",
+    "www.facebook.com",
+    "www.instagram.com",
+    "www.last.fm",
+    "www.setlist.fm",
+    "www.songkick.com",
+    "www.wikidata.org",
+    "www.youtube.com"
+   ]
+  },
+  {
+   "id": "L4",
+   "query": "Traumer",
+   "mbid": "319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist/319c89bc-c7a3-4139-8386-a2a5b48b4ed7?fmt=json&inc=url-rels",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/34f397e27422b0adee0a62c5.json"
+   },
+   "name": "Traumer",
+   "type": "Person",
+   "country": "FR",
+   "area": "Paris",
+   "disambiguation": "house/techno",
+   "url_rels": [
+    "myspace.com",
+    "open.spotify.com",
+    "ra.co",
+    "soundcloud.com",
+    "traumer-music.com",
+    "twitter.com",
+    "www.deezer.com",
+    "www.discogs.com",
+    "www.facebook.com",
+    "www.youtube.com"
+   ]
+  }
+ ]
+}

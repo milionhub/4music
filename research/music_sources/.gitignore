@@ -5,3 +5,7 @@ data/logs/
 
 # Contenido obtenido de la API de Discogs (API Terms of Use: almacenamiento limitado). Solo local.
 data/results_phase13/discogs_*.json
+
+# Fase 1.5 (ListenBrainz): respuestas originales y logs solo en local; se versionan results/.
+listenbrainz/data/raw/
+listenbrainz/data/logs/

@@ -1,0 +1,248 @@
+{
+ "generated_at": "2026-10-16T15:58:23+00:00",
+ "stage": "identify",
+ "algorithm": null,
+ "network_requests_this_run": {
+  "musicbrainz": 2,
+  "listenbrainz_labs": 0
+ },
+ "network_requests_all_runs": {
+  "musicbrainz": 12,
+  "listenbrainz_labs": 0
+ },
+ "budget": {
+  "musicbrainz": 14,
+  "listenbrainz_labs": 4
+ },
+ "results": [
+  {
+   "id": "L1",
+   "query": "PAWSA",
+   "context_given": "tech house",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=5&query=artist%3A%22PAWSA%22",
+    "status": 503,
+    "error": "HTTP 503",
+    "raw_file": null
+   },
+   "exact_name_candidates": 0,
+   "candidates": []
+  },
+  {
+   "id": "L2",
+   "query": "Ricardo Villalobos",
+   "context_given": "minimal / experimental",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=5&query=artist%3A%22Ricardo%20Villalobos%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/3a8f64f0186466cf2b5a623c.json"
+   },
+   "exact_name_candidates": 1,
+   "candidates": [
+    {
+     "mbid": "bbd79854-df54-4c1b-b7d6-cf7eea2d0afb",
+     "name": "Ricardo Villalobos",
+     "sort_name": "Villalobos, Ricardo",
+     "score": 100,
+     "type": "Person",
+     "country": "DE",
+     "area": "Germany",
+     "disambiguation": "electronic music producer and DJ",
+     "begin": "1970-08-06",
+     "aliases": [
+      "Ricardo Villalopos",
+      "Richardo Villalobos",
+      "Villalobos"
+     ],
+     "exact_name": true,
+     "url_rels": [
+      "catalogue.bnf.fr",
+      "commons.wikimedia.org",
+      "d-nb.info",
+      "id.loc.gov",
+      "myspace.com",
+      "open.qobuz.com",
+      "open.spotify.com",
+      "rateyourmusic.com",
+      "tidal.com",
+      "viaf.org",
+      "www.allmusic.com",
+      "www.deezer.com",
+      "www.discogs.com",
+      "www.facebook.com",
+      "www.imdb.com",
+      "www.songkick.com",
+      "www.wikidata.org",
+      "www.worldcat.org"
+     ],
+     "lookup": {
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/0e10c348b31f87ebf15caf7f.json"
+     }
+    }
+   ]
+  },
+  {
+   "id": "L3",
+   "query": "Amelie Lens",
+   "context_given": "techno",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=5&query=artist%3A%22Amelie%20Lens%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/f8ceffad1340c48699b475cb.json"
+   },
+   "exact_name_candidates": 1,
+   "candidates": [
+    {
+     "mbid": "67db280d-c3e4-49d9-978e-4050f4e209ef",
+     "name": "Amelie Lens",
+     "sort_name": "Lens, Amelie",
+     "score": 100,
+     "type": "Person",
+     "country": "BE",
+     "area": "Belgium",
+     "disambiguation": "Belgian techno DJ & producer",
+     "begin": "1990-05-31",
+     "aliases": [],
+     "exact_name": true,
+     "url_rels": [
+      "amelielens.bandcamp.com",
+      "itunes.apple.com",
+      "music.apple.com",
+      "open.qobuz.com",
+      "open.spotify.com",
+      "ra.co",
+      "soundcloud.com",
+      "tidal.com",
+      "twitter.com",
+      "www.amelielens.com",
+      "www.bandsintown.com",
+      "www.beatport.com",
+      "www.deezer.com",
+      "www.discogs.com",
+      "www.facebook.com",
+      "www.instagram.com",
+      "www.last.fm",
+      "www.setlist.fm",
+      "www.songkick.com",
+      "www.wikidata.org",
+      "www.youtube.com"
+     ],
+     "lookup": {
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/8702bda1c467b2be4cab8b95.json"
+     }
+    }
+   ]
+  },
+  {
+   "id": "L4",
+   "query": "Traumer",
+   "context_given": "house / minimal",
+   "request": {
+    "url": "https://musicbrainz.org/ws/2/artist?fmt=json&limit=5&query=artist%3A%22Traumer%22",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/musicbrainz/a08998429cfc8364f77e0925.json"
+   },
+   "exact_name_candidates": 2,
+   "candidates": [
+    {
+     "mbid": "319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+     "name": "Traumer",
+     "sort_name": "Traumer",
+     "score": 100,
+     "type": "Person",
+     "country": null,
+     "area": "Paris",
+     "disambiguation": "house/techno",
+     "begin": null,
+     "aliases": [],
+     "exact_name": true,
+     "url_rels": [
+      "myspace.com",
+      "open.spotify.com",
+      "ra.co",
+      "soundcloud.com",
+      "traumer-music.com",
+      "twitter.com",
+      "www.deezer.com",
+      "www.discogs.com",
+      "www.facebook.com",
+      "www.youtube.com"
+     ],
+     "lookup": {
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/34f397e27422b0adee0a62c5.json"
+     }
+    },
+    {
+     "mbid": "0950f065-1d6a-444d-93c9-a6541a9122a7",
+     "name": "TraumeR",
+     "sort_name": "TraumeR",
+     "score": 92,
+     "type": "Group",
+     "country": null,
+     "area": "São Paulo",
+     "disambiguation": "Brazilian Power Metal Band",
+     "begin": "2009",
+     "aliases": [],
+     "exact_name": true,
+     "url_rels": [
+      "www.discogs.com",
+      "www.metal-archives.com"
+     ],
+     "lookup": {
+      "status": 200,
+      "error": null,
+      "raw_file": "raw/musicbrainz/978e2ad4ac7bd713e2f66ef2.json"
+     }
+    },
+    {
+     "mbid": "9e227523-075c-4e3d-be3e-f9b2c45aa335",
+     "name": "Träumer",
+     "sort_name": "Träumer",
+     "score": 88,
+     "type": "Group",
+     "country": null,
+     "area": null,
+     "disambiguation": "hardcore punk",
+     "begin": null,
+     "aliases": [],
+     "exact_name": false
+    },
+    {
+     "mbid": "29f039fb-22b4-4eb0-9a80-65c80cc9f505",
+     "name": "Jeile Träumer",
+     "sort_name": "Jeile Träumer",
+     "score": 79,
+     "type": "Group",
+     "country": "DE",
+     "area": "Germany",
+     "disambiguation": null,
+     "begin": null,
+     "aliases": [],
+     "exact_name": false
+    },
+    {
+     "mbid": "dd5bbb46-d9f5-4ea5-bac3-69b031c42ee6",
+     "name": "Soul Traumer",
+     "sort_name": "Soul Traumer",
+     "score": 79,
+     "type": null,
+     "country": null,
+     "area": null,
+     "disambiguation": null,
+     "begin": null,
+     "aliases": [],
+     "exact_name": false
+    }
+   ]
+  }
+ ]
+}

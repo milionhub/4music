@@ -1,0 +1,13 @@
+{
+ "_nota": "Artistas de prueba de la Fase 1.5. 'context_given' es el estilo que indicó el usuario (no viene de ninguna API). 'mbid' lo fija una persona tras revisar data/results/identify.json y verify.json; 'identity_evidence' resume por qué (datos de MusicBrainz).",
+ "artists": [
+  {"id": "L1", "query": "PAWSA", "context_given": "tech house", "mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+   "identity_evidence": "La búsqueda de artista devolvió HTTP 503 dos veces (sin reintento automático). MBID tomado de la caché de MusicBrainz de la Fase 1.2: crédito de 'Dirty Cash (Money Talks)' (PAWSA & Adventures of Stevie V, 2024), desambiguación 'David Esekhile'. Confirmado con la ficha (verify.json)."},
+  {"id": "L2", "query": "Ricardo Villalobos", "context_given": "minimal / experimental", "mbid": "bbd79854-df54-4c1b-b7d6-cf7eea2d0afb",
+   "identity_evidence": "Única coincidencia exacta (puntuación 100): persona, Alemania, nacido 1970-08-06, 'electronic music producer and DJ'; enlaces a Discogs y Wikidata. La primera búsqueda dio 503 dos veces; la tercera (manual, --ids L2) respondió 200."},
+  {"id": "L3", "query": "Amelie Lens", "context_given": "techno", "mbid": "67db280d-c3e4-49d9-978e-4050f4e209ef",
+   "identity_evidence": "Única coincidencia exacta (puntuación 100): persona, Bélgica, nacida 1990-05-31, 'Belgian techno DJ & producer'; enlaces a ra.co, Beatport, Discogs y web oficial."},
+  {"id": "L4", "query": "Traumer", "context_given": "house / minimal", "mbid": "319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+   "identity_evidence": "Dos coincidencias exactas de nombre: se elige 'Traumer' (persona, París, 'house/techno', enlaces a ra.co, Discogs y traumer-music.com). Se descarta 'TraumeR' (0950f065-…, banda brasileña de power metal) y no se consideran 'Träumer' (hardcore punk) ni otros nombres parecidos."}
+ ]
+}

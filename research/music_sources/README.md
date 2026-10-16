@@ -67,3 +67,7 @@ Presupuesto de la Fase 1.3: Discogs 150 (se usaron 80) y AcousticBrainz 10 (se u
 | Discogs | — | 0 | 0 (bloqueado; ver el informe) |
 
 Límites por caso: 3 grabaciones, 3 lanzamientos y 2 release groups por canción; 2 artistas candidatos por caso; 3 homónimos en la búsqueda diagnóstica; 3 candidatos de Wikidata sin enlace. Si se agota el presupuesto, el script se detiene y lo registra en `summary.json` (`aborted`).
+
+## Fase 1.5: ListenBrainz (artistas similares)
+
+Ver [`listenbrainz/README.md`](listenbrainz/README.md) e informe [`docs/fase-1-listenbrainz.md`](../../docs/fase-1-listenbrainz.md). Usa ListenBrainz Labs (sin clave) y MusicBrainz para los MBID; no modifica los datos de las fases anteriores.

@@ -1,0 +1,289 @@
+{
+ "generated_at": "2026-10-16T15:58:45+00:00",
+ "stage": "similar",
+ "algorithm": "session_based_days_7500_session_300_contribution_3_threshold_10_limit_100_filter_True_skip_30",
+ "network_requests_this_run": {
+  "musicbrainz": 0,
+  "listenbrainz_labs": 4
+ },
+ "network_requests_all_runs": {
+  "musicbrainz": 13,
+  "listenbrainz_labs": 4
+ },
+ "budget": {
+  "musicbrainz": 14,
+  "listenbrainz_labs": 4
+ },
+ "results": [
+  {
+   "id": "L1",
+   "query": "PAWSA",
+   "mbid": "202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+   "request": {
+    "url": "https://labs.api.listenbrainz.org/similar-artists/json?algorithm=session_based_days_7500_session_300_contribution_3_threshold_10_limit_100_filter_True_skip_30&artist_mbids=202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/listenbrainz_labs/7b358fcec4ebbf7e10c57ac2.json",
+    "from_cache": false
+   },
+   "total_results": 0,
+   "fields_observed": [],
+   "top": [],
+   "body_shape": "list"
+  },
+  {
+   "id": "L2",
+   "query": "Ricardo Villalobos",
+   "mbid": "bbd79854-df54-4c1b-b7d6-cf7eea2d0afb",
+   "request": {
+    "url": "https://labs.api.listenbrainz.org/similar-artists/json?algorithm=session_based_days_7500_session_300_contribution_3_threshold_10_limit_100_filter_True_skip_30&artist_mbids=bbd79854-df54-4c1b-b7d6-cf7eea2d0afb",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/listenbrainz_labs/433be7baf5cdbdf583d4b157.json",
+    "from_cache": false
+   },
+   "total_results": 100,
+   "fields_observed": [
+    "artist_mbid",
+    "comment",
+    "gender",
+    "name",
+    "reference_mbid",
+    "score",
+    "type"
+   ],
+   "top": [
+    {
+     "rank": 1,
+     "name": "Aphex Twin",
+     "mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+     "score": 185,
+     "type": "Person"
+    },
+    {
+     "rank": 2,
+     "name": "Apparat",
+     "mbid": "dc3dbfc1-f1f1-49c6-9d7c-425fabf3ae12",
+     "score": 163,
+     "type": "Person"
+    },
+    {
+     "rank": 3,
+     "name": "Floating Points",
+     "mbid": "69d9c5ba-7bba-4cb7-ab32-8ccc48ad4f97",
+     "score": 158,
+     "type": "Person"
+    },
+    {
+     "rank": 4,
+     "name": "WK7",
+     "mbid": "b7467904-b2de-4c1e-b8fa-e57405b41989",
+     "score": 138,
+     "type": "Person"
+    },
+    {
+     "rank": 5,
+     "name": "KMA",
+     "mbid": "d0080001-524c-4a65-807f-0252803ac1a0",
+     "score": 125,
+     "comment": "Finnish band",
+     "type": "Group"
+    },
+    {
+     "rank": 6,
+     "name": "Booka Shade",
+     "mbid": "9940c604-2456-4193-a403-ab18420bc1e9",
+     "score": 125,
+     "type": "Group"
+    },
+    {
+     "rank": 7,
+     "name": "Red Rack’em",
+     "mbid": "943578c3-2351-46bf-bdb9-d29d5b3e6eb9",
+     "score": 121,
+     "type": "Person"
+    },
+    {
+     "rank": 8,
+     "name": "Percussions",
+     "mbid": "abd074c2-5d2b-4486-8081-ef26fd412b0d",
+     "score": 120,
+     "comment": "Kieran Hebden",
+     "type": "Person"
+    },
+    {
+     "rank": 9,
+     "name": "Crazy Bald Heads",
+     "mbid": "ce6c37f5-e855-4ba0-97e0-90dac0d662cf",
+     "score": 118
+    },
+    {
+     "rank": 10,
+     "name": "C++",
+     "mbid": "c7341bae-9fb5-4364-9ada-2687de4adc0d",
+     "score": 115,
+     "comment": "house producer Joshua Michaels",
+     "type": "Person"
+    }
+   ],
+   "body_shape": "list"
+  },
+  {
+   "id": "L3",
+   "query": "Amelie Lens",
+   "mbid": "67db280d-c3e4-49d9-978e-4050f4e209ef",
+   "request": {
+    "url": "https://labs.api.listenbrainz.org/similar-artists/json?algorithm=session_based_days_7500_session_300_contribution_3_threshold_10_limit_100_filter_True_skip_30&artist_mbids=67db280d-c3e4-49d9-978e-4050f4e209ef",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/listenbrainz_labs/1eb466bf11be5b3876a681b8.json",
+    "from_cache": false
+   },
+   "total_results": 99,
+   "fields_observed": [
+    "artist_mbid",
+    "comment",
+    "gender",
+    "name",
+    "reference_mbid",
+    "score",
+    "type"
+   ],
+   "top": [
+    {
+     "rank": 1,
+     "name": "Charlotte de Witte",
+     "mbid": "1de4e373-e597-4087-bf3d-256ec597749e",
+     "score": 102,
+     "comment": "formerly Raving George",
+     "type": "Person"
+    },
+    {
+     "rank": 2,
+     "name": "Regal",
+     "mbid": "d5eeab3c-8f4f-46a0-970f-7a62632bc9e2",
+     "score": 67,
+     "comment": "techno, alias of Gabriel Cassina",
+     "type": "Person"
+    },
+    {
+     "rank": 3,
+     "name": "Umek",
+     "mbid": "a03affe5-47af-48c4-9b8e-67654fa318ec",
+     "score": 61,
+     "type": "Person"
+    },
+    {
+     "rank": 4,
+     "name": "Boris Brejcha",
+     "mbid": "ae0d1794-c9d3-4436-94fc-ceff6130da2c",
+     "score": 56,
+     "type": "Person"
+    },
+    {
+     "rank": 5,
+     "name": "Joyhauser",
+     "mbid": "bd79872c-44d3-422e-be24-5452521c3795",
+     "score": 53,
+     "comment": "Belgian techno duo",
+     "type": "Group"
+    },
+    {
+     "rank": 6,
+     "name": "Enrico Sangiuliano",
+     "mbid": "fe69b211-d470-48e7-a7a0-64cecb5bc991",
+     "score": 50,
+     "comment": "techno producer",
+     "type": "Person"
+    },
+    {
+     "rank": 7,
+     "name": "I Hate Models",
+     "mbid": "f9a4de7f-d3c6-4de8-8892-7aca52610edd",
+     "score": 48,
+     "comment": "techno producer",
+     "type": "Person"
+    },
+    {
+     "rank": 8,
+     "name": "Spektre",
+     "mbid": "8e4ed082-188b-4f23-8b77-d65591c407f8",
+     "score": 44,
+     "comment": "UK electronic music duo; Richard Wakley & Paul Maddox",
+     "type": "Group"
+    },
+    {
+     "rank": 9,
+     "name": "Layton Giordani",
+     "mbid": "81f494b2-bd4b-486c-aae5-8c789165d14c",
+     "score": 42,
+     "comment": "techno",
+     "type": "Person"
+    },
+    {
+     "rank": 10,
+     "name": "ANNA",
+     "mbid": "898a73a5-580a-4ce6-8e71-ea0e6a1209fb",
+     "score": 42,
+     "comment": "Anna Miranda, DJ and producer from São Paulo, Brazil",
+     "type": "Person"
+    }
+   ],
+   "body_shape": "list"
+  },
+  {
+   "id": "L4",
+   "query": "Traumer",
+   "mbid": "319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+   "request": {
+    "url": "https://labs.api.listenbrainz.org/similar-artists/json?algorithm=session_based_days_7500_session_300_contribution_3_threshold_10_limit_100_filter_True_skip_30&artist_mbids=319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+    "status": 200,
+    "error": null,
+    "raw_file": "raw/listenbrainz_labs/1f5a27ca55d1493b02f54b0c.json",
+    "from_cache": false
+   },
+   "total_results": 4,
+   "fields_observed": [
+    "artist_mbid",
+    "comment",
+    "gender",
+    "name",
+    "reference_mbid",
+    "score",
+    "type"
+   ],
+   "top": [
+    {
+     "rank": 1,
+     "name": "Hot Since 82",
+     "mbid": "26ba15a7-e610-4030-a3e0-21e4f5869f2a",
+     "score": 20,
+     "type": "Person"
+    },
+    {
+     "rank": 2,
+     "name": "Boris Brejcha",
+     "mbid": "ae0d1794-c9d3-4436-94fc-ceff6130da2c",
+     "score": 13,
+     "type": "Person"
+    },
+    {
+     "rank": 3,
+     "name": "Kölsch",
+     "mbid": "556ee13f-1ef3-4cf0-a11e-1c71aff962d4",
+     "score": 13,
+     "comment": "Kompakt",
+     "type": "Person"
+    },
+    {
+     "rank": 4,
+     "name": "Ten Walls",
+     "mbid": "c167313f-1922-485a-960e-72614ea93006",
+     "score": 11,
+     "type": "Person"
+    }
+   ],
+   "body_shape": "list"
+  }
+ ]
+}
