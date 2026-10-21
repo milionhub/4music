@@ -573,6 +573,24 @@ def mb_genres(entity: dict[str, Any]) -> list[str]:
     return [g["name"].strip().lower() for g in items]
 
 
+# Lanzamientos cuyo género no describe cada pista que contienen (V5.7: también en la API, no solo en la app).
+NON_TRACK_RELEASES = {"Compilation", "DJ-mix", "Mixtape/Street", "Soundtrack"}
+
+
+def release_genre_values(names: list[str], secondary_types: list[str], multi_song: bool) -> list[str]:
+    """Género de un lanzamiento aplicado a una de sus pistas (scope = release), para MusicBrainz y Discogs por igual.
+    - Nunca el de un recopilatorio, DJ mix, mixtape o banda sonora (Double C: el «Pop» de la banda sonora de F1).
+    - Si el lanzamiento tiene varias canciones y sus géneros son de familias distintas («Techno, House, Tech House»
+      del Dedust EP), no se atribuye ninguno concreto a la pista: solo el género amplio, si consta.
+    """
+    if set(secondary_types) & NON_TRACK_RELEASES:
+        return []
+    specific = [n for n in names if n not in BROAD]
+    if multi_song and len({GENRE_FAMILY.get(n, _title(n)) for n in specific}) > 1:
+        return genre_values([n for n in names if n in BROAD])
+    return genre_values(names)
+
+
 def genre_values(names: list[str]) -> list[str]:
     """[familia, estilo…]: «deep house» + «house» → ["House", "Deep House"]. Solo «electronic» → ["Electrónica"]."""
     specific = [n for n in names if n not in BROAD]
@@ -596,7 +614,8 @@ def dna(recording_mbid: str, title: str, track_wd: WikidataInfo, release_wd: Wik
     track_genres = [wd_labels[q] for q in track_wd.genre_ids if q in wd_labels][:3]
     release_genres = [wd_labels[q] for q in release_wd.genre_ids if q in wd_labels][:3]
     mb_rec = genre_values(recording_genres or [])
-    mb_rg = genre_values(release_genres_mb or [])
+    mb_rg = (release_genre_values(release_genres_mb or [], release.secondary_types, release.primary_type != "Single")
+             if release else [])
     mb_genre_ref = schemas.SourceRef(label="MusicBrainz (géneros)", url=f"https://musicbrainz.org/recording/{recording_mbid}",
                                      license=MB_GENRES_LICENSE)
     # Prioridad: la propia grabación (MusicBrainz, luego Wikidata) > su lanzamiento original. Nunca el artista.
@@ -616,7 +635,7 @@ def dna(recording_mbid: str, title: str, track_wd: WikidataInfo, release_wd: Wik
                                        detail=f"Géneros de «{release.title}» en MusicBrainz: describen el lanzamiento.",
                                        sources=[mb_genre_ref.model_copy(update={
                                            "url": f"https://musicbrainz.org/release-group/{release.mbid}"})]))
-    elif release_genres and release_wd.qid and release:
+    elif release_genres and release_wd.qid and release and not set(release.secondary_types) & NON_TRACK_RELEASES:
         traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
                                        scope="release", values=release_genres,
                                        detail=f"Género de «{release.title}» en Wikidata: describe el lanzamiento, no solo esta pista.",

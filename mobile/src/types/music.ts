@@ -1,7 +1,7 @@
 /** Contrato /v1 del backend (docs/t0-contrato-datos.md). null = la fuente no tiene el dato. */
 
 export type Source = {
-  provider: 'musicbrainz';
+  provider: 'musicbrainz' | 'discogs';
   url: string;
   fetched_at: string;
   license: string;
@@ -221,8 +221,12 @@ export type ArtistRef = { mbid: string; name: string; disambiguation: string | n
 // --- TrackDNA de canciones (T2.0) ---------------------------------------------------------------------------------
 export type CreditedArtist = { mbid: string; name: string; join_phrase: string };
 
+/** V5.6: «discogs» solo si MusicBrainz no encuentra la canción; su id es `discogs:<release>:<posición>` (no un MBID). */
+export type TrackCatalog = 'musicbrainz' | 'discogs';
+
 export type TrackSearchResult = {
   mbid: string;
+  catalog?: TrackCatalog;
   title: string;
   artist_credit: CreditedArtist[];
   artist_name: string;
@@ -308,6 +312,7 @@ export type TrackInterpretation = { text: string; sources: SourceRef[]; generate
 
 export type TrackResponse = {
   mbid: string;
+  catalog?: TrackCatalog;
   title: string;
   artist_credit: CreditedArtist[];
   artist_name: string;

@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 
 class Source(BaseModel):
-    provider: Literal["musicbrainz"] = "musicbrainz"
+    provider: Literal["musicbrainz", "discogs"] = "musicbrainz"  # discogs: canción fuera de MusicBrainz (V5.6)
     url: str
     fetched_at: str
     license: str = "CC0 (MusicBrainz core data)"
@@ -260,7 +260,8 @@ class ErrorResponse(BaseModel):
 # --- TrackDNA de canciones (T2.0) ---------------------------------------------------------------------------------
 class TrackSearchResult(BaseModel):
     """Una grabación de MusicBrainz (o varias idénticas agrupadas: mismo título, créditos y duración)."""
-    mbid: str                     # grabación representativa (la que más lanzamientos tiene)
+    mbid: str                     # grabación representativa (la que más lanzamientos tiene); en Discogs, «discogs:<release>:<pos>»
+    catalog: Literal["musicbrainz", "discogs"] = "musicbrainz"  # V5.6: discogs solo si MusicBrainz no encuentra nada
     title: str
     artist_credit: list[CreditedArtist]
     artist_name: str              # crédito tal como lo escribe MusicBrainz («A feat. B»)
@@ -377,7 +378,8 @@ class TrackInterpretation(BaseModel):
 
 
 class TrackResponse(BaseModel):
-    mbid: str                     # MBID canónico (MusicBrainz redirige los fusionados)
+    mbid: str                     # MBID canónico (MusicBrainz redirige los fusionados); en Discogs, «discogs:<release>:<pos>»
+    catalog: Literal["musicbrainz", "discogs"] = "musicbrainz"  # V5.6: discogs se sirve en /v1/tracks/ext/{id}
     title: str
     artist_credit: list[CreditedArtist]
     artist_name: str

@@ -63,3 +63,34 @@ test('«Escuchar»: solo Spotify, Apple Music, SoundCloud y Discogs físico; dir
   assert.deepEqual(vinyl.map((o) => [o.label, o.target, o.url]), [['Discogs', 'Edición en vinilo', 'https://www.discogs.com/release/9']]);
   assert.deepEqual(listenOptions([], ''), []);
 });
+
+test('V5.6: canciones de Discogs con id propio; sus artistas solo se enlazan si MusicBrainz da el MBID', async () => {
+  const { externalTrack } = await import('../src/lib/format.ts');
+  const { trackDna } = await import('../src/lib/track-sheet.ts');
+  assert.ok(externalTrack('discogs:29565955:1'));
+  assert.ok(!externalTrack(PAWSA) && !externalTrack('') && !externalTrack(null), 'los MBID siguen su ruta de siempre');
+  const parts = creditParts([
+    { mbid: PAWSA, name: 'Luciano', join_phrase: ', ' }, { mbid: 'discogs:artist:6126490', name: 'Carloh', join_phrase: '' },
+  ], '');
+  assert.deepEqual(parts.map((p) => p.mbid), [PAWSA, null]);
+
+  const ref = { label: 'Data provided by Discogs', url: 'https://www.discogs.com/release/29565955', license: null };
+  const trait = (key: string, status: 'community' | 'verified' | 'unavailable', values: string[], scope: 'track' | 'release' = 'track') =>
+    ({ key, group: 'context' as const, label: key, status, scope, values, detail: null, sources: [ref] });
+  const release = { mbid: 'discogs:release:29565955', title: 'Vinotinto', primary_type: null, secondary_types: [] as string[], date: '2022-11-18',
+    labels: ['From The South'], catalog_number: 'FTSR001', formats: ['Digital Media'], own: true, self_released: false, cover_url: null, url: ref.url };
+  const t = {
+    title: 'Vinotinto', version: null, length_ms: 559000, original_release: release,
+    relations: { remix_of: [], remixes: [], remix_count: 0, dj_mix_count: 0, dj_mixes: [] },
+    dna: { recording_mbid: 'discogs:29565955:1', acoustic_analysis: 'unavailable' as const, traits: [
+      trait('genre', 'community', ['Electronic', 'Tech House'], 'release'), trait('label', 'verified', ['From The South']),
+      trait('bpm', 'unavailable', []),
+    ] },
+  };
+  const dna = trackDna(t);
+  assert.deepEqual(dna.genre, { family: 'Electronic', styles: ['Tech House'], note: 'del lanzamiento' });
+  assert.equal(dna.bpm, null, 'sin BPM inventado');
+  assert.deepEqual(dna.rows.map((r) => r.value), ['9:19', 'From The South'], 'sin tipo de lanzamiento no se deduce el formato');
+  // Un recopilatorio no presta su género a la pista.
+  assert.equal(trackDna({ ...t, original_release: { ...release, secondary_types: ['Compilation'] } }).genre, null);
+});

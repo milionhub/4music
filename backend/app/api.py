@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends
 
-from app import (acousticbrainz, biography, config, discogs, editorial, facts, images, normalize, profile, reccobeats, recommend,
+from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient
 from app.musicbrainz import (BadResponse, Fetched, LabsClient, ListenBrainzClient, MusicBrainzClient, ProviderError,
@@ -574,7 +574,8 @@ TRACK_TTL_S = 7 * 24 * 3600      # ficha ensamblada: se reutiliza una semana (so
 # fichas de otra versión se reconstruyen al pedirlas (y se sobrescriben). El resto de la caché no se toca.
 # v1 (sin campo): T2.0 · v2: autoedición, enlaces de lanzamientos, identificadores (T2.2A) ·
 # v3: enlaces agrupados por destino, con `target`/`release_type` y sin los caducados conocidos.
-TRACK_CONTRACT_VERSION = 5  # 5: géneros de MusicBrainz (grabación y lanzamiento), samples, mashups y covers
+TRACK_CONTRACT_VERSION = 6  # 6: sin géneros de bandas sonoras ni recopilatorios; familias mezcladas de un EP (V5.7)
+# 5  # 5: géneros de MusicBrainz (grabación y lanzamiento), samples, mashups y covers
 # 4  # 4: formatos físicos del lanzamiento en sus enlaces (Discogs solo si es una edición física)
 TRACK_SEARCH_DEFAULT = 15
 
@@ -594,6 +595,9 @@ def search_tracks(q: str = "", limit: str = "", client: MusicBrainzClient = Depe
         retry, _retry_error = _section(lambda: client.search_recordings(tracks.fuzzy_query(query), tracks.SEARCH_FETCH))
         if retry:
             results, omitted = tracks.search_results(retry.data, query, max_results, config.cover_art_enabled())
+    if not results:
+        # V5.6: canciones que MusicBrainz no tiene, documentadas en Discogs (catalog = discogs). Nunca un error.
+        results = discogs_tracks.search(query, max_results)
     return schemas.TrackSearchResponse(query=query, results=results, omitted_mix_fragments=omitted,
                                        source=normalize.source(fetched))
 
@@ -689,6 +693,13 @@ def _track_bundle(mbid: str, client: MusicBrainzClient, wiki: WikimediaClient) -
         for key in dict.fromkeys((mbid, canonical)):
             store.put(TRACK_KIND, key, payload, TRACK_TTL_S)
     return track, wiki_context
+
+
+@router.get("/tracks/ext/{track_id}", response_model=schemas.TrackResponse)
+def external_track(track_id: str, client: MusicBrainzClient = Depends(get_client)):
+    """Ficha de una canción fuera de MusicBrainz (`discogs:<release>:<posición>`), con el mismo contrato que la de un
+    MBID. Ruta aparte: /tracks/{mbid} sigue aceptando solo MBID."""
+    return discogs_tracks.profile(track_id, client)
 
 
 @router.get("/tracks/{mbid}", response_model=schemas.TrackResponse)

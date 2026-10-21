@@ -414,6 +414,19 @@ export function VersionList({ rows, accent }: { rows: VersionRow[]; accent: Acce
 
 // --- Escuchar -----------------------------------------------------------------------------------------------------
 /** Enlace directo («Canción», «EP»…) o búsqueda explícita; nunca una búsqueda presentada como la canción. */
+/** Canción de Discogs (V5.6): atribución obligatoria junto a los datos y aviso de no afiliación (API Terms of Use). */
+export function SourceNote({ url }: { url: string }) {
+  const S = SHEET.base;
+  return (
+    <View style={{ paddingHorizontal: GUTTER, paddingBottom: Space.xxxl, gap: Space.xs }}>
+      <Text onPress={() => openBrowserAsync(url, BROWSER_OPTIONS)} accessibilityRole="link" style={[MONO_B, { color: S.ink, textDecorationLine: 'underline' }]}>
+        Data provided by Discogs ↗
+      </Text>
+      <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz. Chromatic Underground no está afiliado a Discogs.</Text>
+    </View>
+  );
+}
+
 export function ListenList({ options }: { options: ListenOption[] }) {
   return (
     <View>

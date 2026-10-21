@@ -1,3 +1,4 @@
+import { externalTrack } from '@/lib/format';
 import { getJson } from '@/services/api-client';
 import type {
   ArtistProfileResponse,
@@ -57,7 +58,9 @@ export function searchTracks(query: string) {
 }
 
 export function getTrack(mbid: string) {
-  return getJson<TrackResponse>(`/v1/tracks/${encodeURIComponent(mbid)}`, TRACK_TIMEOUT_MS);
+  // Canciones de Discogs (V5.6): ruta aparte, mismo contrato. /v1/tracks/{mbid} solo acepta MBID.
+  const path = externalTrack(mbid) ? `/v1/tracks/ext/${encodeURIComponent(mbid)}` : `/v1/tracks/${encodeURIComponent(mbid)}`;
+  return getJson<TrackResponse>(path, TRACK_TIMEOUT_MS);
 }
 
 export function getTrackInterpretation(mbid: string) {

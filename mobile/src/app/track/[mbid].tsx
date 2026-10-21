@@ -13,13 +13,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SheetSection } from '@/components/sheet';
 import { StatusBarScrim } from '@/components/status-bar-scrim';
 import {
-  ArtDivider, ArtHero, ArtistList, ArtSave, DnaCard, GUTTER, heroTop, ListenList, StoryCard, VersionList,
+  ArtDivider, ArtHero, ArtistList, ArtSave, DnaCard, GUTTER, heroTop, ListenList, SourceNote, StoryCard, VersionList,
 } from '@/components/track-art';
 import { StateView } from '@/components/ui';
 import { C, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { useRemote } from '@/hooks/use-remote';
 import { contrast } from '@/lib/artist-identity';
-import { listenOptions } from '@/lib/format';
+import { externalTrack, listenOptions } from '@/lib/format';
 import { savedTrackFrom } from '@/lib/preferences';
 import { SHEET, sheetAccent, type TrackArt, trackArt } from '@/lib/track-art';
 import { hasDna, trackArtists, trackDna, trackStory, trackVersions } from '@/lib/track-sheet';
@@ -96,7 +96,9 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
   const { width } = useWindowDimensions();
   const P = art.palette;
   const pageWidth = Math.min(width, MaxContentWidth);
-  const saved = lib.isTrackSaved({ mbid: data.mbid, isrcs: data.isrcs, version: data.version });
+  // Guardados se identifican por MBID: una canción de Discogs aún no se puede guardar (sin botón, no a medias).
+  const external = externalTrack(data.mbid);
+  const saved = !external && lib.isTrackSaved({ mbid: data.mbid, isrcs: data.isrcs, version: data.version });
   const accent = sheetAccent(P);
 
   // Qué se muestra (lib/track-sheet.ts): cada bloque vacío se oculta. Créditos técnicos, mashups, DJ mixes y la lectura
@@ -119,7 +121,7 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
       <Animated.ScrollView style={{ backgroundColor: SHEET.base.bg }} contentInsetAdjustmentBehavior="never">
         <View style={{ alignSelf: 'center', width: pageWidth }}>
           <ArtHero data={data} art={art} width={pageWidth} back={<BackButton art={art} />}
-            footer={<ArtSave saved={saved} s={art.hero === 'split' ? P.alt : P.hero} onPress={() => lib.toggleTrack(savedTrackFrom(data, new Date().toISOString()))} />} />
+            footer={external ? null : <ArtSave saved={saved} s={art.hero === 'split' ? P.alt : P.hero} onPress={() => lib.toggleTrack(savedTrackFrom(data, new Date().toISOString()))} />} />
           <ArtDivider art={art} width={pageWidth} word={data.title} />
           <Animated.View entering={FadeIn.duration(250).reduceMotion(ReduceMotion.System)}>
             {sections.map((sec, i) => (
@@ -128,6 +130,7 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
               </SheetSection>
             ))}
             {sections.length === 0 ? <View style={{ height: Space.xxxl * 2 }} /> : null}
+            {external && data.sources[0] ? <SourceNote url={data.sources[0].url} /> : null}
           </Animated.View>
         </View>
       </Animated.ScrollView>

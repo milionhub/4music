@@ -85,3 +85,44 @@ Cobertura sobre las 8 grabaciones de MusicBrainz:
 - **Ruta nueva:** `GET /v1/tracks/ext/{id}`, con procedencia por campo y el mismo contrato de `TrackResponse`. Exige campos opcionales y `mbid` nulo, así que es un cambio de contrato.
 - **App:** una ruta aparte; los Guardados se mantienen por MBID. Se migran solo cuando una canción externa aparece en MusicBrainz, por ISRC.
 - **Riesgo demostrado:** el ISRC de Vinotinto en Deezer es una edición de 2:23, distinta de la de 9:19 de Discogs. La versión debe confirmarse siempre por duración.
+
+## 7. V5.7 — Enriquecimiento del ADN (2026-10-21)
+
+Piloto: `backend/eval/pilot_v57.py` (línea base y resultado en `eval/pilot_v57_*.json`, fuera de Git). 8 canciones con las identidades ya fijadas.
+
+### Evaluado y descartado (sin ganancia verificable)
+
+- **Enlaces MusicBrainz → Discogs (release):** Lovelee Dae, MSBWY y Dirty Cash dan los mismos estilos que MusicBrainz. Desire y Crazy no tienen enlace.
+- **Artista enlazado + título + duración:**
+  - Hoodlum está en el *Dedust EP* (Desolat, release 5925531): 8 canciones, sin duraciones y con *Techno, House, Tech House*. No hay un estilo atribuible a la pista.
+  - Crazy está en el LP *Withness* (38632116): sin duraciones, con estilos de álbum y crédito «ANOTR, 3ddy».
+  - Desire solo tiene la edición de 6:14.
+  - Ninguna correspondencia de confianza alta: **no se integra** en la ruta interactiva, porque añadiría peticiones a Discogs, con la regla de las 6 h, sin ningún dato nuevo.
+- **BPM de fichas externas:** Vinotinto y You Got The Groove no tienen ISRC en Discogs, y el de Deezer de Vinotinto es otra versión. Un ISRC tomado de los metadatos de ReccoBeats no es verificable de forma independiente: BPM desconocido.
+- **Tonalidad:** sin evidencia nueva. ReccoBeats sigue descartado.
+
+### Implementado
+
+- **`tracks.release_genre_values`** (regla única para MusicBrainz y Discogs):
+  - Nunca el género de un recopilatorio, DJ mix, mixtape o banda sonora, ahora también en la API, no solo en la app.
+  - En un lanzamiento de varias canciones con géneros de familias distintas no se atribuye ninguno concreto, solo el amplio si consta.
+  - Misma familia o una sola canción: se conservan familia y estilo.
+- **Fichas de Discogs:** usan el normalizador de MusicBrainz (`genre_values`): *Tech House* pasa a mostrarse como «House · Tech House», en lugar de «Electronic · Tech House».
+- `TRACK_CONTRACT_VERSION` 6: las fichas en caché se reconstruyen una vez, en la siguiente visita.
+
+### Antes → después
+
+| Canción | Género / estilo | BPM | Tonalidad | Cambio |
+|---|---|---|---|---|
+| Desire | — → — | 134 E | — | No |
+| Double C | Pop (banda sonora, release) → **—** | 129 E | — | **Corrección** |
+| Dirty Cash | House C | 132 E | — | No |
+| Crazy | — → — | — | — | No |
+| Hoodlum | House C | 123 E | 1A E | No |
+| Lovelee Dae | House · Deep House L | 124 E | — | No |
+| Vinotinto (Discogs) | Electronic · Tech House → House · Tech House L | — | — | Normalización |
+| You Got The Groove (Discogs) | Electronic · Minimal Techno → Techno · Minimal Techno L | — | — | Normalización |
+
+Cobertura: género 5/8 (la API daba 6/8 contando el «Pop» erróneo de Double C, que la app ya ocultaba), BPM 5/8 y tonalidad 1/8, sin cambios. Un error corregido (Double C). Las dos fichas externas ganan la familia, pero eso es normalización y no se cuenta como cobertura.
+
+**Limitación conocida:** `genre_values` toma como familia la del primer estilo. Con estilos de familias distintas en una sola canción (p. ej. *Minimal, Tech House*), el segundo se presenta como estilo de la primera familia. Es el comportamiento de MusicBrainz desde V5.2 y no se ha cambiado para no alterar fichas aprobadas.

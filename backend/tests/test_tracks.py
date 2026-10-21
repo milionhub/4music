@@ -498,3 +498,15 @@ def test_release_links_carry_the_formats_of_their_edition():
     links = t.links({"relations": []}, releases, frozenset({"a1"}))
     discogs = next(l for l in links if "discogs.com" in l.url)
     assert discogs.formats == ['12" Vinyl'] and discogs.scope == "release"
+
+
+def test_genero_de_lanzamiento_regla_compartida_v57():
+    # Banda sonora o recopilatorio: su género no describe la pista (Double C y el «Pop» de F1 The Album).
+    assert tracks.release_genre_values(["pop"], ["Soundtrack"], True) == []
+    assert tracks.release_genre_values(["deep house", "house"], ["Compilation"], False) == []
+    # Varias canciones con familias distintas: nada concreto; solo el género amplio si consta.
+    assert tracks.release_genre_values(["techno", "house", "tech house", "electronic"], [], True) == ["Electrónica"]
+    assert tracks.release_genre_values(["techno", "house"], [], True) == []
+    # Misma familia (Breather, EP «Get Together»: house + deep house) o un single: se conservan familia y estilo.
+    assert tracks.release_genre_values(["deep house", "electronic", "house"], [], True) == ["House", "Deep House"]
+    assert tracks.release_genre_values(["techno", "house"], [], False) == ["Techno", "House"]
