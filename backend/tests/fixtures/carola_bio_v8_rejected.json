@@ -1,0 +1,81 @@
+{
+ "_note": "Caso real (sesión 2): hechos enviados a Groq y borrador v8 rechazado por el validador v5 para Marco Carola. Copiado de SQLite el 2026-10-19; textos de Wikipedia (CC BY-SA 4.0) y MusicBrainz (CC0).",
+ "artist": "Marco Carola",
+ "mbid": "daa683bc-1a8d-48da-be35-864526c444a6",
+ "error_code": "afirmación sin respaldo (sello o proyecto fundado: Music)",
+ "facts": [
+  {
+   "id": "H1",
+   "kind": "identidad",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "Marco Carola (Nápoles el 7 de febrero de 1975) es un DJ italiano de música electrónica."
+  },
+  {
+   "id": "H2",
+   "kind": "estilo",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "Rápidamente consiguió el apoyo de muchos DJs de todo el mundo que observaban el sonido de Carola como un cruce de caminos entre el Dynamic Syncopation de Surgeon, el Cavernous Walls de Lost y el I-Fidelity de Blueprint."
+  },
+  {
+   "id": "H3",
+   "kind": "origen",
+   "source": "MusicBrainz",
+   "url": "https://musicbrainz.org/artist/daa683bc-1a8d-48da-be35-864526c444a6",
+   "license": "CC0",
+   "text": "País: Italia."
+  },
+  {
+   "id": "H4",
+   "kind": "inicios",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "A la edad de 13 años obtuvo su primera batería, que tocó durante años antes de comprar y pinchar discos."
+  },
+  {
+   "id": "H5",
+   "kind": "sello propio",
+   "source": "Wikipedia (en): Marco Carola",
+   "url": "https://en.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "Carola has founded labels like Design, Zenit, Question, One Thousands, Do.Mi.No. and Music On and held residencies at Amnesia Ibiza, with Cocoon, for two years, and with his own Music On project from 2012 until 2018."
+  },
+  {
+   "id": "H6",
+   "kind": "sello propio",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "Carola se dio cuenta de las limitaciones que suponía grabar para los sellos de otros y en 1996 decidió crear su propio sello, Design Music, que se convertiría en el primer sello italiano que se dedicaba totalmente a publicar música techno, sorprendiendo a los aficionados al techno de la ciudad italiana con su propio 12\" titulado Man Train."
+  },
+  {
+   "id": "H7",
+   "kind": "proyecto paralelo",
+   "source": "MusicBrainz (relaciones)",
+   "url": "https://musicbrainz.org/artist/daa683bc-1a8d-48da-be35-864526c444a6/relationships",
+   "license": "CC0",
+   "text": "Otros alias del mismo artista: Locomotive, Random / Noize, The Previous, Question."
+  },
+  {
+   "id": "H8",
+   "kind": "escena",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "En 2004 Marco Carola se renueva y decide dejar atrás los ritmos más duros para optar por centrarse en publicar música más minimalista, esta nueva etapa coincide con su vuelta a Nápoles y comienza a apostar por actuar en Clubs más pequeños donde se le permita desarrollar unos Sets más largos."
+  },
+  {
+   "id": "H9",
+   "kind": "música destacada",
+   "source": "Wikipedia (es): Marco Carola",
+   "url": "https://es.wikipedia.org/wiki/Marco_Carola",
+   "license": "CC BY-SA 4.0",
+   "text": "En 2011 publica su nuevo álbum, Play It Loud (Minus, 2011), con el que realiza una extensa gira de presentación que le lleva a viajar y a actuar por todo el mundo."
+  }
+ ],
+ "draft": "Marco Carola, DJ italiano nacido en Nápoles, inició su trayectoria tocando batería a los trece años antes de pasar al DJing. Su sonido, descrito como un cruce de caminos entre el Dynamic Syncopation de Surgeon, el Cavernous Walls de Lost y el I‑Fidelity de Blueprint, le ganó el apoyo de DJs de todo el mundo. En 2004 se renovó, dejando atrás los ritmos más duros para centrarse en un estilo más minimalista, y empezó a actuar en clubes más pequeños donde podía desarrollar sets más largos.\n\nDesde 1996 fundó su propio sello, Design Music, convirtiéndose en el primer sello italiano dedicado exclusivamente al techno con su 12” Man Train. Más adelante creó los sellos Zenit, Question, One Thousands, Do.Mi.No. y Music On, y sostuvo residencias en Amnesia Ibiza y Cocoon durante dos años, además de su proyecto Music On desde 2012 hasta 2018. Sus alias Locomotive, Random / Noize, The Previous y Question le permiten explorar distintas facetas de su música, mientras que su álbum Play It Loud (Minus, 2011) dio pie a una extensa gira mundial."
+}

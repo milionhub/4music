@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "_instrucciones": "Catálogo editorial por MBID. 'bio.text': texto ORIGINAL (no copiado) breve (40-110 palabras), sin recuentos, sin listas de títulos/años/colaboradores y sin mencionar bases de datos, redactado a partir de hechos verificables de las fuentes listadas; 'reviewed' pasa a true tras revisión humana. 'photo': SOLO fotografías con permiso documentado del titular de los derechos ('permission' describe quién, cuándo y en qué condiciones lo concedió); nunca imágenes tomadas de webs, redes o tiendas. Ver docs/t1-plan-implementacion.md §0.2.",
+  "artists": {
+    "202ed573-bcb9-4686-bc98-6fc96b1f6ae9": {
+      "name": "PAWSA",
+      "bio": {
+        "text": "PAWSA es el alias de David Esekhile, DJ y productor londinense que ha convertido el tech house en su terreno. Su música ha sido descrita como un tech house inventivo con espíritu de vieja escuela, y varios de sus temas han llegado a las listas. Fuera del estudio, cofundó Solid Grooves Records, sello de referencia en el género, y ha girado de forma constante por Europa, con una residencia de verano en Sankeys Ibiza entre sus hitos.",
+        "language": "es",
+        "sources": [
+          {
+            "label": "Wikipedia (inglés): PAWSA",
+            "url": "https://en.wikipedia.org/wiki/PAWSA",
+            "license": "CC BY-SA 4.0"
+          },
+          {
+            "label": "Wikidata Q131580038",
+            "url": "https://www.wikidata.org/wiki/Q131580038",
+            "license": "CC0"
+          },
+          {
+            "label": "MusicBrainz",
+            "url": "https://musicbrainz.org/artist/202ed573-bcb9-4686-bc98-6fc96b1f6ae9",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    },
+    "6f8d9d66-24a0-4faf-97c7-81cd22cb1c7e": {
+      "name": "Luciano",
+      "bio": {
+        "text": "Luciano es el nombre artístico de Lucien Nicolet, DJ y productor con raíces suizas y chilenas. Sus sesiones llevan la huella de la música latinoamericana, un rasgo que lo distingue dentro de la electrónica de club. Empezó vinculado al minimal techno y, con los años, su sonido ha evolucionado hacia una mezcla de house y techno. Su trayectoria suma una veintena de premios del circuito electrónico, entre ellos los Ibiza DJ Awards.",
+        "language": "es",
+        "sources": [
+          {
+            "label": "Wikipedia (inglés): Luciano (DJ)",
+            "url": "https://en.wikipedia.org/wiki/Luciano_(DJ)",
+            "license": "CC BY-SA 4.0"
+          },
+          {
+            "label": "Wikidata Q1704751",
+            "url": "https://www.wikidata.org/wiki/Q1704751",
+            "license": "CC0"
+          },
+          {
+            "label": "MusicBrainz",
+            "url": "https://musicbrainz.org/artist/6f8d9d66-24a0-4faf-97c7-81cd22cb1c7e",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    },
+    "b643c24d-4cd6-4531-88bc-62b39ce43ee1": {
+      "name": "Cloonee",
+      "bio": {
+        "text": "Cloonee es un artista británico de tech house que publica música de club desde 2014. Hellbent Records es el sello que más ha acompañado su carrera, aunque también ha lanzado trabajos en Big Beat y Black Book Records. Su música se mueve entre la pista y la colaboración, con Prospa e InntRaw entre sus socios habituales, y en 2026 dio el salto al formato largo con «Are You Still You?», su primer álbum.",
+        "language": "es",
+        "sources": [
+          {
+            "label": "MusicBrainz (artista y lanzamientos)",
+            "url": "https://musicbrainz.org/artist/b643c24d-4cd6-4531-88bc-62b39ce43ee1",
+            "license": "CC0"
+          },
+          {
+            "label": "Wikidata Q136484190",
+            "url": "https://www.wikidata.org/wiki/Q136484190",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    },
+    "319c89bc-c7a3-4139-8386-a2a5b48b4ed7": {
+      "name": "Traumer",
+      "bio": {
+        "text": "Traumer es un productor de París que se mueve entre el house y el techno. Lleva sacando música desde 2009 y ha construido buena parte de su catálogo en GETTRAUM, el sello que concentra su música, además de Berg Audio, Desolat o Skryptöm. Su discografía alterna EPs y discos largos, con «ELEMENTS : TRAUMER» como uno de sus álbumes recientes, y ha compartido lanzamientos con artistas como Priku o Ada Kaleh.",
+        "language": "es",
+        "sources": [
+          {
+            "label": "MusicBrainz (artista y lanzamientos)",
+            "url": "https://musicbrainz.org/artist/319c89bc-c7a3-4139-8386-a2a5b48b4ed7",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    },
+    "4c3cffca-37b7-4ecd-9320-e6dcc2cb837a": {
+      "name": "Prospa",
+      "bio": {
+        "text": "Prospa es un dúo electrónico de Leeds en activo desde 2018 que ha encontrado en CircoLoco Records su casa principal, con otros títulos en Polydor y Rave Science. Su trayectoria está muy ligada a la colaboración, con Cloonee o KETTAMA entre sus socios, y en 2026 publicó su álbum «Free Your Mind».",
+        "language": "es",
+        "sources": [
+          {
+            "label": "MusicBrainz (artista y lanzamientos)",
+            "url": "https://musicbrainz.org/artist/4c3cffca-37b7-4ecd-9320-e6dcc2cb837a",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    },
+    "b523b6b8-f2ea-4d6c-ba23-f25e02715727": {
+      "name": "Joseph Capriati",
+      "bio": {
+        "text": "Joseph Capriati, nacido Giuseppe Capriati en 1987, es un DJ y productor italiano de techno. Drumcode ha sido uno de sus sellos más habituales, junto a Global Underground y CLR, y es fundador del sello Redimension. Su discografía incluye el álbum «Self Portrait» y una larga serie de singles y EPs, y ha firmado trabajos junto a Adam Beyer.",
+        "language": "es",
+        "sources": [
+          {
+            "label": "Wikipedia (inglés): Joseph Capriati",
+            "url": "https://en.wikipedia.org/wiki/Joseph_Capriati",
+            "license": "CC BY-SA 4.0"
+          },
+          {
+            "label": "MusicBrainz (artista y lanzamientos)",
+            "url": "https://musicbrainz.org/artist/b523b6b8-f2ea-4d6c-ba23-f25e02715727",
+            "license": "CC0"
+          }
+        ],
+        "written_at": "2026-10-16",
+        "reviewed": false
+      },
+      "photo": null
+    }
+  }
+}

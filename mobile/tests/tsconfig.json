@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "../src/lib/**/*.ts",
+    "../src/types/**/*.ts",
+    "../expo-env.d.ts"
+  ],
+  "exclude": []
+}

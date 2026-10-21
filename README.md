@@ -1,11 +1,11 @@
 # music-discovery
 
 Proyecto móvil de descubrimiento de música electrónica (nombre provisional).
-Estado actual: **fase 0 (entorno) y fase 1 (investigación de fuentes) completadas** — app Expo que comprueba la conexión con un backend FastAPI mínimo. Sin funciones musicales todavía; la Fase 2 (diseño) parte de [docs/fase-1-conclusiones.md](docs/fase-1-conclusiones.md).
+Estado actual: **Fase 2, hito T1 implementado y pendiente de validación en el móvil** — primer recorrido de TrackDNA: bienvenida opcional, artistas favoritos buscados en MusicBrainz, descubrimiento por conexiones verificables, ficha de artista y Guardados ([plan T1](docs/t1-plan-implementacion.md), [contrato de datos](docs/t0-contrato-datos.md)). **T2.0 TrackDNA (canciones) implementado y pendiente de validación en el iPhone**: pestaña TrackDNA, búsqueda de grabaciones de MusicBrainz y ficha con ADN de procedencia trazable (sin BPM, tonalidad ni energía: no hay fuente autorizada). Fases 0 y 1 cerradas ([conclusiones de la Fase 1](docs/fase-1-conclusiones.md)).
 
 ```
 mobile/    App Expo SDK 57 (TypeScript, Expo Router), probada con Expo Go
-backend/   API FastAPI (Python 3.11) con GET /health
+backend/   API FastAPI (Python 3.11): GET /health y /v1 (artistas y descubrimiento vía MusicBrainz)
 docs/      Documentación compartida (dependencias, decisiones)
 ```
 
@@ -24,6 +24,14 @@ py -3.11 -m venv .venv
 
 `requirements.txt` (aplicación) y `requirements-dev.txt` (tests) tienen todas las versiones fijadas, incluidas las transitivas.
 
+Configura el contacto que MusicBrainz exige en el User-Agent (email o URL; `backend/.env` no se versiona):
+
+```powershell
+Copy-Item .env.example .env   # y rellena MUSICBRAINZ_CONTACT=
+```
+
+Sin él, `/health` funciona pero `/v1/*` responde `503 provider_not_configured`. Opcionales: `LISTENBRAINZ_TOKEN` (token gratuito de listenbrainz.org; activa «Más escuchadas», que ListenBrainz ya no sirve sin token) y `COVER_ART=off` (desactiva las portadas de Cover Art Archive). Biografías y fotos con permiso: catálogo `backend/app/data/editorial.json`. Biografías con IA (opcional): `GROQ_API_KEY` y `GROQ_MODEL` (por defecto `openai/gpt-oss-20b`) en `backend/.env`; se generan solo en el backend a partir de fuentes verificadas y se guardan en `backend/data/` (SQLite, fuera de Git). El backend es el único que consulta MusicBrainz (y Wikidata/Commons para fotos de artistas con licencia libre): como máximo 1 petición cada 1,1 s a MusicBrainz, caché en memoria de 24 h (se vacía al reiniciar) y como mucho una repetición ante un 503/429. Usa un solo proceso de uvicorn (como en los comandos de abajo) para que el límite sea global.
+
 ### Arrancar
 
 Solo para este PC y el emulador Android:
@@ -38,7 +46,11 @@ Para el iPhone (u otro dispositivo físico), ver [iPhone](#iphone-expo-go).
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8000/health      # -> status: ok
-.\.venv\Scripts\python -m pytest                     # test del contrato de /health
+Invoke-RestMethod "http://127.0.0.1:8000/v1/artists/search?q=traumer"   # consulta real a MusicBrainz
+Invoke-RestMethod "http://127.0.0.1:8000/v1/tracks/search?q=deadmau5%20-%20strobe"   # TrackDNA: canciones
+# Ficha: /v1/tracks/{mbid} · solo ADN: /v1/tracks/{mbid}/dna · IA: /v1/tracks/{mbid}/interpretation
+.\.venv\Scripts\python -m pytest                     # tests sin red (contrato /health y /v1, cliente MusicBrainz)
+.\.venv\Scripts\python eval\evaluate_discovery.py         # evaluación del motor con datos reales (consulta MusicBrainz y Labs)
 ```
 
 ### Actualizar dependencias
@@ -66,7 +78,7 @@ Copy-Item .env.example .env
 npx expo start
 ```
 
-En la app, pulsa **Comprobar conexión**. La pantalla muestra la URL usada y el estado (sin comprobar, comprobando, conectado o error con motivo). Si falla (backend parado, timeout de 5 s, respuesta inesperada), corrige y pulsa **Reintentar**.
+La primera vez aparece la bienvenida (se puede omitir). Las preferencias, favoritos y descartes se guardan solo en el dispositivo (`expo-sqlite/kv-store`). Para diagnosticar la conexión: pestaña **Perfil → Comprobar conexión** (muestra la URL usada y el resultado de `/health`). Para volver a ver la bienvenida desde cero, borra los datos de Expo Go o reinstala la app.
 
 ### Cambiar la URL
 
@@ -114,7 +126,7 @@ Con la IP LAN y `0.0.0.0`, el emulador Android también puede usar la misma URL.
 
 ```powershell
 cd backend; .\.venv\Scripts\python -m pytest; cd ..
-cd mobile;  npx tsc --noEmit; npx expo install --check; cd ..
+cd mobile;  npx tsc --noEmit; npx tsc --noEmit -p tests; npm test; npx expo install --check; cd ..
 ```
 
 ## Fase 0: preparación del entorno ✅ completada

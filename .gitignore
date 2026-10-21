@@ -10,7 +10,11 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+# Caché persistente del backend (biografías y fotos resueltas por MBID)
+backend/data/
 
 # Sistema / editor
 .DS_Store
 Thumbs.db
+# Salidas generadas por las evaluaciones (resultados y respuestas externas cacheadas)
+backend/eval/*.json

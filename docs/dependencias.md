@@ -6,6 +6,14 @@ Revisión: 2026-10-16 · Expo SDK 57 (`expo@57.0.30`, `expo-router@57.0.28`, `re
 
 **No se ha modificado ninguna dependencia ni el lockfile** en este bloque.
 
+**Actualización T1 (2026-10-16):** se añade `expo-sqlite@~57.0.4` con `npx expo install`, para la persistencia local de preferencias y favoritos. Es un módulo de Expo incluido en Expo Go, y añade su config plugin a `app.json`. `npx expo install --check` no detecta incompatibilidades. `npm audit` sigue en **29 avisos (11 moderados, 18 altos)** con las mismas 4 causas raíz (`braces`, `decode-uri-component`, `node-forge`, `uuid`); `expo-sqlite` no figura entre los afectados. No hay lint configurado: `npx expo lint` intentó instalar ESLint por su cuenta y se revirtió, porque no forma parte del alcance de T1.
+
+**Actualización Artist Experience v4 (2026-10-19):** se añade `react-native-svg@15.15.4` con `npx expo install` (versión del SDK 57, incluida en Expo Go) para pintar los iconos de plataformas (trazados de Simple Icons, CC0, en `src/constants/platform-icons.ts`). `npx expo install --check`: sin incompatibilidades. `npm audit --omit=dev` sigue en **29 avisos (11 moderados, 18 altos)** con las mismas 4 causas raíz; `react-native-svg` no figura entre los afectados.
+
+**Actualización V5.1 (2026-10-19):** se añaden `@expo-google-fonts/dm-serif-display@^0.4.2` y `@expo-google-fonts/space-grotesk@^0.4.1` con `npx expo install` (solo archivos TTF con licencia OFL, sin código nativo: compatibles con Expo Go). Solo se registran 4 archivos en `app/_layout.tsx`. `npx expo install --check`: sin incompatibilidades. `npm audit --omit=dev` sigue en **29 avisos (11 moderados, 18 altos)** con las mismas 4 causas raíz; ninguno de los paquetes nuevos figura entre los afectados.
+
+**Actualización V5.3 (2026-10-19):** se añaden `@expo-google-fonts/abril-fatface` y `@expo-google-fonts/syne` con `npx expo install`. Son solo archivos TTF con licencia OFL, sin código nativo, así que funcionan en Expo Go. Se registran 2 archivos: Abril Fatface Regular y Syne ExtraBold. `npx expo install --check`: sin incompatibilidades. `npm audit --omit=dev` sigue en **29 avisos (11 moderados, 18 altos)** con las mismas 4 causas raíz.
+
 | Aviso raíz | Ruta | Uso afectado | Exposición | ¿Arreglo compatible? |
 |---|---|---|---|---|
 | `braces@3.0.3` — DoS por patrones muy anidados ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)), alto | `expo` → `@expo/metro` → `metro-file-map` → `micromatch` → `braces` | Metro (bundler en el PC) al vigilar archivos con globs | Solo herramienta de desarrollo en el PC; los patrones vienen de la configuración del proyecto, no de entrada externa. No va en el bundle de la app. | No: 3.0.3 es la última versión publicada. |
