@@ -1,11 +1,15 @@
-/** Carteles 3.1–3.3: B2B, ausencias, correcciones protegidas, recuperación parcial, duplicados y biblioteca. */
+/** Carteles 3.1–3.4: B2B, ausencias, correcciones protegidas, recuperación parcial, duplicados y biblioteca. */
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import {
   addArtist, applySuggestion, confirmArtist, fromExtraction, groupByDay, joinSets, knownContext, mergeExtraction,
-  parseTime, removeArtist, removeSet, renameArtist, reviewFlags, setLabel, splitSet, updateEvent, updateSet, userTime,
+  parseTime, removeArtist, removeSet, renameArtist, reviewFlags, setLabel, splitSet, suspiciousName, updateEvent, updateSet, userTime,
 } from '../src/lib/poster-model.ts';
+import {
+  type ApiCandidate, applyResolution, chooseIdentity, leaveUnidentified, linkedMbid, parseLink, resetIdentity, type Resolution,
+  resolutionQueue,
+} from '../src/lib/poster-identity.ts';
 import {
   findDuplicate, idsFromKeys, indexEntry, parseIndex, parsePosterEvent, POSTER_INDEX_KEY, posterKey, serializePosterEvent,
   upsertIndex,
@@ -204,4 +208,101 @@ test('biblioteca: lectura tolerante, índice sin duplicados y detección del mis
   assert.equal(findDuplicate(index, null, null), null);
   assert.deepEqual(idsFromKeys([posterKey('p1'), POSTER_INDEX_KEY, 'md.saved_tracks.v1', 'md.preferences.v1']), ['p1']);
   assert.ok(![POSTER_INDEX_KEY, posterKey('p1')].some((k) => k.startsWith('md.saved_tracks') || k.startsWith('md.favorites')));
+});
+
+// --- 3.4: identidad de artistas -------------------------------------------------------------------------------------
+
+const res = (name: string, over: Partial<Resolution> = {}): Resolution => ({
+  name, status: 'linked', mbid: `mbid-${name}`, canonical: name, candidates: [], evidence: 'Nombre exacto', source: null, ...over,
+});
+const cand = (mbid: string, name: string, match: ApiCandidate['match'] = 'name'): ApiCandidate => ({
+  mbid, name, disambiguation: null, type: null, country: null, score: 100, match, alias: null, scene: false,
+});
+
+test('nombres sospechosos: avisa de 9999999999 sin señalar nombres reales con cifras o símbolos', () => {
+  for (const bad of ['9999999999', '+44 7911 123456 0', '***', '-- // --', 'Tickets on sale now at the venue box office and online stores']) {
+    assert.equal(suspiciousName(bad), true, bad);
+  }
+  for (const ok of ['999999999', 'Future.666', '808 State', 'Âme', '2562', '&ME', 'DJ Stingray 313', 'Kyle Hall', 'Byron the Aquarius']) {
+    assert.equal(suspiciousName(ok), false, ok);
+  }
+  const e = fromExtraction(ext({ b2b: [], sessions: [{ date: null, label: null, stage: null, time: null, artists: ['9999999999', '999999999'] }] }), INIT);
+  const flags = reviewFlags(e);
+  assert.ok(flags.get(byName(e, '9999999999').id)?.includes('suspicious_name'));
+  assert.ok(!flags.get(byName(e, '999999999').id)?.includes('suspicious_name'));
+  // Es un aviso: el nombre sigue en el evento y, confirmado a mano, deja de señalarse.
+  assert.equal(reviewFlags(confirmArtist(e, byName(e, '9999999999').id, LATER)).get(byName(e, '9999999999').id), undefined);
+});
+
+test('resolución: exacta enlaza, homónimos quedan ambiguos y un fallo deja el artista pendiente', () => {
+  const e = fromExtraction(ext(), INIT);
+  const cuky = byName(e, 'CUKY').id, persic = byName(e, 'PERSIC').id, mihigh = byName(e, 'MIHIGH').id;
+  let next = applyResolution(e, cuky, res('CUKY'));
+  next = applyResolution(next, persic, res('PERSIC', { status: 'ambiguous', mbid: null, canonical: null, candidates: [cand('a', 'Persic'), cand('b', 'Persic')] }));
+  next = applyResolution(next, mihigh, res('MIHIGH', { status: 'error', mbid: null }));
+  assert.deepEqual(linkedMbid(byName(next, 'CUKY')), 'mbid-CUKY');
+  assert.equal(byName(next, 'PERSIC').link.status, 'ambiguous');
+  assert.equal(linkedMbid(byName(next, 'PERSIC')), null);
+  assert.equal(byName(next, 'PERSIC').link.candidates?.length, 2);
+  assert.equal(byName(next, 'MIHIGH').link.status, 'pending');
+  assert.equal(next.updatedAt, e.updatedAt); // resolver no es una edición del usuario
+  // Una respuesta para un nombre que cambió mientras tanto no se aplica.
+  const renamed = renameArtist(e, cuky, 'CUKY OTRO', LATER);
+  assert.equal(applyResolution(renamed, cuky, res('CUKY')).artists.find((a) => a.id === cuky)?.link.status, 'pending');
+});
+
+test('B2B: una sola actuación y cada artista con su identidad; el abierto se resuelve primero', () => {
+  const e = fromExtraction(ext(), INIT);
+  const b2b = e.sets.find((s) => s.artistIds.length === 2 && s.artistIds.includes(byName(e, 'CUKY').id))!;
+  const queue = resolutionQueue(e, [byName(e, 'PERSIC').id]);
+  assert.equal(queue[0], byName(e, 'PERSIC').id);
+  assert.equal(new Set(queue).size, e.artists.length);
+  let next = applyResolution(e, b2b.artistIds[0], res('CUKY'));
+  next = applyResolution(next, b2b.artistIds[1], res('PERSIC'));
+  assert.equal(next.sets.length, e.sets.length);
+  assert.deepEqual(next.sets.find((s) => s.id === b2b.id)?.artistIds, b2b.artistIds);
+  assert.deepEqual(b2b.artistIds.map((id) => linkedMbid(next.artists.find((a) => a.id === id)!)), ['mbid-CUKY', 'mbid-PERSIC']);
+  assert.ok(!next.artists.some((a) => /b2b/i.test(a.name)));
+  assert.deepEqual(resolutionQueue(next), resolutionQueue(e).filter((id) => !b2b.artistIds.includes(id)));
+});
+
+test('identidad elegida a mano: se guarda, sobrevive a reabrir y ninguna resolución la pisa', () => {
+  const e = fromExtraction(ext(), INIT);
+  const id = byName(e, 'PERSIC').id;
+  const chosen = chooseIdentity(e, id, { refId: 'mb-b', name: 'Persic', disambiguation: 'techno DJ', match: 'manual' }, LATER);
+  const reopened = parsePosterEvent(serializePosterEvent(chosen))!;
+  const a = reopened.artists.find((x) => x.id === id)!;
+  assert.equal(linkedMbid(a), 'mb-b');
+  assert.equal(a.link.origin, 'user');
+  assert.equal(reopened.updatedAt, LATER);
+  assert.equal(applyResolution(reopened, id, res('PERSIC', { mbid: 'otro' })).artists.find((x) => x.id === id)?.link.refId, 'mb-b');
+  assert.ok(!resolutionQueue(reopened).includes(id));
+  // Renombrar no borra lo elegido; un reanálisis tampoco.
+  assert.equal(renameArtist(reopened, id, 'PERSIC (live)', LATER).artists.find((x) => x.id === id)?.link.refId, 'mb-b');
+  assert.equal(mergeExtraction(reopened, ext(), LATER).artists.find((x) => x.id === id)?.link.refId, 'mb-b');
+  // Dejarlo sin identificar también se respeta, y se puede volver a la identificación automática.
+  const none = leaveUnidentified(reopened, id, LATER);
+  assert.equal(none.artists.find((x) => x.id === id)?.link.status, 'none');
+  assert.ok(!resolutionQueue(none).includes(id));
+  assert.ok(resolutionQueue(resetIdentity(none, id, LATER)).includes(id));
+});
+
+test('un enlace automático se vuelve a resolver si el usuario corrige el nombre', () => {
+  const e = fromExtraction(ext(), INIT);
+  const id = byName(e, 'CUKY').id;
+  const linked = applyResolution(e, id, res('CUKY'));
+  assert.equal(renameArtist(linked, id, 'Cuky', LATER).artists.find((a) => a.id === id)?.link.status, 'linked'); // misma clave
+  assert.equal(renameArtist(linked, id, 'CUKI', LATER).artists.find((a) => a.id === id)?.link.status, 'pending');
+});
+
+test('eventos guardados en 3.3 y enlaces dañados se leen como pendientes', () => {
+  const e = fromExtraction(ext(), INIT);
+  const raw = JSON.parse(serializePosterEvent(e));
+  raw.artists[0].link = { status: 'pending', catalog: null, refId: null }; // forma de 3.3
+  raw.artists[1].link = { status: 'linked', catalog: 'musicbrainz', refId: null }; // enlazado sin id
+  raw.artists[2].link = 'roto';
+  delete raw.artists[3].link;
+  const back = parsePosterEvent(JSON.stringify(raw))!;
+  assert.deepEqual(back.artists.slice(0, 4).map((a) => a.link.status), ['pending', 'pending', 'pending', 'pending']);
+  assert.equal(parseLink({ status: 'linked', catalog: 'musicbrainz', refId: 'x', origin: 'user' }).origin, 'user');
 });

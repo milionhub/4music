@@ -9,11 +9,41 @@ Fecha: 2026-10-21. Documento de diseño: no implica código. Base: `docs/fase-1-
 | 3.1 Captura y análisis | **Cerrada**. Tests automáticos, 1 llamada real desde el backend (Now Here: 6/6 artistas, evento y fecha correctos, 1,7 s, 2 437 + 491 tokens) y validación manual en iPhone: captura, envío y análisis de Now Here y Movement Detroit. |
 | 3.2 Revisión y recuperación | **Cerrada**. Tests del modelo y validación manual en iPhone: Now Here (13 artistas, 3 escenarios) con edición correcta; Movement Detroit con 44 actuaciones detectadas y varios B2B agrupados correctamente. |
 | 3.3 Biblioteca local | **Cerrada**. Tests de la lógica pura y validación manual en iPhone: las ediciones persisten, Movement Detroit queda guardado en la biblioteca y los eventos se reabren correctamente. No se ha probado matar la app durante el análisis. |
-| 3.4–3.6 | Sin empezar. |
+| 3.4 Artistas y música | **Cerrada** (2026-10-22). `pytest` con MusicBrainz simulado, tests de Node y validación manual en iPhone con MusicBrainz real: Carl Craig B2B Cajmere abre a cada artista por separado; las vistas rápidas cargan imagen, información y canciones; perfil completo y TrackDNA funcionan; Colette muestra 8 homónimos sin enlace automático y la elección manual persiste al reabrir; Paco Osuna correcto. |
+| 3.5–3.6 | Sin empezar. |
+
+**Decisiones técnicas de 3.4**:
+- **Resolución** (`backend/app/poster_identity.py`): `POST /v1/posters/resolve` (1–20 nombres, en serie al ritmo del cliente de MusicBrainz).
+  - Regla de §7 sin excepciones: un único candidato con nombre o alias exacto tras normalizar y `score ≥ 95`.
+  - Homónimos → `ambiguous`. La desambiguación (DJ, house, techno…) solo ordena y se señala como «Escena electrónica».
+  - Sin coincidencia exacta → `none`. Los nombres parecidos (similitud ≥ 0,85) se ofrecen como «¿Quizá…?». El nombre impreso nunca se corrige.
+  - Caché: la del cliente (24 h) y el almacén SQLite existente (`poster_resolve_v1`: 7 días; «sin identidad», 1 día). Los fallos no se guardan y, si MusicBrainz cae, el resto del lote queda en `error` sin más peticiones.
+  - Discogs no interviene: ningún nombre de cartel tiene id de Discogs.
+- **Canciones**: sin `LISTENBRAINZ_TOKEN`, `top_tracks` llega vacío. `GET /v1/posters/artists/{mbid}/tracks` devuelve hasta 5 grabaciones propias con fecha (MBID de grabación → `track/[mbid]`), por fecha y sin rellenar. Reutiliza la consulta del perfil, ya en caché.
+- **Móvil**:
+  - `lib/poster-identity.ts` (lógica pura). `link` amplía el modelo de 3.3 con campos opcionales: `name`, `candidates`, `evidence`, `origin` y `query`. Los eventos guardados siguen siendo válidos.
+  - Lo elegido o dejado sin identificar a mano (`origin: 'user'`) no lo cambian ni la resolución, ni un reanálisis, ni un renombrado. Renombrar sí invalida un enlace automático.
+- **Progresiva** (`hooks/use-poster-resolution.ts`):
+  - Lotes de 4, uno cada vez, solo con la pantalla enfocada. Se puede pausar.
+  - El artista que abre el usuario va en su propia petición.
+  - Cada resultado se aplica sobre el evento recién leído del almacenamiento.
+- **Vista rápida** (`components/poster-artist.tsx`):
+  - Hoja superpuesta, no `Modal` (decisión de §11): el perfil y TrackDNA se apilan encima y, al volver, la hoja, el día elegido y el scroll siguen igual.
+  - Atrás en Android cierra la hoja.
+  - Un B2B abre una hoja con un selector por artista.
+  - Muestra la foto solo si el perfil la trae con licencia; si no, el cartel tipográfico de `identityFor`.
+- **Aviso `suspicious_name`**: solo cifras y 10 o más (`9999999999`), mayoría de símbolos, o más de 48 caracteres o 7 palabras. No señala `999999999`, `2562`, `808 State`, `Future.666`, `Âme` ni `&ME`.
 
 **Pendientes detectados en la validación (para fases posteriores)**:
-- Nombres sospechosos como `9999999999` pasan sin aviso: añadir una regla en `reviewFlags` (solo dígitos, símbolos, longitud anómala).
-- Posibles errores de transcripción (p. ej. `PETER GROCE`): revisar en 3.4 con la resolución contra MusicBrainz (candidatos cercanos) y en 3.6 con los carteles piloto.
+- ~~Nombres sospechosos como `9999999999` pasan sin aviso~~: resuelto en 3.4 (`suspicious_name`).
+- Posibles errores de transcripción (p. ej. `PETER GROCE`): desde 3.4 se sugieren nombres parecidos de MusicBrainz sin corregir el impreso. Queda comprobarlo con MusicBrainz real en 3.6.
+- La foto en la vista rápida contradice la regla de v5 «sin fotos de artistas en la interfaz». Se añadió por petición expresa de 3.4: hay que confirmar si se mantiene.
+
+**Mejoras anotadas para 3.5** (tras la validación de 3.4):
+- Presentación editorial de las fotografías y de sus créditos.
+- Sustituir en la vista rápida los datos biográficos poco útiles.
+- Elegir canciones más representativas sin inventar popularidad (sin datos de escuchas, hoy solo hay orden por fecha).
+- Mejorar la jerarquía visual, la navegación y el explorador del evento.
 - Mejorar la extracción y conservación del año cuando está impreso en el cartel.
 - 3.6: validar exhaustivamente los B2B y la recuperación de respuestas parciales (`continue`, JSON cortado).
 

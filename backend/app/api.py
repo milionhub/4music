@@ -10,7 +10,8 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends, Request
 
-from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, posters, profile, reccobeats, recommend,
+from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, poster_identity,
+                 posters, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient, GroqError
 from app.musicbrainz import (BadResponse, Fetched, LabsClient, ListenBrainzClient, MusicBrainzClient, ProviderError,
@@ -763,3 +764,22 @@ def analyze_poster(req: schemas.PosterAnalyzeRequest, request: Request, groq: Gr
         status, code, message = _POSTER_GROQ_ERRORS.get(exc.code, (502, "poster_ai_bad_response",
                                                                     "La IA devolvió una respuesta inesperada"))
         raise ApiError(status, code, message) from None
+
+
+@router.post("/posters/resolve", response_model=schemas.PosterResolveResponse)
+def resolve_poster_artists(req: schemas.PosterResolveRequest, client: MusicBrainzClient = Depends(get_client)):
+    """Carteles 3.4: identidad de hasta 20 nombres (en serie, al ritmo de MusicBrainz). Solo enlaza lo inequívoco."""
+    try:
+        return schemas.PosterResolveResponse(results=poster_identity.resolve(client, req.names))
+    except poster_identity.ResolveError as exc:
+        raise ApiError(422, "invalid_names", exc.message) from None
+
+
+@router.get("/posters/artists/{mbid}/tracks", response_model=schemas.PosterTracksResponse)
+def poster_artist_tracks(mbid: str, client: MusicBrainzClient = Depends(get_client)):
+    """Canciones propias documentadas (con MBID de grabación para TrackDNA). Reutiliza la consulta del perfil."""
+    mbid = _valid_mbid(mbid)
+    fetched = client.recordings(mbid)
+    raw = [x for x in fetched.data.get("recordings") or [] if isinstance(x, dict)]
+    return schemas.PosterTracksResponse(artist_mbid=mbid, tracks=poster_identity.recent_tracks(raw, mbid),
+                                        source=normalize.source(fetched))

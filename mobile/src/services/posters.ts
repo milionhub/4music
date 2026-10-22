@@ -1,8 +1,23 @@
 /** Carteles: análisis en el backend (Groq solo allí). Una petición = una llamada a la IA; aquí no hay reintentos. */
-import { type ApiError, type ApiResult, postJson } from '@/services/api-client';
+import { type ApiError, type ApiResult, getJson, postJson } from '@/services/api-client';
+import type { Resolution } from '@/lib/poster-identity';
 import type { PosterExtraction } from '@/types/poster';
 
 const ANALYZE_TIMEOUT_MS = 75_000;
+// Resolución: hasta RESOLVE_BATCH nombres en serie a 1 petición/1,1 s en MusicBrainz (con un reintento posible).
+const RESOLVE_TIMEOUT_MS = 30_000;
+const TRACKS_TIMEOUT_MS = 20_000;
+
+export type PosterTrack = { recording_mbid: string; title: string; artist_credit: string; first_release_date: string | null };
+
+export function resolveArtists(names: string[]): Promise<ApiResult<{ results: Resolution[] }>> {
+  return postJson<{ results: Resolution[] }>('/v1/posters/resolve', { names }, RESOLVE_TIMEOUT_MS);
+}
+
+/** Canciones propias documentadas en MusicBrainz por fecha (alternativa a `top_tracks` sin ListenBrainz). */
+export function getPosterArtistTracks(mbid: string): Promise<ApiResult<{ artist_mbid: string; tracks: PosterTrack[] }>> {
+  return getJson(`/v1/posters/artists/${encodeURIComponent(mbid)}/tracks`, TRACKS_TIMEOUT_MS);
+}
 
 export type AnalyzeBody = {
   image: string;

@@ -1,4 +1,4 @@
-/** v5 + Carteles 3.1: navegación inferior con cinco destinos reales (sin «Buscar»), sin rutas huérfanas ni enlaces a Explorar. */
+/** v5 + Carteles 3.1–3.4: navegación inferior con cinco destinos reales (sin «Buscar»), sin rutas huérfanas ni enlaces a Explorar. */
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -35,4 +35,14 @@ test('sin fotos de artistas en la interfaz (se conservan las portadas de lanzami
   const ui = files(SRC).filter((f) => f.endsWith('.tsx')).map((f) => readFileSync(f, 'utf8')).join('\n');
   assert.ok(!/ArtistPhoto|useArtistImage|PhotoCredit|getArtistImage/.test(ui));
   assert.ok(/cover_url/.test(ui));
+});
+
+test('Carteles 3.4: la vista rápida abre perfil y TrackDNA en la pila y es estado del evento (no un Modal)', () => {
+  const sheet = readFileSync(join(SRC, 'components', 'poster-artist.tsx'), 'utf8');
+  const event = readFileSync(join(SRC, 'app', 'poster', '[id].tsx'), 'utf8');
+  assert.ok(sheet.includes('router.push(`/artist/${mbid}`)'));
+  assert.ok(sheet.includes('router.push(`/track/${t.id}`)'));
+  assert.ok(!/<Modal\b/.test(sheet), 'un Modal nativo quedaría por encima del perfil apilado');
+  assert.ok(/router\.setParams\(\{ set: s\.id, artist: /.test(event));
+  assert.ok(/BackHandler/.test(sheet), 'Atrás en Android cierra la hoja');
 });

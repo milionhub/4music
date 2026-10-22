@@ -291,7 +291,25 @@ export const FLAG_TEXT: Record<Flag, string> = {
   block_time: 'Hora del bloque, no de cada artista',
   year_not_printed: 'Año no impreso',
   incomplete: 'Análisis incompleto',
+  suspicious_name: 'No parece un nombre de artista: compruébalo',
 };
+
+/**
+ * Nombre manifiestamente anómalo (3.4): solo es un aviso, nunca se elimina. Prudente con los nombres reales de la
+ * electrónica: «999999999», «2562», «808 State», «Future.666», «Âme» o «&ME» no se señalan.
+ * - Solo cifras y 10 o más (p. ej. «9999999999»: parece un teléfono o un código, no un artista).
+ * - Mayoría de símbolos (menos de la mitad de los caracteres son letras o cifras).
+ * - Longitud de frase: más de 48 caracteres o más de 7 palabras (varias líneas leídas como un nombre).
+ */
+export function suspiciousName(name: string): boolean {
+  const compact = name.replace(/\s+/g, '');
+  if (!compact) return false;
+  const letters = (compact.match(/\p{L}/gu) ?? []).length;
+  const digits = (compact.match(/\p{N}/gu) ?? []).length;
+  if (!letters && digits >= 10) return true;
+  if (letters + digits < compact.length / 2) return true;
+  return name.trim().length > 48 || name.trim().split(/\s+/).length > 7;
+}
 
 function similarity(a: string, b: string): number {
   if (a === b) return 1;
@@ -321,6 +339,7 @@ function artistFlags(e: PosterEvent, a: PosterArtist): Flag[] {
   if (NOISE.test(a.name) || /^\p{L}+\d{2}$/u.test(k) || normName(e.name) === k
     || places.some((c) => c === k || (k.length > 3 && c.includes(k)))) flags.add('possible_brand');
   if (/[([].+[)\]]/.test(a.name)) flags.add('collective');
+  if (suspiciousName(a.name)) flags.add('suspicious_name');
   return [...flags];
 }
 
@@ -374,7 +393,11 @@ export function renameArtist(e: PosterEvent, id: string, name: string, now: stri
     const sets = e.sets.map((s) => ({ ...s, artistIds: [...new Set(s.artistIds.map((x) => (x === id ? other.id : x)))] }));
     return touch({ ...e, artists: e.artists.filter((a) => a.id !== id), sets }, now);
   }
-  return touch({ ...e, artists: e.artists.map((a) => (a.id === id ? { ...a, name: v, meta: lock(a.meta, 'name') } : a)) }, now);
+  // Otro nombre, otra identidad: el enlace automático se vuelve a resolver; el elegido a mano se respeta.
+  const relink = (a: PosterArtist) => normName(a.name) !== normName(v) && a.link.origin !== 'user';
+  return touch({ ...e, artists: e.artists.map((a) => (a.id === id
+    ? { ...a, name: v, meta: lock(a.meta, 'name'), link: relink(a) ? { status: 'pending' as const, catalog: null, refId: null } : a.link }
+    : a)) }, now);
 }
 
 export function confirmArtist(e: PosterEvent, id: string, now: string): PosterEvent {

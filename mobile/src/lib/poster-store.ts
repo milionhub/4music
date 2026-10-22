@@ -2,7 +2,8 @@
  * Carteles 3.3: lectura tolerante, índice y duplicados de la biblioteca local. Lógica pura; la E/S está en
  * storage/poster-library.ts. Un evento ilegible se ignora (nunca rompe la biblioteca ni toca Guardados).
  */
-import type { PosterEvent, PosterIndexEntry } from '../types/poster.ts';
+import { parseLink } from './poster-identity.ts';
+import type { PosterArtist, PosterEvent, PosterIndexEntry } from '../types/poster.ts';
 
 export const POSTER_INDEX_KEY = 'md.posters.index.v1';
 export const posterKey = (id: string) => `md.poster.${id}.v1`;
@@ -26,7 +27,9 @@ export function parsePosterEvent(raw: string | null): PosterEvent | null {
   return {
     ...(v as unknown as PosterEvent),
     status,
-    days: arr(v.days), stages: arr(v.stages), artists: arr(v.artists), sets: arr(v.sets),
+    days: arr(v.days), stages: arr(v.stages), sets: arr(v.sets),
+    // 3.4: el enlace de identidad se lee con tolerancia (los eventos de 3.3 solo tienen `pending`).
+    artists: arr<PosterArtist>(v.artists).filter(isObj).map((a) => ({ ...a, link: parseLink(a.link) })),
     discarded: arr(v.discarded), suggestions: arr(v.suggestions),
     palette: isObj(v.palette) ? (v.palette as PosterEvent['palette']) : { source: 'fallback', seeds: [] },
   };

@@ -86,8 +86,8 @@ export function FlagNote({ flags }: { flags: Flag[] }) {
   return <Text style={styles.flag}>{flags.map((f) => FLAG_TEXT[f]).join(' · ')}</Text>;
 }
 
-export function SetRow({ event, set, flags, selected, onPress, onLongPress }: {
-  event: PosterEvent; set: PosterSet; flags?: Flag[]; selected?: boolean; onPress?: () => void; onLongPress?: () => void;
+export function SetRow({ event, set, flags, note, selected, onPress, onLongPress }: {
+  event: PosterEvent; set: PosterSet; flags?: Flag[]; note?: string | null; selected?: boolean; onPress?: () => void; onLongPress?: () => void;
 }) {
   const ctx = setContext(event, set);
   const b2b = set.artistIds.length > 1;
@@ -101,6 +101,7 @@ export function SetRow({ event, set, flags, selected, onPress, onLongPress }: {
         <Text style={styles.rowTitle}>{setLabel(event, set)}</Text>
         {ctx ? <Meta>{ctx}</Meta> : null}
         {flags ? <FlagNote flags={flags} /> : null}
+        {note ? <Meta style={{ color: C.cyan }}>{note}</Meta> : null}
       </View>
       {b2b ? <Text style={styles.b2b}>{set.connector ?? 'B2B'}</Text> : null}
     </Pressable>

@@ -29,7 +29,7 @@ export type Origin = 'ai' | 'user';
 /** Avisos guardados con el dato (los de la extracción). Los demás se calculan al vuelo: ver lib/poster-model. */
 export type Flag =
   | 'similar_name' | 'odd_spelling' | 'possible_brand' | 'collective' | 'possible_merge'
-  | 'model_uncertain' | 'block_time' | 'year_not_printed' | 'incomplete';
+  | 'model_uncertain' | 'block_time' | 'year_not_printed' | 'incomplete' | 'suspicious_name';
 
 /** `locked`: campos editados o confirmados a mano; un reanálisis nunca los cambia. */
 export type Meta = { origin: Origin; flags: Flag[]; locked: string[]; printed: string | null };
@@ -41,8 +41,34 @@ export type PosterArtist = {
   id: string;
   name: string;
   meta: Meta;
-  /** Identidad musical: se resuelve en 3.4. Hasta entonces, siempre `pending`. */
-  link: { status: 'pending' | 'linked' | 'ambiguous' | 'none'; catalog: 'musicbrainz' | 'discogs' | null; refId: string | null };
+  /** Identidad musical (3.4). Los campos opcionales no existían en 3.3: los eventos guardados siguen siendo válidos. */
+  link: ArtistLink;
+};
+
+/** Candidato de MusicBrainz para un nombre del cartel. `similar` = nombre parecido (posible errata): nunca se enlaza solo. */
+export type LinkCandidate = {
+  refId: string;
+  name: string;
+  disambiguation: string | null;
+  country?: string | null;
+  type?: string | null;
+  match?: 'name' | 'alias' | 'similar' | 'manual';
+  scene?: boolean;
+};
+
+/**
+ * `origin: 'user'`: el usuario eligió la identidad o la dejó sin identificar; la resolución automática ya no la toca.
+ * `query`: nombre normalizado con el que se resolvió (si el nombre cambia, el enlace automático deja de valer).
+ */
+export type ArtistLink = {
+  status: 'pending' | 'linked' | 'ambiguous' | 'none';
+  catalog: 'musicbrainz' | 'discogs' | null;
+  refId: string | null;
+  name?: string | null;
+  candidates?: LinkCandidate[];
+  evidence?: string | null;
+  origin?: Origin;
+  query?: string | null;
 };
 
 /** Actuación: 1 artista = individual; 2 o más = B2B (una sola actuación). */

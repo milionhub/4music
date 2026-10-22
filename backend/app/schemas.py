@@ -480,3 +480,49 @@ class PosterAnalyzeRequest(BaseModel):
     mode: Literal["full", "continue", "region"] = "full"
     known_sessions: list[str] = []  # continuación: bloques ya leídos
     known_names: list[str] = []     # continuación: nombres ya leídos
+
+
+# --- Carteles (Fase 3.4): identidad musical de los nombres del cartel. Sin catálogo propio: solo MBID. ---
+
+class PosterResolveRequest(BaseModel):
+    names: list[str]
+
+
+class PosterCandidate(BaseModel):
+    mbid: str
+    name: str
+    disambiguation: str | None = None
+    type: str | None = None
+    country: str | None = None
+    score: int | None = None
+    match: Literal["name", "alias", "similar"]  # similar = parecido (posible errata), nunca se enlaza solo
+    alias: str | None = None     # alias de MusicBrainz que coincide con el nombre del cartel
+    scene: bool = False          # su desambiguación lo sitúa en la escena electrónica (orienta, no decide)
+
+
+class PosterResolution(BaseModel):
+    name: str                    # tal como se envió (el nombre del cartel no se corrige)
+    status: Literal["linked", "ambiguous", "none", "error"]
+    mbid: str | None = None
+    canonical: str | None = None
+    candidates: list[PosterCandidate] = []
+    evidence: str | None = None
+    source: str | None = None
+
+
+class PosterResolveResponse(BaseModel):
+    results: list[PosterResolution]
+
+
+class PosterTrack(BaseModel):
+    recording_mbid: str
+    title: str
+    artist_credit: str
+    first_release_date: str | None = None
+
+
+class PosterTracksResponse(BaseModel):
+    """Canciones propias documentadas en MusicBrainz, por fecha (no es un ranking): alternativa a `top_tracks`."""
+    artist_mbid: str
+    tracks: list[PosterTrack]
+    source: Source
