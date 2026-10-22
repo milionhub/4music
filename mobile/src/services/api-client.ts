@@ -11,7 +11,16 @@ export type ApiError = {
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiError };
 
 /** GET JSON al backend con timeout; nunca lanza: devuelve un error tipado. */
-export async function getJson<T>(path: string, timeoutMs: number): Promise<ApiResult<T>> {
+export function getJson<T>(path: string, timeoutMs: number): Promise<ApiResult<T>> {
+  return request<T>(path, timeoutMs);
+}
+
+/** POST JSON (Carteles: análisis de imagen). Mismo contrato de errores que getJson. */
+export function postJson<T>(path: string, body: unknown, timeoutMs: number): Promise<ApiResult<T>> {
+  return request<T>(path, timeoutMs, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+}
+
+async function request<T>(path: string, timeoutMs: number, init?: { method: string; body: string; headers: Record<string, string> }): Promise<ApiResult<T>> {
   const config = getApiConfig();
   if (!config.ok) {
     return { ok: false, error: { kind: 'config', code: null, status: null, message: config.reason } };
@@ -20,7 +29,9 @@ export async function getJson<T>(path: string, timeoutMs: number): Promise<ApiRe
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(`${config.baseUrl}${path}`, {
-      headers: { Accept: 'application/json' },
+      method: init?.method ?? 'GET',
+      body: init?.body,
+      headers: { Accept: 'application/json', ...init?.headers },
       signal: controller.signal,
     });
     let body: unknown = null;

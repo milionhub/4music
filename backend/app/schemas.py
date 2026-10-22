@@ -411,3 +411,72 @@ class TrackInterpretationResponse(BaseModel):
     recording_mbid: str
     status: Literal["ready", "insufficient_sources", "unavailable"]
     interpretation: TrackInterpretation | None = None
+
+
+# --- Carteles (Fase 3.1): extracción de IA auditada, sin editar. El evento editable vive en el móvil. ---
+
+class PosterDate(BaseModel):
+    text: str
+    iso: str | None = None  # solo con día, mes y año impresos en ese mismo texto
+
+
+class PosterSession(BaseModel):
+    date: PosterDate | None = None
+    label: str | None = None
+    stage: str | None = None
+    time: str | None = None  # hora impresa del bloque: no es la hora de cada DJ
+    artists: list[str]
+
+
+class PosterArtistRow(BaseModel):
+    name: str
+    stage: str | None = None
+    day: str | None = None
+
+
+class PosterTime(BaseModel):
+    name: str
+    time: str
+
+
+class PosterB2B(BaseModel):
+    artists: list[str]
+    text: str | None = None
+
+
+class PosterReview(BaseModel):
+    field: str
+    value: str | None = None
+    action: str  # descartado | reparado
+    reason: str
+
+
+class PosterUsage(BaseModel):
+    input: int
+    output: int
+
+
+class PosterExtraction(BaseModel):
+    mode: Literal["full", "continue", "region"]
+    complete: bool  # False: la respuesta se cortó (finish_reason length) y solo se conserva lo completo
+    model: str
+    event_name: str | None = None
+    dates: list[PosterDate] = []
+    location: str | None = None
+    stages: list[str] = []
+    colors: list[str] = []
+    sessions: list[PosterSession] = []
+    artists: list[PosterArtistRow] = []
+    individual_times: list[PosterTime] = []
+    b2b: list[PosterB2B] = []
+    uncertain: list[str] = []
+    unreadable_text: list[str] = []
+    review: list[PosterReview] = []
+    usage: PosterUsage | None = None
+
+
+class PosterAnalyzeRequest(BaseModel):
+    image: str  # base64 (JPEG, PNG o WebP; el móvil convierte HEIC antes de enviar)
+    mode: Literal["full", "continue", "region"] = "full"
+    known_sessions: list[str] = []  # continuación: bloques ya leídos
+    known_names: list[str] = []     # continuación: nombres ya leídos

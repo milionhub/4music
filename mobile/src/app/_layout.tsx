@@ -59,6 +59,9 @@ export default function RootLayout() {
           <Stack.Screen name="onboarding" options={{ gestureEnabled: false, animation: reduceMotion ? 'none' : 'fade' }} />
           <Stack.Screen name="artist/[mbid]" />
           <Stack.Screen name="track/[mbid]" />
+          <Stack.Screen name="poster/new" />
+          <Stack.Screen name="poster/[id]" />
+          <Stack.Screen name="poster/[id]/review" />
         </Stack>
       </ThemeProvider>
     </LibraryProvider>

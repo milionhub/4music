@@ -8,11 +8,11 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from functools import lru_cache
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
-from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, profile, reccobeats, recommend,
+from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, posters, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
-from app.groq_client import GroqClient
+from app.groq_client import GroqClient, GroqError
 from app.musicbrainz import (BadResponse, Fetched, LabsClient, ListenBrainzClient, MusicBrainzClient, ProviderError,
                              WikimediaClient)
 
@@ -739,3 +739,27 @@ def track_interpretation(mbid: str, client: MusicBrainzClient = Depends(get_clie
     status = ("ready" if interpretation else
               "insufficient_sources" if record.status == "insufficient_sources" else "unavailable")
     return schemas.TrackInterpretationResponse(recording_mbid=track.mbid, status=status, interpretation=interpretation)
+
+
+_POSTER_GROQ_ERRORS = {
+    "not_configured": (503, "poster_ai_not_configured", "El análisis de carteles no está configurado en el servidor"),
+    "rate_limited": (429, "poster_ai_rate_limited", "La IA ha alcanzado su límite. Espera un minuto y vuelve a intentarlo"),
+    "unavailable": (503, "poster_ai_unavailable", "La IA no responde ahora mismo"),
+    "image_too_large": (413, "image_too_large", "La IA rechazó el tamaño de la imagen"),
+}
+
+
+@router.post("/posters/analyze", response_model=schemas.PosterExtraction)
+def analyze_poster(req: schemas.PosterAnalyzeRequest, request: Request, groq: GroqClient = Depends(get_groq_client)):
+    """Carteles: una llamada a Groq Vision por petición, sin reintentos automáticos ni imagen guardada. Devuelve la
+    extracción auditada (propuesta para revisar); complete=False si la respuesta se cortó."""
+    try:
+        posters.decode_image(req.image)  # valida antes de gastar cupo
+        posters.take_quota(request.client.host if request.client else "local", config.poster_daily_limit())
+        return posters.analyze(req, groq, config.groq_vision_model())
+    except posters.PosterError as exc:
+        raise ApiError(exc.status, exc.code, exc.message) from None
+    except GroqError as exc:
+        status, code, message = _POSTER_GROQ_ERRORS.get(exc.code, (502, "poster_ai_bad_response",
+                                                                    "La IA devolvió una respuesta inesperada"))
+        raise ApiError(status, code, message) from None

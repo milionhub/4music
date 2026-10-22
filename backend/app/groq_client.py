@@ -17,6 +17,7 @@ from typing import Any, Callable
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 TIMEOUT_S = 25.0
+VISION_TIMEOUT_S = 60.0  # un cartel grande tardó 8,7 s en Fase 1.4; margen para colas del plan gratuito
 MAX_WAIT_RETRY_S = 5.0
 MAX_CONCURRENT = 2
 
@@ -129,8 +130,55 @@ class GroqClient:
             raise GroqError("bad_response", "Respuesta de Groq con formato inesperado")
         return data
 
-    def _call(self, headers: dict[str, str], body: bytes) -> tuple[int, bytes, float | None]:
+    def vision(self, model: str, prompt: str, image_b64: str, mime: str,
+               max_tokens: int = 4096) -> tuple[str, bool, dict[str, int] | None]:
+        """Una imagen + instrucciones en modo json_object (Fase 1.4). Devuelve (texto, completo, uso).
+
+        Sin reintentos automáticos (cada análisis gasta cuota): 429/503 se devuelven al usuario. Una respuesta
+        cortada por longitud NO lanza: el texto parcial se devuelve con completo=False para recuperarlo."""
+        if not (self._key and model):
+            raise GroqError("not_configured", "Groq no está configurado (GROQ_API_KEY / GROQ_VISION_MODEL)")
+        body = json.dumps({
+            "model": model,
+            "messages": [{"role": "user", "content": [
+                {"type": "text", "text": prompt},
+                {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{image_b64}"}},
+            ]}],
+            "temperature": 0,
+            "max_completion_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
+            "reasoning_effort": "none",  # modo instruct: menos tokens y latencia (Fase 1.4)
+        }).encode("utf-8")
+        headers = {"Authorization": f"Bearer {self._key}", "Content-Type": "application/json",
+                   "User-Agent": "music-discovery/0.1"}
+        if not self._slots.acquire(timeout=VISION_TIMEOUT_S):
+            raise GroqError("rate_limited", "Demasiadas generaciones simultáneas")
         try:
-            return self._transport(API_URL, headers, body, TIMEOUT_S)
+            status, raw, retry_after = self._call(headers, body, VISION_TIMEOUT_S)
+        finally:
+            self._slots.release()
+        if status == 429:
+            raise GroqError("rate_limited", "Límite de Groq alcanzado", retry_after)
+        if status == 503:
+            raise GroqError("unavailable", "Groq no disponible", retry_after)
+        if status in (401, 403):
+            raise GroqError("not_configured", "Groq rechazó la autenticación")
+        if status == 413:
+            raise GroqError("image_too_large", "Groq rechazó el tamaño de la imagen")
+        if status != 200:
+            raise GroqError(f"http_{status}", f"Groq respondió HTTP {status}")
+        try:
+            data = json.loads(raw.decode("utf-8"))
+            choice = data["choices"][0]
+            content = choice["message"]["content"] or ""
+            usage = data.get("usage") or {}
+        except (KeyError, IndexError, TypeError, ValueError, UnicodeDecodeError) as exc:
+            raise GroqError("bad_response", "Respuesta de Groq con formato inesperado") from exc
+        tokens = {"input": int(usage.get("prompt_tokens") or 0), "output": int(usage.get("completion_tokens") or 0)}
+        return content, choice.get("finish_reason") != "length", tokens if any(tokens.values()) else None
+
+    def _call(self, headers: dict[str, str], body: bytes, timeout: float = TIMEOUT_S) -> tuple[int, bytes, float | None]:
+        try:
+            return self._transport(API_URL, headers, body, timeout)
         except (urllib.error.URLError, socket.timeout, TimeoutError, ConnectionError, OSError) as exc:
             raise GroqError("unavailable", f"Sin respuesta de Groq: {exc.__class__.__name__}") from exc

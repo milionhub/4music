@@ -33,7 +33,15 @@
           "imageWidth": 76
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Chromatic Underground usa tus fotos para analizar carteles de fiestas y festivales que elijas.",
+          "cameraPermission": "Chromatic Underground usa la cámara para fotografiar carteles de fiestas y festivales.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

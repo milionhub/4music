@@ -1,4 +1,4 @@
-/** v5: navegación inferior con cuatro destinos reales (sin «Buscar»), sin rutas huérfanas ni enlaces a Explorar. */
+/** v5 + Carteles 3.1: navegación inferior con cinco destinos reales (sin «Buscar»), sin rutas huérfanas ni enlaces a Explorar. */
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -14,7 +14,7 @@ function files(dir: string): string[] {
 test('la barra inferior declara exactamente las pantallas de (tabs), en orden, y no hay pestaña Buscar', () => {
   const layout = readFileSync(join(TABS, '_layout.tsx'), 'utf8');
   const triggers = [...layout.matchAll(/NativeTabs\.Trigger name="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(triggers, ['index', 'trackdna', 'saved', 'profile']);
+  assert.deepEqual(triggers, ['index', 'trackdna', 'posters', 'saved', 'profile']);
   const screens = readdirSync(TABS).filter((f) => f.endsWith('.tsx') && f !== '_layout.tsx').map((f) => f.replace('.tsx', '')).sort();
   assert.deepEqual(screens, [...triggers].sort());
   assert.ok(!/Explorar|Buscar<\/NativeTabs/.test(layout));

@@ -25,6 +25,10 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Label>TrackDNA</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf="waveform.path.ecg" md="genetics" />
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="posters">
+        <NativeTabs.Trigger.Label>Carteles</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'photo.on.rectangle', selected: 'photo.on.rectangle.angled' }} md="photo_library" />
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="saved">
         <NativeTabs.Trigger.Label>Guardados</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'heart', selected: 'heart.fill' }} md="favorite" />
