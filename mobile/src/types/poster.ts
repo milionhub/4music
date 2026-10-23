@@ -43,6 +43,8 @@ export type PosterArtist = {
   meta: Meta;
   /** Identidad musical (3.4). Los campos opcionales no existían en 3.3: los eventos guardados siguen siendo válidos. */
   link: ArtistLink;
+  /** 3.5: estilos documentados del perfil enlazado, copiados al abrir su vista rápida (para filtrar sin red). */
+  styles?: string[];
 };
 
 /** Candidato de MusicBrainz para un nombre del cartel. `similar` = nombre parecido (posible errata): nunca se enlaza solo. */

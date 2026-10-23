@@ -36,6 +36,9 @@ SCENE_RE = re.compile(r"\b(dj|house|techno|electro\w*|producer|productor|disco|g
                       r"drum (and|&) bass|minimal|club|rave|dance)\b", re.IGNORECASE)
 
 
+_VARIANT = re.compile(r"\s*[\(\[][^()\[\]]*[\)\]]\s*$|\s+[-–—]\s+.+$")
+
+
 class ResolveError(Exception):
     def __init__(self, message: str):
         super().__init__(message)
@@ -154,7 +157,8 @@ def recent_tracks(recordings: list[dict[str, Any]], mbid: str, limit: int = TRAC
     seen: set[str] = set()
     out = []
     for r in rows:
-        k = profile.base_title(r.title)
+        # Un tema, una canción: «X», «X (Live)», «X (Remix)» y «X - Edit» cuentan como «X» (la más reciente).
+        k = _VARIANT.sub("", r.title).strip().casefold() or profile.base_title(r.title)
         if k in seen:
             continue
         seen.add(k)

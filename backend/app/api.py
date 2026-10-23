@@ -165,7 +165,10 @@ def _wikimedia_module(fetched: Fetched, mbid: str, wiki: WikimediaClient, countr
     image, image_reason = _image_for(fetched, mbid, wiki, wd)
     # Introducción de Wikipedia (una petición, en caché): solo para contrastar y precisar los géneros.
     intro = sources.wikipedia_summary(wiki, wd) if wd.wikipedia else None
-    return wd, labels, image, image_reason, wikidata.country_name(wiki, country), intro
+    # La introducción literal (misma petición, en caché) para presentar al artista en la vista rápida de Carteles.
+    lead = sources.wikipedia_lead(wiki, wd) if wd.wikipedia else None
+    summary = schemas.Excerpt(text=lead[1].text, language=lead[0], source=lead[1].ref()) if lead else None
+    return wd, labels, image, image_reason, wikidata.country_name(wiki, country), intro, summary
 
 
 def _musicbrainz_module(client: MusicBrainzClient, mbid: str):
@@ -195,7 +198,7 @@ def artist_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
         f_wiki = pool.submit(_wikimedia_module, fetched, mbid, wiki, artist.country)
         f_lb = pool.submit(_listenbrainz_module, lb, mbid)
         rec, rec_error, rg, rg_error = f_mb.result()
-        wd, labels, image, image_reason, country_name, intro = f_wiki.result()
+        wd, labels, image, image_reason, country_name, intro, summary = f_wiki.result()
         lb_fetched, lb_error = f_lb.result()
 
     recordings_raw = [x for x in (rec.data.get("recordings") or []) if isinstance(x, dict)] if rec else []
@@ -227,7 +230,7 @@ def artist_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
     return schemas.ArtistProfileResponse(
         artist=artist, identity=identity,
         image=image, image_reason=image_reason,
-        styles=styles, bio=bio, bio_pending=bio_pending,
+        styles=styles, bio=bio, bio_pending=bio_pending, summary=summary,
         top_tracks=tracks,
         top_tracks_status=_status(lb_fetched, lb_error, len(tracks), None),
         recent_releases=recent,

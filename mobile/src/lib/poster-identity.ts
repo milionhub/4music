@@ -102,12 +102,31 @@ export function applyResolution(e: PosterEvent, artistId: string, r: Resolution)
     origin: 'ai',
     query: normName(a.name),
   };
-  return { ...e, artists: e.artists.map((x) => (x.id === artistId ? { ...x, link } : x)) };
+  return { ...e, artists: e.artists.map((x) => (x.id === artistId ? withLink(x, link) : x)) };
+}
+
+/** Nuevo enlace; si cambia la identidad, los estilos copiados del perfil anterior dejan de valer. */
+function withLink(a: PosterArtist, link: ArtistLink): PosterArtist {
+  const next: PosterArtist = { ...a, link };
+  if (link.refId !== a.link.refId) delete next.styles;
+  return next;
 }
 
 function setLink(e: PosterEvent, artistId: string, now: string, f: (l: ArtistLink) => ArtistLink): PosterEvent {
   if (!e.artists.some((a) => a.id === artistId)) return e;
-  return { ...e, artists: e.artists.map((a) => (a.id === artistId ? { ...a, link: f(a.link) } : a)), updatedAt: now };
+  return { ...e, artists: e.artists.map((a) => (a.id === artistId ? withLink(a, f(a.link)) : a)), updatedAt: now };
+}
+
+/**
+ * 3.5: guarda los estilos documentados del perfil enlazado (para el filtro de estilo sin red). Solo si el artista sigue
+ * enlazado a ese MBID; devuelve el mismo evento si no cambia nada. No es una edición del usuario: no toca `updatedAt`.
+ */
+export function setArtistStyles(e: PosterEvent, artistId: string, mbid: string, styles: string[]): PosterEvent {
+  const a = e.artists.find((x) => x.id === artistId);
+  if (!a || linkedMbid(a) !== mbid) return e;
+  const clean = [...new Set(styles.map((s) => s.replace(/^música /i, '').trim()).filter(Boolean))].slice(0, 6);
+  if (JSON.stringify(clean) === JSON.stringify(a.styles ?? [])) return e;
+  return { ...e, artists: e.artists.map((x) => (x.id === artistId ? { ...x, styles: clean } : x)) };
 }
 
 /** El usuario elige la identidad (candidato o búsqueda manual). Queda protegida frente a la resolución automática. */

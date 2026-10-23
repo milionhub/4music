@@ -29,10 +29,17 @@ export function parsePosterEvent(raw: string | null): PosterEvent | null {
     status,
     days: arr(v.days), stages: arr(v.stages), sets: arr(v.sets),
     // 3.4: el enlace de identidad se lee con tolerancia (los eventos de 3.3 solo tienen `pending`).
-    artists: arr<PosterArtist>(v.artists).filter(isObj).map((a) => ({ ...a, link: parseLink(a.link) })),
+    artists: arr<PosterArtist>(v.artists).filter(isObj).map(parseArtist),
     discarded: arr(v.discarded), suggestions: arr(v.suggestions),
     palette: isObj(v.palette) ? (v.palette as PosterEvent['palette']) : { source: 'fallback', seeds: [] },
   };
+}
+
+/** Artista guardado: enlace tolerante (3.4) y estilos solo si son una lista de textos (3.5; ausentes en eventos antiguos). */
+function parseArtist(a: PosterArtist): PosterArtist {
+  const out: PosterArtist = { ...a, link: parseLink(a.link) };
+  if (!Array.isArray(a.styles) || !a.styles.every((s) => typeof s === 'string')) delete out.styles;
+  return out;
 }
 
 export const serializePosterEvent = (e: PosterEvent) => JSON.stringify(e);

@@ -162,6 +162,20 @@ def test_profile_contract_all_modules():
     assert {s["label"] for s in body["sources"]} >= {"MusicBrainz", f"Wikidata {mb.QID}", "Foto"}
 
 
+def test_profile_summary_is_the_cached_wikipedia_intro_with_attribution():
+    """Carteles 3.5B: introducción literal (párrafos incluidos) del ítem verificado, sin peticiones de más."""
+    intro = "Seed Artist is a Belgian DJ and producer known for tech house.\nThe artist grew up in Antwerp and plays long sets."
+    wiki = {"query": {"pages": {"1": {"title": "Seed Artist", "extract": intro}}}}
+    client, transport = make_client({**ROUTES, "wp:Seed Artist": (200, wiki)})
+    body = client.get(f"/v1/artists/{mb.SEED}").json()
+    assert body["summary"] == {"text": intro, "language": "en", "source": {
+        "label": "Wikipedia (en)", "url": "https://en.wikipedia.org/wiki/Seed_Artist", "license": "CC BY-SA 4.0"}}
+    assert sum("exintro=1" in u for u in transport.urls) == 1  # la misma petición que los géneros (en caché)
+
+    client, _ = make_client()  # sin artículo disponible: sin extracto
+    assert client.get(f"/v1/artists/{mb.SEED}").json()["summary"] is None
+
+
 def test_profile_degrades_per_module_without_blocking():
     routes = {**ROUTES, f"recording:{mb.SEED}": (503, None), f"release-group:{mb.SEED}": (503, None),
               f"wd:{mb.QID}": (503, None), f"lb:{mb.SEED}": (503, None)}

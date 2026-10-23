@@ -8,8 +8,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Chip, Meta } from '@/components/ui';
-import { accentFor, C, Fonts, Radius, Space } from '@/constants/theme';
+import { C, Fonts, Radius, Space } from '@/constants/theme';
 import { fixedIdentity, surfaces } from '@/lib/artist-identity';
+import { eventArt } from '@/lib/poster-art';
 import {
   addDay, addStage, FLAG_TEXT, removeSet, renameArtist, setContext, setLabel, splitSet, updateSet, userTime,
 } from '@/lib/poster-model';
@@ -23,33 +24,35 @@ export const STATUS_LABEL: Record<PosterEvent['status'], string> = { draft: 'Por
 
 const now = () => new Date().toISOString();
 
-/** Color de marco de un evento: su paleta guardada o, si no hay, uno estable derivado del id. */
-export function eventColor(entry: Pick<PosterIndexEntry, 'id' | 'seeds'>): string {
-  return entry.seeds[0] ?? accentFor(entry.id)[0];
-}
-
-export function PosterCard({ entry, width, onPress, onLongPress }: {
-  entry: PosterIndexEntry; width: number; onPress: () => void; onLongPress: () => void;
+/** Tarjeta de la biblioteca: miniatura del cartel enmarcada con la paleta del evento (la misma de su portada),
+ *  estado si está por revisar y un botón de acciones (editar, eliminar) además de la pulsación larga. */
+export function PosterCard({ entry, width, onPress, onActions }: {
+  entry: PosterIndexEntry; width: number; onPress: () => void; onActions: () => void;
 }) {
-  const color = eventColor(entry);
+  const P = eventArt(entry).palette;
   const [failed, setFailed] = useState(false);
   return (
-    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={450} accessibilityRole="button"
+    <Pressable onPress={onPress} onLongPress={onActions} delayLongPress={450} accessibilityRole="button"
       accessibilityLabel={[entry.name ?? 'Cartel sin nombre', entry.dateText, STATUS_LABEL[entry.status], 'Abrir'].filter(Boolean).join(', ')}
-      accessibilityActions={[{ name: 'delete', label: 'Eliminar evento' }]}
-      onAccessibilityAction={(e) => e.nativeEvent.actionName === 'delete' && onLongPress()}
-      style={({ pressed }) => [styles.card, { width, borderColor: color }, pressed && { opacity: 0.8 }]}>
+      accessibilityActions={[{ name: 'actions', label: 'Editar o eliminar' }]}
+      onAccessibilityAction={(e) => e.nativeEvent.actionName === 'actions' && onActions()}
+      style={({ pressed }) => [styles.card, { width, borderColor: P.bg, backgroundColor: P.bg }, pressed && { opacity: 0.85 }]}>
       <View style={{ width: '100%', aspectRatio: 0.8, backgroundColor: PS.deep }}>
-        {failed ? null : <Image source={{ uri: posterThumbUri(entry.id) }} style={StyleSheet.absoluteFill} contentFit="cover" onError={() => setFailed(true)} />}
+        {failed ? <Text style={[styles.cardGlyph, { color: P.glow }]}>▦</Text>
+          : <Image source={{ uri: posterThumbUri(entry.id) }} style={StyleSheet.absoluteFill} contentFit="cover" onError={() => setFailed(true)} />}
         {entry.status !== 'confirmed' ? (
           <View style={[styles.badge, { backgroundColor: entry.status === 'partial' ? C.orange : C.acid }]}>
             <Text style={styles.badgeLabel}>{STATUS_LABEL[entry.status]}</Text>
           </View>
         ) : null}
+        <Pressable onPress={onActions} accessibilityRole="button" accessibilityLabel={`Acciones de ${entry.name ?? 'este cartel'}`} hitSlop={6}
+          style={({ pressed }) => [styles.more, pressed && { opacity: 0.7 }]}>
+          <Text style={styles.moreLabel}>•••</Text>
+        </Pressable>
       </View>
-      <View style={{ padding: Space.sm, gap: 2 }}>
-        <Text style={styles.cardTitle} numberOfLines={2}>{entry.name ?? 'Sin nombre'}</Text>
-        <Meta numberOfLines={1}>{[entry.dateText, `${entry.artists} artistas`].filter(Boolean).join(' · ')}</Meta>
+      <View style={{ padding: Space.sm, paddingBottom: Space.md, gap: 2 }}>
+        <Text style={[styles.cardTitle, { color: P.ink }]} numberOfLines={2}>{entry.name ?? 'Sin nombre'}</Text>
+        <Text style={[styles.cardMeta, { color: P.ink }]} numberOfLines={1}>{[entry.dateText, `${entry.artists} artistas`].filter(Boolean).join(' · ')}</Text>
       </View>
     </Pressable>
   );
@@ -195,7 +198,12 @@ const styles = StyleSheet.create({
   card: { borderWidth: 2, borderRadius: Radius.md, overflow: 'hidden', backgroundColor: PS.raised },
   badge: { position: 'absolute', top: Space.sm, left: Space.sm, paddingHorizontal: Space.sm, paddingVertical: 3, borderRadius: Radius.pill },
   badgeLabel: { color: C.onAccent, fontFamily: Fonts.monoBold, fontSize: 10, textTransform: 'uppercase' },
-  cardTitle: { color: C.text, fontFamily: Fonts.display, fontSize: 18, lineHeight: 21, textTransform: 'uppercase' },
+  cardTitle: { fontFamily: Fonts.display, fontSize: 18, lineHeight: 21, textTransform: 'uppercase' },
+  cardMeta: { fontFamily: Fonts.mono, fontSize: 11 },
+  cardGlyph: { fontSize: 40, textAlign: 'center', marginTop: '40%' },
+  more: { position: 'absolute', top: Space.xs, right: Space.xs, width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: 'rgba(7,6,11,0.78)' },
+  moreLabel: { color: C.text, fontSize: 12, fontWeight: '800', letterSpacing: 1 },
   fieldHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: Space.md },
   check: { color: C.orange, fontFamily: Fonts.monoBold, fontSize: 11 },
   input: { minHeight: 48, borderWidth: 1.5, borderColor: C.line, borderRadius: Radius.md, backgroundColor: C.surface, color: C.text,

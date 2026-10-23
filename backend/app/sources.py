@@ -223,6 +223,25 @@ def wikipedia_summary(wiki: WikimediaClient, wd: WikidataInfo, full_article: boo
     return None
 
 
+def wikipedia_lead(wiki: WikimediaClient, wd: WikidataInfo) -> tuple[str, SourceDoc] | None:
+    """(idioma, introducción) tal cual, con sus párrafos: es la misma petición que hace `wikipedia_summary` (en
+    caché), sin el recorte del comienzo del artículo, cuyos títulos de sección se pegarían a las frases."""
+    for site, lang in (("eswiki", "es"), ("enwiki", "en")):
+        title = wd.wikipedia.get(site)
+        if not title:
+            continue
+        try:
+            extract = _wiki_extract(wiki, lang, title, intro=True)
+        except ProviderError:
+            continue
+        paragraphs = [" ".join(p.split()) for p in extract.replace("​", "").splitlines() if p.strip()]
+        text = "\n".join(paragraphs)[:MAX_SOURCE_CHARS]
+        page = f"https://{lang}.wikipedia.org/wiki/{urllib.parse.quote(title.replace(' ', '_'))}"
+        if len(text) >= 80:
+            return lang, SourceDoc("", f"Wikipedia ({lang})", page, "CC BY-SA 4.0", text)
+    return None
+
+
 def wikipedia_articles(wiki: WikimediaClient, wd: WikidataInfo) -> list[SourceDoc]:
     """Texto narrativo de los artículos en español Y en inglés (si existen): a menudo uno tiene lo que falta en el
     otro (Marco Carola: el español no menciona Music On ni Amnesia; el inglés, sí). Una petición por idioma."""

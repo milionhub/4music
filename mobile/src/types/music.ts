@@ -74,6 +74,9 @@ export type SectionStatus = {
 
 export type SourceRef = { label: string; url: string; license: string | null };
 
+/** Texto literal de una fuente con licencia, en su idioma original. */
+export type Excerpt = { text: string; language: string; source: SourceRef };
+
 /** editorial: texto original del catálogo con fuentes; factual: frase con datos verificados (Wikidata + MusicBrainz). */
 export type Bio = {
   kind: 'editorial' | 'generated' | 'factual';
@@ -176,6 +179,8 @@ export type ArtistProfileResponse = {
   bio: Bio | null;
   /** Se puede pedir /biography para obtener (o generar) una biografía editorial mejor. */
   bio_pending: boolean;
+  /** Introducción literal de Wikipedia del ítem verificado por MBID, con su atribución (vista rápida de Carteles). */
+  summary?: Excerpt | null;
   top_tracks: TopTrack[];
   top_tracks_status: SectionStatus;
   recent_releases: RecentRelease[];

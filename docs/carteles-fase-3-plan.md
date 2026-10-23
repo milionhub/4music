@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-21. Documento de diseño: no implica código. Base: `docs/fase-1-ia-carteles.md` (Fase 1.4), `research/poster_ai/` y el estado actual de `mobile/` y `backend/`.
 
-## Estado (2026-10-22)
+## Estado (2026-10-23)
 
 | Subfase | Estado |
 |---|---|
@@ -10,7 +10,45 @@ Fecha: 2026-10-21. Documento de diseño: no implica código. Base: `docs/fase-1-
 | 3.2 Revisión y recuperación | **Cerrada**. Tests del modelo y validación manual en iPhone: Now Here (13 artistas, 3 escenarios) con edición correcta; Movement Detroit con 44 actuaciones detectadas y varios B2B agrupados correctamente. |
 | 3.3 Biblioteca local | **Cerrada**. Tests de la lógica pura y validación manual en iPhone: las ediciones persisten, Movement Detroit queda guardado en la biblioteca y los eventos se reabren correctamente. No se ha probado matar la app durante el análisis. |
 | 3.4 Artistas y música | **Cerrada** (2026-10-22). `pytest` con MusicBrainz simulado, tests de Node y validación manual en iPhone con MusicBrainz real: Carl Craig B2B Cajmere abre a cada artista por separado; las vistas rápidas cargan imagen, información y canciones; perfil completo y TrackDNA funcionan; Colette muestra 8 homónimos sin enlace automático y la elección manual persiste al reabrir; Paco Osuna correcto. |
-| 3.5–3.6 | Sin empezar. |
+| 3.5 Experiencia editorial | **Cerrada** (2026-10-23), con los ajustes 3.5B y 3.5C. Tests de Node y `pytest`, y validación manual en iPhone: portadas editoriales de Now Here y Movement, biblioteca y explorador, vista rápida «Sobre el artista», fotografías permitidas y atribuciones accesibles, apertura y reapertura de la hoja sin cortes, cambio entre artistas B2B y navegación a perfiles y TrackDNA. Falta la comprobación en Android (pasa a 3.6). |
+| 3.6 | Sin empezar. |
+| 3.7 | Sin empezar (añadida al plan el 2026-10-23). |
+
+**Decisiones de 3.5**:
+- **Paleta** (`lib/poster-art.ts`):
+  - Los colores guardados (`palette.seeds`) se validan: se descartan los hex inválidos, los casi negros o blancos y los grises.
+  - Se ajustan a la paleta más cercana de `PALETTES`, que ya tiene contraste WCAG comprobado. Un cartel de fondo oscuro usa las paletas oscuras.
+  - Sin colores útiles, la paleta se elige por `seedOf(fingerprint ?? id)`.
+  - Se deriva siempre de lo guardado: es estable y no reescribe eventos. No se añadió `palette.key`.
+- **Portada** (`components/poster-cover.tsx`):
+  - Cuatro familias propias (`billboard`, `ticket`, `stamp`, `column`), con la composición y la tipografía elegidas por la misma semilla.
+  - Solo datos guardados: nombre, fecha y lugar si existen, recuentos del line-up y nombres en el orden del cartel, sin tamaños decrecientes porque no hay `tiers`.
+  - Miniatura que abre el cartel completo. Nunca hay texto sobre el color decorativo `pop`.
+- **Explorador** (`lib/poster-explore.ts`, `components/poster-lineup.tsx`):
+  - `FlatList` con la barra de filtros fija.
+  - Una fila por actuación; en un B2B, cada nombre abre su vista rápida.
+  - El estado de identidad es un signo de ancho fijo, así que resolver artistas no mueve las filas.
+  - Filtros de día, escenario, horario (solo horas propias, `timeScope: 'set'`) y estilo. Cada uno aparece solo si separa algo.
+- **Estilos**: el filtro de estilo usa los estilos documentados del perfil, que se guardan en `artist.styles` al abrir la vista rápida. No hay búsquedas masivas, así que el filtro aparece a medida que se exploran artistas. Si cambia la identidad, los estilos se borran.
+- **Vista rápida → Artist Spotlight (3.5B, 2026-10-23)**:
+  - Foto solo si `verifiablePhoto`: licencia libre conocida, sin NC ni ND, página de origen y autor cuando hace falta, o catálogo editorial con autor. Si no, cartel tipográfico. El crédito completo se abre con un toque.
+  - Estilos documentados, «Sobre el artista» y «Explorar perfil y música». Sin canciones ni lanzamientos (están en el perfil completo), sin fecha de nacimiento, lugar de registro ni evidencias internas.
+  - Texto (`artistSpotlight`, `lib/poster-quick.ts`): determinista, sin LLM ni peticiones extra; todo llega en `GET /v1/artists/{mbid}`, por MBID (un homónimo elegido a mano trae su texto). Prioridad: biografía del perfil (editorial revisada o generada y validada antes, nunca al abrir) → introducción de Wikipedia en español del ítem verificado (nuevo campo `summary`, misma petición que ya se hacía para los géneros, literal y atribuida, «Extracto adaptado» si se recorta) → descripción de Wikidata en español. En los dos últimos casos se añade una frase con relaciones documentadas que el texto no menciona (origen, inicio de actividad, sellos fundados o dirigidos, proyectos, integrantes), en formas neutras.
+  - Solo frases completas hasta ~110 palabras. No hay mínimo: con pocos datos, una frase; sin datos, se dice. Los textos en inglés no se muestran sin traducir.
+- **3.5C (2026-10-23)**:
+  - Hoja que se quedaba a media altura al reabrir: la animación de entrada (`SlideInDown`) estaba en el mismo nodo que se ajustaba al contenido; con la caché caliente, la ficha llegaba durante la animación y la hoja conservaba su altura inicial. Ahora se anima un marco de tamaño fijo (zona segura superior → borde inferior) y la tarjeta interior se ajusta al contenido (`maxHeight: '100%'`), desplazando a partir de ahí. Cada artista del B2B empieza arriba.
+  - Créditos fuera del flujo: botón ⓘ junto a «Sobre el artista» que abre «Fuentes y créditos» (`spotlightCredits`): autor, fuente, licencia con enlace a sus condiciones, atribución del texto y si es un extracto adaptado.
+- **Biblioteca**:
+  - Franja con los colores de los carteles guardados.
+  - «Por revisar» antes que «Biblioteca».
+  - Tarjetas enmarcadas con la paleta del evento y botón de acciones (editar o eliminar).
+  - Estado vacío con los tres pasos.
+
+**Pendiente para 3.6** (además de lo anotado abajo):
+- Revisión visual en Android (no se ha probado): portadas, biblioteca, explorador, vista rápida y su hoja, y Atrás del sistema.
+- Revisión visual en iPhone con las 4 portadas con nombres largos, la barra de filtros fija y el cartel ampliado (Now Here y Movement ya validados).
+- Ampliación con pellizco del cartel original: hoy solo encaja la imagen completa.
+- Jerarquía del line-up (`tiers`): sin ella, la portada no destaca a ningún artista.
 
 **Decisiones técnicas de 3.4**:
 - **Resolución** (`backend/app/poster_identity.py`): `POST /v1/posters/resolve` (1–20 nombres, en serie al ritmo del cliente de MusicBrainz).
@@ -284,7 +322,7 @@ No hay segundo catálogo de canciones: la música se obtiene siempre de los perf
   - El orden inicial es `tier` y después `order`.
 - **Pantalla Carteles**: portada editorial propia (un evento reciente en grande, o un mensaje en el estado vacío), botón Analizar y cuadrícula de miniaturas con la paleta del evento como marco. No reutiliza las portadas de Inicio.
 
-## 10. Plan 3.1–3.6
+## 10. Plan 3.1–3.7
 
 | Subfase | Objetivo y alcance | Archivos probables | Criterios de aceptación | Pruebas | Fuera |
 |---|---|---|---|---|---|
@@ -294,6 +332,7 @@ No hay segundo catálogo de canciones: la música se obtiene siempre de los perf
 | **3.4 Artistas y música** | `POST /v1/posters/resolve`, regla de enlace, homónimos, vista rápida, navegación a perfil y TrackDNA | `posters.py`, `api.py`; `app/poster/[id].tsx` (hoja), `components/poster.tsx` | Sin enlace dudoso automático; candidatos elegibles; volver del perfil reabre la hoja; 3–5 canciones solo de datos reales con su motivo; un artista sin identificar no tiene perfil ficticio | `pytest` con MusicBrainz simulado (único, homónimos, alias, sin resultados); `tsc` | Recomendaciones nuevas fuera de los datos existentes |
 | **3.5 Experiencia editorial** | Paleta (colores del modelo → paleta cercana, alternativa por semilla), portada, explorador, filtros, cartel original | `lib/poster-art.ts`, `components/poster.tsx`, `app/poster/[id].tsx` | Paleta estable tras reabrir; contraste ≥ 4,5:1; selector de día solo con 2 o más días; lo que no tiene día está en «Todo»; un filtro sin datos no se muestra | Tests de Node de paleta, contraste y filtros; revisión visual en iPhone y Android | Animaciones complejas |
 | **3.6 Validación y cierre** | Los 4 carteles piloto de principio a fin, ajustes finos, documentación | `docs/carteles-v1.md` | Now Here 6/6; Circoloco sin artista inventado tras revisión; Solid Grooves con el lugar corregible; SW38 completo (con continuación si hace falta), B2B correctos y 0 horas inventadas | 4–6 llamadas reales con presupuesto fijado; `pytest` y tests móviles completos una vez; prueba en dispositivo por el usuario | SetLab |
+| **3.7 Auditoría transversal de cobertura musical** | Revisar conjuntamente TrackDNA, Carteles y perfiles de artista: qué datos musicales cubre cada uno, huecos y coherencia entre ellos | Por definir al empezar | Por definir al empezar | Por definir | Implementación antes de cerrar 3.6 |
 
 Las suites completas se ejecutan al cerrar 3.1, 3.3 y 3.6. En medio, solo lo afectado.
 

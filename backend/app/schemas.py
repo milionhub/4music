@@ -102,6 +102,13 @@ class Bio(BaseModel):
     legacy: bool = False  # generated: biografía válida de una versión anterior, a la espera de la nueva
 
 
+class Excerpt(BaseModel):
+    """Texto literal de una fuente con licencia (introducción de Wikipedia del ítem verificado por MBID)."""
+    text: str
+    language: str
+    source: SourceRef
+
+
 class Identity(BaseModel):
     """Identidad documentada (MusicBrainz + Wikidata verificado por MBID). Lugares con su significado exacto:
     `area` es el área asociada en MusicBrainz (no se presenta como residencia); `origin` es el begin-area:
@@ -210,6 +217,7 @@ class ArtistProfileResponse(BaseModel):
     styles: list[Style]
     bio: Bio | None
     bio_pending: bool = False     # la app puede pedir /biography: se está (o se puede) generar una mejor
+    summary: Excerpt | None = None  # introducción de Wikipedia (vista rápida de Carteles), con su atribución
     top_tracks: list[TopTrack]
     top_tracks_status: SectionStatus
     recent_releases: list[RecentRelease]

@@ -395,9 +395,13 @@ export function renameArtist(e: PosterEvent, id: string, name: string, now: stri
   }
   // Otro nombre, otra identidad: el enlace automático se vuelve a resolver; el elegido a mano se respeta.
   const relink = (a: PosterArtist) => normName(a.name) !== normName(v) && a.link.origin !== 'user';
-  return touch({ ...e, artists: e.artists.map((a) => (a.id === id
-    ? { ...a, name: v, meta: lock(a.meta, 'name'), link: relink(a) ? { status: 'pending' as const, catalog: null, refId: null } : a.link }
-    : a)) }, now);
+  const renamed = (a: PosterArtist): PosterArtist => {
+    if (!relink(a)) return { ...a, name: v, meta: lock(a.meta, 'name') };
+    const next: PosterArtist = { ...a, name: v, meta: lock(a.meta, 'name'), link: { status: 'pending', catalog: null, refId: null } };
+    delete next.styles; // eran los del perfil anterior
+    return next;
+  };
+  return touch({ ...e, artists: e.artists.map((a) => (a.id === id ? renamed(a) : a)) }, now);
 }
 
 export function confirmArtist(e: PosterEvent, id: string, now: string): PosterEvent {

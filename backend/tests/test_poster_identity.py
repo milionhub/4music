@@ -65,7 +65,8 @@ def rec(mbid, title, date, credit=CARL, video=False):
 RECORDINGS = [
     rec("r1", "At Les", "1997-05-01"), rec("r2", "At Les (Original Mix)", "1999"), rec("r3", "Sandstorms", "2004"),
     rec("r4", "Remix for other", "2020", credit=CAJ), rec("r5", "Video", "2021", video=True),
-    rec("r6", "No date", ""), rec("r7", "Darkness", "2008"),
+    rec("r6", "No date", ""), rec("r7", "Darkness", "2008"), rec("r8", "Darkness - Live", "2010"),
+    rec("r9", "Darkness (Moodymann remix)", "2009"),
 ]
 
 
@@ -191,6 +192,6 @@ def test_canciones_propias_por_fecha_sin_rellenar(api):
     r = http.get(f"/v1/posters/artists/{CARL}/tracks")
     assert r.status_code == 200
     titles = [t["title"] for t in r.json()["tracks"]]
-    assert titles == ["Darkness", "Sandstorms", "At Les (Original Mix)"]  # versión más reciente, sin duplicar el tema
+    assert titles == ["Darkness - Live", "Sandstorms", "At Les (Original Mix)"]  # una por tema: la más reciente
     assert all(t["recording_mbid"].startswith("r") for t in r.json()["tracks"])
     assert http.get("/v1/posters/artists/no-es-mbid/tracks").status_code == 422
