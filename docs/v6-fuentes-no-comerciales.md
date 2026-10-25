@@ -127,3 +127,35 @@ Extracto en 6 de 8 grabaciones de MusicBrainz, +1 sello y +1 canción encontrada
   piden aprobación por escrito).
 - Guardar canciones de los catálogos externos (Discogs y Deezer): exige migrar Guardados, que van por MBID.
 - Probar en el dispositivo la cabecera con foto y el reproductor: solo se han comprobado los tipos y las pruebas.
+
+## 7. Perfil de artista (2026-10-25)
+
+Piloto con fuentes reales: `backend/eval/pilot_profiles.py` (Traumer, PAWSA, Chris Stussy, Priku y Arapu).
+
+- **Tracks esenciales** (`GET /v1/artists/{mbid}/essentials`, `app/essentials.py`), al final de «Más allá de la
+  cabina»: 3–4 canciones del ranking del artista en Deezer, solo propias (sin remixes de otros ni versiones repetidas:
+  la original antes que su edit). Cada fila abre su TrackDNA: el MBID si MusicBrainz tiene ese ISRC acreditado al
+  artista y con la misma duración, o la ficha `deezer:<id>`. El criterio (popularidad en Deezer) se dice debajo. Caché
+  de 7 días; se pide aparte del perfil. Piloto: 4 de 5 artistas con esenciales (Priku, sin ficha verificada en Deezer).
+- **«Más allá de la cabina» v6** (`stories.VERSION` 6: las historias guardadas se regeneran una vez):
+  - Títulos concretos: el prompt pide nombrar algo del hecho, y la validación rechaza los genéricos («Primer
+    lanzamiento», «Su propio universo», «Estilo musical»…) y las historias que solo cuentan géneros (todos sus hechos
+    son de estilo). Las plantillas sin IA usan «Todo empezó con «E-Bird»», «El universo Gettraum», «En el cartel de Dour».
+  - Corregido: el primer lanzamiento ya no puede ser un DJ mix o un recopilatorio («Amnesia Ibiza Underground #4»), y
+    los eventos sin nombre (solo una fecha, «1987‐12‐13») no salen en «En el cartel de».
+- **«Escuchar»**: solo Spotify, Apple Music, SoundCloud y Discogs, en ese orden y en una rejilla de 2×2. El perfil
+  directo si MusicBrainz lo enlaza; si no, una búsqueda por nombre marcada «Búsqueda». El resto de webs sigue en
+  «Información técnica».
+- **Carteles, «Sobre el artista»**: si el texto del perfil es pobre (sin Wikipedia, o con menos de 30 palabras), la vista
+  pide la biografía (redactada por el backend a partir de fuentes y validada); si no hay fuentes descriptivas
+  suficientes (`insufficient_sources`, lo habitual en el underground), usa las historias verificadas de «Más allá de la
+  cabina». Piloto: sin biografía posible para Traumer, Priku ni Arapu, pero los tres tienen historias.
+- Corregido de paso en `mobile/src/lib/format.ts`: la expresión `\bcd\b` de los formatos físicos se había guardado
+  con caracteres de retroceso, así que las ediciones en CD nunca se reconocían.
+- Pendiente: probar en el dispositivo los esenciales, el dock 2×2 y la vista rápida.
+- **Pulido (tras probar en el iPhone):**
+  - Vista rápida de Carteles: la foto va arriba (encuadrada desde arriba) y el nombre debajo, en su banda; antes, la
+    franja del nombre iba encima de la foto y tapaba las caras.
+  - Perfil sin «Su música» ni «Temas más escuchados» (los esenciales ya llevan a la música con su TrackDNA), sin el
+    bloque «Información técnica y fuentes» y sin la línea de fuentes de cada historia. El crédito de la foto, que su
+    licencia exige (CC BY-SA en Commons), sigue sobre la foto y ahora abre su página de origen.

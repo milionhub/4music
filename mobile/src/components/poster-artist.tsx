@@ -4,7 +4,8 @@
  * siguen igual. Solo datos reales de GET /v1/artists/{mbid}; sin identidad fiable no hay perfil, solo el nombre leído.
  *
  * 3.5B (Artist Spotlight): foto (solo con derechos verificables; si no, el cartel tipográfico), estilos documentados,
- * «Sobre el artista» (lib/poster-quick.ts: texto existente, nunca redactado al abrir) y «Explorar perfil y música».
+ * «Sobre el artista» (lib/poster-quick.ts: texto existente; si es pobre, V6 pide la biografía del backend, redactada
+ * a partir de fuentes y validada) y «Explorar perfil y música».
  * Canciones y lanzamientos, solo en el perfil completo. Colores de la paleta del evento.
  *
  * 3.5C: los créditos (foto y texto) están completos tras el botón ⓘ «Fuentes y créditos». La animación de entrada va
@@ -26,9 +27,11 @@ import { useRemote } from '@/hooks/use-remote';
 import { display, fitSize, identityFor } from '@/lib/artist-identity';
 import type { EventArt } from '@/lib/poster-art';
 import { linkedMbid } from '@/lib/poster-identity';
-import { artistSpotlight, type PhotoInfo, type Spotlight, spotlightCredits, verifiablePhoto } from '@/lib/poster-quick';
+import {
+  artistSpotlight, needsBiography, type PhotoInfo, type Spotlight, spotlightCredits, storiesSpotlight, verifiablePhoto,
+} from '@/lib/poster-quick';
 import { describeError } from '@/services/api-client';
-import { getArtist, searchArtists } from '@/services/music';
+import { getArtist, getBiography, getStories, searchArtists } from '@/services/music';
 import type { LinkCandidate, PosterArtist, PosterEvent } from '@/types/poster';
 
 export type IdentityAction =
@@ -148,7 +151,18 @@ function LinkedArtist({ artist, mbid, printed, art, onStyles, onWrong }: Ctx & {
   const data = state.status === 'success' ? state.data : state.status === 'loading' ? state.previous : null;
   const name = data?.artist.name ?? artist.link.name ?? artist.name;
   const styleLabels = data ? [...new Set(data.styles.map((s) => s.label.replace(/^música /i, '')))] : [];
-  const spotlight = data ? artistSpotlight(data) : null;
+  const basic = data ? artistSpotlight(data) : null;
+  // Texto pobre (underground sin Wikipedia): la biografía del backend, generada una vez y en caché.
+  const bioRemote = useRemote(needsBiography(basic) ? `poster-bio:${mbid}` : null, () => getBiography(mbid));
+  const fetchedBio = bioRemote.state.status === 'success' ? bioRemote.state.data.bio : null;
+  const fromBio = data && fetchedBio && fetchedBio.kind !== 'factual' ? artistSpotlight({ ...data, bio: fetchedBio }) : null;
+  // Sin biografía posible (pocas fuentes descriptivas), las historias verificadas de «Más allá de la cabina».
+  const noBio = needsBiography(basic) && bioRemote.state.status !== 'loading' && bioRemote.state.status !== 'idle' && !fromBio?.paragraphs.length;
+  const storiesRemote = useRemote(noBio ? `stories:${mbid}` : null, () => getStories(mbid));
+  const fetchedStories = storiesRemote.state.status === 'success' ? storiesRemote.state.data.stories : [];
+  const richer = fromBio?.paragraphs.length ? fromBio : basic && fetchedStories.length ? storiesSpotlight(fetchedStories, basic) : null;
+  const spotlight = richer ?? basic;
+  const researching = !richer && (bioRemote.state.status === 'loading' || storiesRemote.state.status === 'loading');
   const [photoFailed, setPhotoFailed] = useState(false);
   const photo = data?.image && verifiablePhoto(data.image) && !photoFailed ? data.image : null;
   const onPoster = printed || differs(artist.name, name) ? `En el cartel: «${printed ?? artist.name}»` : null;
@@ -178,7 +192,10 @@ function LinkedArtist({ artist, mbid, printed, art, onStyles, onWrong }: Ctx & {
       ) : !spotlight ? (
         <View style={styles.row}><ActivityIndicator color={art.palette.glow} /><Meta>Cargando su ficha…</Meta></View>
       ) : (
-        <About spotlight={spotlight} photo={photo} name={name} art={art} />
+        <>
+          <About spotlight={spotlight} photo={photo} name={name} art={art} />
+          {researching ? <View style={styles.row}><ActivityIndicator color={art.palette.glow} /><Meta>Buscando más sobre su trayectoria…</Meta></View> : null}
+        </>
       )}
       <View style={{ gap: Space.sm }}>
         <Pressable onPress={() => router.push(`/artist/${mbid}`)} accessibilityRole="button"
@@ -242,21 +259,35 @@ function Hero({ mbid, name, photo, onPhotoError }: { mbid: string; name: string;
   const id = identityFor(mbid);
   const box = Math.min(width, 640) - Space.lg * 4;
   const size = fitSize(display(name, id.type), box, id.type, 52, 26);
+  if (photo) {
+    // Foto arriba, encuadrada desde arriba (las caras), y el nombre debajo, en su banda: nunca encima de la foto.
+    return (
+      <View style={[styles.heroPhotoCard, { backgroundColor: id.palette.bg }]}>
+        <Image source={{ uri: photo.url }} style={styles.heroPhoto} contentFit="cover" contentPosition="top" onError={onPhotoError}
+          accessibilityLabel={`Foto de ${name}`} />
+        <View style={{ height: 4, backgroundColor: id.palette.pop }} />
+        <View style={styles.heroNameBox}>
+          <Text numberOfLines={2} adjustsFontSizeToFit
+            style={{ color: id.palette.ink, fontFamily: id.type.family, fontSize: size, lineHeight: Math.round(size * 1.05),
+              letterSpacing: id.type.tracking, includeFontPadding: false }}>
+            {display(name, id.type)}
+          </Text>
+        </View>
+      </View>
+    );
+  }
   return (
     <View>
-      <View style={[styles.hero, { backgroundColor: photo ? '#000' : id.palette.bg }]}>
-        {photo ? (
-          <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} contentFit="cover" onError={onPhotoError}
-            accessibilityLabel={`Foto de ${name}`} />
-        ) : (
+      <View style={[styles.hero, { backgroundColor: id.palette.bg }]}>
+        {(
           <>
             <View style={[styles.heroShape, { backgroundColor: id.palette.pop }]} />
             <Text style={[styles.heroIssue, { color: id.palette.ink }]}>Nº {id.issue}</Text>
           </>
         )}
-        <View style={[styles.heroNameBox, photo && styles.heroNameOnPhoto]}>
+        <View style={styles.heroNameBox}>
           <Text numberOfLines={2} adjustsFontSizeToFit
-            style={{ color: photo ? C.text : id.palette.ink, fontFamily: id.type.family, fontSize: size, lineHeight: Math.round(size * 1.05),
+            style={{ color: id.palette.ink, fontFamily: id.type.family, fontSize: size, lineHeight: Math.round(size * 1.05),
               letterSpacing: id.type.tracking, includeFontPadding: false }}>
             {display(name, id.type)}
           </Text>
@@ -370,7 +401,8 @@ const styles = StyleSheet.create({
   heroShape: { position: 'absolute', top: -40, right: -30, width: 150, height: 150, borderRadius: 75 },
   heroIssue: { position: 'absolute', top: Space.md, left: Space.lg, fontFamily: Fonts.monoBold, fontSize: 11, letterSpacing: 1.2 },
   heroNameBox: { padding: Space.lg },
-  heroNameOnPhoto: { backgroundColor: 'rgba(7,6,11,0.72)' },
+  heroPhotoCard: { borderRadius: Radius.md, overflow: 'hidden' },
+  heroPhoto: { width: '100%', height: 220 },
   aboutHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   infoBtn: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   infoIcon: { fontFamily: Fonts.monoBold, fontSize: 14 },

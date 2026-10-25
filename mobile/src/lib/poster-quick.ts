@@ -7,7 +7,7 @@
  * - «Sobre el artista»: solo texto que ya existe con su procedencia; nada se redacta al abrir la vista (sin LLM).
  *   Ver `artistSpotlight`. La música y la discografía están en el perfil completo.
  */
-import type { ArtistIdentity, ArtistProfileResponse, SourceRef } from '@/types/music';
+import type { ArtistIdentity, ArtistProfileResponse, SourceRef, Story } from '@/types/music';
 
 export type PhotoInfo = {
   url: string;
@@ -137,8 +137,9 @@ export function identityLine(id: ArtistIdentity | undefined, text = '', subject?
 export type Spotlight = {
   /** Párrafos listos para mostrar; vacío si no hay nada verificado que contar (nunca se inventa un relleno). */
   paragraphs: string[];
-  /** De dónde sale el texto: biografía del perfil, introducción de Wikipedia, descripción de Wikidata o solo datos. */
-  basis: 'editorial' | 'generated' | 'wikipedia' | 'wikidata' | 'facts' | null;
+  /** De dónde sale el texto: biografía del perfil, introducción de Wikipedia, descripción de Wikidata, historias de
+   * «Más allá de la cabina» (V6) o solo datos. */
+  basis: 'editorial' | 'generated' | 'wikipedia' | 'wikidata' | 'stories' | 'facts' | null;
   sources: SourceRef[];
   /** El extracto literal se ha recortado (fechas o extensión): la atribución lo indica (CC BY-SA). */
   adapted: boolean;
@@ -178,6 +179,35 @@ export function artistSpotlight(p: ProfileText): Spotlight {
   return facts ? { paragraphs: [facts], basis: 'facts', sources: unique, adapted: false } : { paragraphs: [], basis: null, sources: [], adapted: false };
 }
 
+/** Por debajo de esto, «Sobre el artista» se queda corto y se pide la biografía (V6: antes se mostraba tal cual). */
+export const SPOTLIGHT_MIN_WORDS = 30;
+
+/**
+ * ¿Hace falta pedir /biography? Sí cuando no hay texto, solo hay datos sueltos o la descripción breve de Wikidata, o
+ * el texto es muy corto. La biografía la redacta el backend a partir de fuentes y la valida frase a frase (con caché):
+ * no se inventa nada al abrir la vista.
+ */
+export function needsBiography(s: Spotlight | null): boolean {
+  if (!s) return false;
+  if (s.basis === 'editorial' || s.basis === 'generated') return false;
+  return s.basis !== 'wikipedia' || words(s.paragraphs.join(' ')) < SPOTLIGHT_MIN_WORDS;
+}
+
+/**
+ * Sin biografía (underground sin Wikipedia ni web propia), las historias de «Más allá de la cabina»: hechos citados y
+ * validados frase a frase en el backend. Se encadenan como un texto, por frases completas y hasta el techo de palabras;
+ * los datos de identidad que no repiten cierran el texto. Si no hay historias, la vista se queda como estaba.
+ */
+export function storiesSpotlight(stories: Story[], fallback: Spotlight): Spotlight {
+  const text = stories.map((s) => s.text.trim()).filter(Boolean).join(' ');
+  if (!text) return fallback;
+  const paragraphs = fitText(text);
+  const extra = fallback.basis === 'facts' ? fallback.paragraphs.filter((p) => !text.includes(p)) : [];
+  const sources = [...stories.flatMap((s) => s.sources), ...(extra.length ? fallback.sources : [])];
+  return { paragraphs: [...paragraphs, ...extra], basis: 'stories',
+    sources: sources.filter((s, i) => sources.findIndex((t) => t.url === s.url) === i), adapted: false };
+}
+
 /** Condiciones de la licencia: la URL que da la fuente o, para las Creative Commons conocidas, su página oficial. */
 export function licenseUrl(license: string | null | undefined, given?: string | null): string | null {
   if (https(given)) return given!;
@@ -195,6 +225,7 @@ const BASIS_DETAIL: Record<NonNullable<Spotlight['basis']>, string> = {
   generated: 'Biografía elaborada a partir de estas fuentes',
   wikipedia: '',
   wikidata: 'Descripción breve de Wikidata y datos documentados',
+  stories: 'Historias de «Más allá de la cabina»: redactadas a partir de hechos citados y validadas con ellos',
   facts: 'Datos documentados',
 };
 

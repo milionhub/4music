@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends, Request
 
-from app import (acousticbrainz, biography, config, deezer, discogs, discogs_tracks, editorial, facts, images, normalize, poster_identity,
+from app import (acousticbrainz, biography, config, deezer, discogs, essentials, discogs_tracks, editorial, facts, images, normalize, poster_identity,
                  posters, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient, GroqError
@@ -75,8 +75,9 @@ def _canonical(fetched: Fetched, mbid: str) -> str:
     return real if isinstance(real, str) and normalize.is_mbid(real) else mbid
 
 
-def _deezer_image(client: MusicBrainzClient, fetched: Fetched, mbid: str) -> tuple[schemas.ArtistImage | None, bool]:
-    """Foto de la ficha de Deezer verificada por identificadores (app/deezer.py). (imagen, fallo temporal)."""
+def _deezer_record(client: MusicBrainzClient, fetched: Fetched, mbid: str) -> dict | None:
+    """Ficha del artista en Deezer verificada por identificadores (app/deezer.py, caché propia). Las grabaciones y la
+    discografía de MusicBrainz solo se piden si hacen falta. Lanza deezer.Unavailable ante un fallo temporal."""
     def recordings():
         rec, _ = _section(lambda: client.recordings(mbid))
         return [x for x in (rec.data.get("recordings") or []) if isinstance(x, dict)] if rec else []
@@ -85,10 +86,30 @@ def _deezer_image(client: MusicBrainzClient, fetched: Fetched, mbid: str) -> tup
         rg, _ = _section(lambda: client.release_groups(mbid))
         return [str(g.get("title") or "") for g in (rg.data.get("release-groups") or []) if isinstance(g, dict)] if rg else []
 
+    return deezer.resolve(fetched.data, mbid, recordings, titles)
+
+
+def _deezer_image(client: MusicBrainzClient, fetched: Fetched, mbid: str) -> tuple[schemas.ArtistImage | None, bool]:
+    """Foto de la ficha de Deezer del artista. (imagen, fallo temporal)."""
     try:
-        return deezer.artist_image(deezer.resolve(fetched.data, mbid, recordings, titles)), False
+        return deezer.artist_image(_deezer_record(client, fetched, mbid)), False
     except deezer.Unavailable:
         return None, True
+
+
+@router.get("/artists/{mbid}/essentials", response_model=schemas.EssentialsResponse)
+def artist_essentials(mbid: str, client: MusicBrainzClient = Depends(get_client)):
+    """3–4 tracks esenciales con enlace a TrackDNA (app/essentials.py). Aparte del perfil, con caché propia; sin
+    fuentes no comerciales o si Deezer no responde, `unavailable` (la app no muestra el bloque)."""
+    mbid = _valid_mbid(mbid)
+    if not config.noncommercial_sources():
+        return schemas.EssentialsResponse(artist_mbid=mbid, status="unavailable")
+    fetched = client.artist(mbid)
+    canonical = _canonical(fetched, mbid)
+    try:
+        return essentials.cached_or_build(canonical, lambda: _deezer_record(client, fetched, canonical), client)
+    except deezer.Unavailable:
+        return schemas.EssentialsResponse(artist_mbid=canonical, status="unavailable")
 
 
 def _image_for(fetched: Fetched, mbid: str, wiki: WikimediaClient, wd: wikidata.WikidataInfo | None = None,

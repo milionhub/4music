@@ -193,6 +193,28 @@ class Story(BaseModel):
     sources: list[SourceRef]
 
 
+class EssentialTrack(BaseModel):
+    """Una canción esencial del artista con su TrackDNA: MBID si MusicBrainz la tiene (por ISRC), si no `deezer:<id>`."""
+    id: str
+    catalog: Literal["musicbrainz", "deezer"]
+    title: str
+    artist_name: str
+    length_ms: int | None = None
+    year: str | None = None
+    cover_url: str | None = None
+    release_title: str | None = None
+    deezer_url: str | None = None
+
+
+class EssentialsResponse(BaseModel):
+    """Tracks esenciales (3–4) para «Más allá de la cabina». `basis` explica el criterio (popularidad en Deezer)."""
+    artist_mbid: str
+    status: Literal["ready", "unavailable"]
+    tracks: list[EssentialTrack] = []
+    basis: str | None = None
+    sources: list[SourceRef] = []
+
+
 class StoriesResponse(BaseModel):
     """generated: redactadas y validadas contra los hechos citados; structured: plantillas con datos verificados;
     mixed: ambas. Sin historias posibles, `unavailable` (la app no muestra la sección)."""

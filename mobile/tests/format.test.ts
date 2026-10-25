@@ -75,3 +75,14 @@ test('sellos fundados, proyectos e integrantes: solo los documentados, una líne
   assert.deepEqual(sceneFacts(none), []); // respuesta antigua sin estos campos
   assert.deepEqual(sceneFacts(undefined), []);
 });
+
+test('V6: «Escuchar» del artista solo con Spotify, Apple Music, SoundCloud y Discogs; búsqueda marcada si falta', async () => {
+  const { artistPlatforms } = await import('../src/lib/format.ts');
+  const link = (label: string, url: string) => ({ url, label, platform: label, kinds: [], detail: 'Streaming', primary: true });
+  const out = artistPlatforms([link('Beatport', 'https://www.beatport.com/artist/x/1'), link('Spotify', 'https://open.spotify.com/artist/abc'),
+    link('Discogs', 'https://www.discogs.com/artist/6362')], 'Luciano');
+  assert.deepEqual(out.map((l) => [l.label, l.detail]), [['Spotify', null], ['Apple Music', 'Búsqueda'], ['SoundCloud', 'Búsqueda'], ['Discogs', null]]);
+  assert.equal(out[0].url, 'https://open.spotify.com/artist/abc');
+  assert.equal(out[1].url, 'https://music.apple.com/search?term=Luciano');
+  assert.deepEqual(artistPlatforms([], '  '), []);
+});

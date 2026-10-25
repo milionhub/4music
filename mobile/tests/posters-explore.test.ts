@@ -266,3 +266,30 @@ test('3.5C fuentes y créditos: sin licencia acreditable no hay foto (cartel tip
   assert.equal(licenseUrl('Permiso del artista'), null);
   assert.equal(licenseUrl('CC BY-SA 4.0', 'https://example.org/terms'), 'https://example.org/terms');
 });
+
+test('V6: la vista rápida pide la biografía solo si su texto se queda corto', async () => {
+  const { needsBiography } = await import('../src/lib/poster-quick.ts');
+  const long = Array(40).fill('palabra').join(' ');
+  const spot = (basis: 'wikipedia' | 'wikidata' | 'facts' | 'generated' | 'editorial' | null, text: string) =>
+    ({ paragraphs: text ? [text] : [], basis, sources: [], adapted: false });
+  assert.ok(!needsBiography(null), 'sin perfil aún, nada');
+  assert.ok(needsBiography(spot(null, '')) && needsBiography(spot('facts', 'Natural de Bucarest.')) && needsBiography(spot('wikidata', long)));
+  assert.ok(needsBiography(spot('wikipedia', 'Productor rumano.')), 'Wikipedia de una línea');
+  assert.ok(!needsBiography(spot('wikipedia', long)) && !needsBiography(spot('generated', 'x')) && !needsBiography(spot('editorial', 'x')));
+});
+
+test('V6: sin biografía, «Sobre el artista» cuenta sus historias verificadas', async () => {
+  const { storiesSpotlight } = await import('../src/lib/poster-quick.ts');
+  const ref = { label: 'Discogs (perfil)', url: 'https://www.discogs.com/artist/1', license: 'CC0' };
+  const mb = { label: 'MusicBrainz', url: 'https://musicbrainz.org/artist/x', license: 'CC0' };
+  const stories = [
+    { key: 'inicios' as const, title: 'Bobohalma 2012', text: 'Priku lanzó su primer EP, Bobohalma, en 2012.', sources: [mb] },
+    { key: 'universo' as const, title: 'El universo Atipic', text: 'Dirige el sello Atipic, de vinilo y con sede en Rumanía.', sources: [ref, mb] },
+  ];
+  const facts = { paragraphs: ['Natural de Rumanía.'], basis: 'facts' as const, sources: [mb], adapted: false };
+  const out = storiesSpotlight(stories, facts);
+  assert.equal(out.basis, 'stories');
+  assert.deepEqual(out.paragraphs, ['Priku lanzó su primer EP, Bobohalma, en 2012. Dirige el sello Atipic, de vinilo y con sede en Rumanía.', 'Natural de Rumanía.']);
+  assert.deepEqual(out.sources.map((s) => s.url), [mb.url, ref.url]);
+  assert.equal(storiesSpotlight([], facts), facts, 'sin historias, como estaba');
+});

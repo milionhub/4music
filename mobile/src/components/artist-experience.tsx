@@ -13,9 +13,10 @@ import { PlatformIcon } from '@/components/platform-icon';
 import { SheetHead } from '@/components/sheet';
 import { Fonts, Radius, Space } from '@/constants/theme';
 import { alpha, type ArtistIdentity, display, fitSize, nameLines } from '@/lib/artist-identity';
-import { type CardRow, formatCount, platformSearchUrl, releaseKind, uniqueBy } from '@/lib/format';
+import { openTrack } from '@/components/track';
+import { type CardRow, duration, formatCount, platformSearchUrl, releaseKind, uniqueBy } from '@/lib/format';
 import { SHEET } from '@/lib/track-art';
-import type { Link, RecentRelease, SourceRef, Story, TopTrack } from '@/types/music';
+import type { EssentialTrack, Link, RecentRelease, SourceRef, Story, TopTrack } from '@/types/music';
 
 export const GUTTER = Space.lg;
 const MONO = 'SpaceMono';
@@ -35,7 +36,7 @@ type HeroProps = {
   /** Datos verificados breves para el cartel («Rumanía», «Sello Atipic»): nunca inventados. */
   credits: string[];
   /** Foto con derechos verificados (Commons, catálogo editorial o Deezer) y su crédito breve; sin ella, cartel tipográfico. */
-  photo?: { url: string; credit: string } | null;
+  photo?: { url: string; credit: string; sourceUrl?: string } | null;
   onPhotoError?: () => void;
 };
 
@@ -121,9 +122,11 @@ export function ArtistHero({ name, id, width: W, height: H, tags, credits, photo
           <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top"
             transition={200} onError={onPhotoError} accessibilityIgnoresInvertColors {...decorative} />
           <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: top + 24, backgroundColor: alpha(P.bg, 0.35) }} {...decorative} />
-          <View style={{ position: 'absolute', right: GUTTER, bottom: Space.sm, backgroundColor: alpha(P.bg, 0.75), paddingHorizontal: 6, paddingVertical: 2 }}>
-            <Mono color={P.ink} size={9}>{photo.credit}</Mono>
-          </View>
+          <Pressable disabled={!photo.sourceUrl} onPress={() => photo.sourceUrl && openBrowserAsync(photo.sourceUrl, BROWSER_OPTIONS)}
+            accessibilityRole="link" accessibilityLabel={`${photo.credit}. Ver la foto en su fuente original`} hitSlop={8}
+            style={{ position: 'absolute', right: GUTTER, bottom: Space.sm, backgroundColor: alpha(P.bg, 0.75), paddingHorizontal: 6, paddingVertical: 2 }}>
+            <Mono color={P.ink} size={9}>{photo.sourceUrl ? `${photo.credit} ↗` : photo.credit}</Mono>
+          </Pressable>
         </View>
         <View style={{ height: 6, backgroundColor: P.pop }} />
         <View style={{ paddingHorizontal: GUTTER, paddingTop: Space.lg, paddingBottom: Space.xl, gap: Space.md }}>
@@ -271,21 +274,6 @@ export function ArtistCard({ name, id, rows, genres }: { name: string; id: Artis
   );
 }
 
-function SourceLine({ sources, color }: { sources: SourceRef[]; color: string }) {
-  const unique = uniqueBy(sources, (x) => x.url); // una historia puede citar dos hechos de la misma página
-  if (!unique.length) return null;
-  return (
-    <Text style={{ fontFamily: MONO, fontSize: 11, lineHeight: 16, color }}>
-      Fuentes:{' '}
-      {unique.map((s, i) => (
-        <Text key={s.url} onPress={() => openBrowserAsync(s.url)} accessibilityRole="link" style={{ textDecorationLine: 'underline' }}>
-          {s.label}{s.license ? ` (${s.license})` : ''}{i < unique.length - 1 ? ' · ' : ''}
-        </Text>
-      ))}
-    </Text>
-  );
-}
-
 const STORY_KICKER: Record<Story['key'], string> = { inicios: 'Los inicios', universo: 'Su universo', momento: 'El momento clave' };
 
 /**
@@ -311,7 +299,6 @@ export function StoryBlocks({ stories, id, loading }: { stories: Story[]; id: Ar
           <Mono color={P.glow} size={10}>{`${String(i + 1).padStart(2, '0')} · ${STORY_KICKER[s.key]}`}</Mono>
           <Text accessibilityRole="header" style={[styles.storyTitle, i === 0 && { fontSize: 28, lineHeight: 33 }]}>{s.title}</Text>
           <Text style={styles.storyText}>{s.text}</Text>
-          <SourceLine sources={s.sources} color={SOFT} />
         </View>
       ))}
     </View>
@@ -347,6 +334,37 @@ export function TopTrackList({ tracks, id }: { tracks: TopTrack[]; id: ArtistIde
           <SearchButton query={t.search_query} title={t.title} id={id} />
         </View>
       ))}
+    </View>
+  );
+}
+
+/**
+ * Tracks esenciales (cierre de «Más allá de la cabina»): 3–4 canciones propias con su TrackDNA. El criterio es la
+ * popularidad en Deezer y se dice debajo; toda la fila abre la ficha de la canción.
+ */
+export function EssentialTracks({ tracks, id, basis }: { tracks: EssentialTrack[]; id: ArtistIdentity; basis: string | null }) {
+  const S = ARTIST_SURFACES;
+  const P = id.palette;
+  return (
+    <View style={{ gap: Space.sm }}>
+      <Mono color={P.glow} size={10}>Para empezar · sus esenciales</Mono>
+      {tracks.map((t, i) => (
+        <Pressable key={t.id} onPress={() => openTrack(t.id)} accessibilityRole="button"
+          accessibilityLabel={`${t.title}${t.year ? `, ${t.year}` : ''}. Abrir su TrackDNA`}
+          style={({ pressed }) => [styles.trackRow, { backgroundColor: i === 0 ? S.raised : 'transparent', borderColor: S.line },
+            pressed && { borderColor: P.glow }]}>
+          <Text style={{ width: 34, fontFamily: id.type.family, fontSize: 28, lineHeight: 30, color: P.glow }}>{i + 1}</Text>
+          <Cover uri={t.cover_url} size={56} id={id} title={t.title} />
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={styles.trackTitle} numberOfLines={2}>{t.title}</Text>
+            <Text style={styles.monoMeta} numberOfLines={1}>{[t.year, duration(t.length_ms)].filter(Boolean).join(' · ')}</Text>
+          </View>
+          <View style={[styles.dnaPill, { borderColor: P.glow }]}>
+            <Text style={[styles.monoMeta, { color: P.glow, fontSize: 10 }]}>TrackDNA →</Text>
+          </View>
+        </Pressable>
+      ))}
+      {basis ? <Text style={[styles.monoMeta, { color: SOFT }]}>{basis}</Text> : null}
     </View>
   );
 }
@@ -408,9 +426,10 @@ function Cover({ uri, size, id, title }: { uri: string | null; size: number; id:
  * Plataformas: muelle de iconos reconocibles con nombre pequeño; abre el perfil verificado del artista o, en TrackDNA,
  * el enlace documentado de la canción. `detail` dice a qué lleva cada enlace («Canción», «Álbum»).
  */
-export function PlatformDock({ links, id, width, detail }: { links: Link[]; id: ArtistIdentity; width: number; detail?: (l: Link) => string | null }) {
+export function PlatformDock({ links, id, width, detail, cols = 3 }: {
+  links: Link[]; id: ArtistIdentity; width: number; detail?: (l: Link) => string | null; cols?: number;
+}) {
   const S = ARTIST_SURFACES;
-  const cols = 3;
   const cell = Math.floor((width - Space.sm * (cols - 1)) / cols);
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Space.sm }}>
@@ -447,6 +466,7 @@ const styles = StyleSheet.create({
   storyCard: { gap: Space.sm, borderRadius: Radius.sm, borderTopWidth: 4, padding: Space.lg },
   storyTitle: { color: INK, fontFamily: Fonts.serifDisplay, fontSize: 24, lineHeight: 29 },
   trackRow: { flexDirection: 'row', alignItems: 'center', gap: Space.md, padding: Space.sm, borderRadius: Radius.md, borderWidth: 1 },
+  dnaPill: { borderWidth: 1.5, borderRadius: Radius.pill, paddingHorizontal: 10, paddingVertical: 6 },
   trackTitle: { color: INK, fontSize: 16, fontFamily: Fonts.sansBold, lineHeight: 20 },
   monoMeta: { color: SOFT, fontFamily: MONO, fontSize: 11, letterSpacing: 0.4 },
   searchBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, paddingHorizontal: Space.md, borderRadius: Radius.pill, borderWidth: 1.5 },

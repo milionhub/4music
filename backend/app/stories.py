@@ -18,11 +18,12 @@ from typing import Any, Callable
 
 from app import biography, facts, schemas, store
 from app.groq_client import GroqClient, GroqError
-from app.profile import OWN_PRIMARY_TYPES, base_title
+from app.profile import EXCLUDED_SECONDARY, OWN_PRIMARY_TYPES, base_title
 from app.sources import SourceDoc
 
 KIND = "stories"
-VERSION = 5  # v5: nombres civiles que incluyen el artístico; sin autopromoción («esencia», «tradición»)
+VERSION = 6  # v6: títulos concretos (sin genéricos), sin historias de solo géneros, primer lanzamiento sin DJ mixes
+# v5: nombres civiles que incluyen el artístico; sin autopromoción («esencia», «tradición»)
 TTL_GENERATED_S = 60 * 24 * 3600   # historias validadas: dos meses
 TTL_STRUCTURED_S = 24 * 3600       # solo estructuradas (sin Groq o rechazadas): se reintenta al día siguiente
 MAX_EVIDENCE = 16
@@ -46,9 +47,12 @@ SYSTEM = (
     "hechos respalden de verdad: mejor una historia sólida que tres pobres, y nunca dos historias con el mismo dato. "
     "No marques el género de la persona si los hechos no lo indican: usa construcciones neutras («nació en», «su primer "
     "EP», «se dedica a la producción»). No describas funciones ni actividades que no consten (qué hace en su sello, para quién publica, cómo trabaja). "
-    "Cada frase debe poder señalarse en un hecho concreto. Cada historia: un título original de 2 a 5 palabras, sin "
-    "dos puntos, y un texto de 15 a 50 palabras en un solo párrafo, sin listas ni preguntas; si los hechos dan para "
-    "menos, escribe menos.")
+    "Cada frase debe poder señalarse en un hecho concreto. Cada historia: un título de 2 a 5 palabras, sin dos puntos, "
+    "con gancho de revista y concreto: nombra algo del propio hecho (un sello, un club, una ciudad, un título, un año), "
+    "como «Desde Detroit, a los 17», «El nacimiento de Plus 8» o «Una noche en Warehouse '92». Nunca títulos genéricos "
+    "(«Primer lanzamiento», «Primeros pasos», «Estilo musical», «Su propio universo», «Sello y proyecto», «Colaboraciones»). "
+    "No escribas una historia que solo diga sus géneros o estilos: eso ya está en la ficha. El texto, de 15 a 50 "
+    "palabras en un solo párrafo, sin listas ni preguntas; si los hechos dan para menos, escribe menos.")
 
 SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -71,6 +75,7 @@ def trajectory_doc(mbid: str, groups_raw: list[dict], total: int | None, release
     """Trayectoria con datos de MusicBrainz (CC0): primer lanzamiento propio (solo con la discografía completa) y su
     sello, sellos donde más ha publicado (sin implicar fundación) y artistas con varios lanzamientos conjuntos."""
     own = [g for g in groups_raw if g.get("first-release-date") and g.get("primary-type") in OWN_PRIMARY_TYPES
+           and not EXCLUDED_SECONDARY & set(g.get("secondary-types") or [])  # sin DJ mixes ni recopilatorios
            and mbid in {(c.get("artist") or {}).get("id") for c in g.get("artist-credit") or []}]
     lines = []
     if own and total is not None and total <= len(groups_raw):
@@ -153,6 +158,15 @@ def civil_names(mb_artist: dict, name: str) -> list[str]:
     return [n for n in dict.fromkeys(out) if n.casefold() != name.casefold()]
 
 
+# Títulos de plantilla que no cuentan nada (vistos en las historias reales de V5) y textos que solo enumeran géneros.
+GENERIC_TITLE_RE = re.compile(
+    r"^(los )?primer(os)? (pasos|lanzamiento|single|sencillo|ep|álbum|album|remix)( propio| destacado)?( (en )?(19|20)\d{2})?$|"
+    r"^(estilo|sonido|género)s?( musical(es)?)?$|^su propio universo$|^sellos?( y proyectos?| que publican)?$|"
+    r"^colaboraciones?( y reconocimientos)?$|^sobre el escenario$|^trayectoria$", re.IGNORECASE)
+GENRE_ONLY_RE = re.compile(r"\b(trabaja|se mueve|se centra|produce|pincha)\b.{0,40}\b(dentro del?|entre|en)\b.{0,40}"
+                           r"\b(house|techno|electro|trance|ambient|minimal|disco)\b", re.IGNORECASE)
+
+
 def _valid(out: dict, name: str, refs: dict[str, facts.Fact], avoid: list[str] = ()) -> tuple[list[schemas.Story], list[str]]:
     stories, problems, seen = [], [], set()
     for item in out.get("stories") or []:
@@ -165,6 +179,10 @@ def _valid(out: dict, name: str, refs: dict[str, facts.Fact], avoid: list[str] =
         issue = biography.story_issue(title, text, name, facts.as_docs(cited))
         civil = next((n for n in avoid if n.casefold() in f"{title} {text}".casefold()), None)
         issue = issue or (f"usa el nombre civil ({civil})" if civil else None)
+        if not issue and GENERIC_TITLE_RE.match(title.rstrip(".")):
+            issue = f"título genérico («{title}»): nombra algo concreto del hecho"
+        if not issue and (all(f.kind == "estilo" for f in cited) or GENRE_ONLY_RE.search(text) and len(text.split()) < 16):
+            issue = "solo cuenta sus géneros o estilos (eso ya está en la ficha)"
         if issue:
             problems.append(f"{key}: {issue}")
             continue
@@ -235,7 +253,8 @@ def structured_stories(name: str, plural: bool, identity: schemas.Identity, mb_a
         partners = re.search(r"Lanzamientos conjuntos con: ([^.]+)\.", trajectory.text)
         if partners:
             text += f" Desde entonces {v('ha', 'han')} firmado varios trabajos junto a {_join(partners.group(1).split(', '))}."
-        out.append(schemas.Story(key="inicios", title="Los primeros pasos", text=text, sources=[sources["musicbrainz"]]))
+        out.append(schemas.Story(key="inicios", title=f"Todo empezó con «{title}»" if len(title) <= 28 else f"El arranque, en {year}",
+                                 text=text, sources=[sources["musicbrainz"]]))
     parts, refs = [], []
     founded = identity.founded_labels
     if founded:
@@ -251,15 +270,20 @@ def structured_stories(name: str, plural: bool, identity: schemas.Identity, mb_a
         parts.append(f"También forma parte de {_join(identity.projects)}.")
     if parts:
         refs = [sources["musicbrainz"]] + ([sources["discogs"]] if "discogs" in sources else [])
-        out.append(schemas.Story(key="universo", title="Su propio universo", text=" ".join(parts), sources=refs))
+        own_labels = founded or identity.run_labels
+        heading = (f"El universo {own_labels[0]}" if own_labels else
+                   "Quiénes están detrás" if identity.members else f"Más allá de {name}")
+        out.append(schemas.Story(key="universo", title=heading, text=" ".join(parts), sources=refs))
     # Ediciones de festivales y eventos con año; sin etiquetas («#VEGASRAVE») ni eventos con su propio nombre.
     events = [_event(rel) for rel in mb_artist.get("relations") or []
               if rel.get("target-type") == "event" and rel.get("type") == "main performer"
               and not re.search(r"\bb2b\b|back ?to ?back", ((rel.get("event") or {}).get("name") or ""), re.IGNORECASE)]
+    # Con año y con nombre: «1987‐12‐13» (un evento sin nombre, solo la fecha) no es un festival que contar.
     events = [e for e in dict.fromkeys(events) if re.search(r"\b(19|20)\d{2}\b", e) and not e.startswith("#")
-              and name.casefold() not in e.casefold()][:3]
+              and re.search(r"[^\W\d_]{3}", e) and name.casefold() not in e.casefold()][:3]
     if len(events) >= 2:
-        out.append(schemas.Story(key="momento", title="Sobre el escenario",
+        festival = re.sub(r"\s*(19|20)\d{2}$", "", events[0])
+        out.append(schemas.Story(key="momento", title=f"En el cartel de {festival}",
                                  text=f"Su nombre figura entre los artistas de {_join(events)}.", sources=[sources["musicbrainz"]]))
     return out
 

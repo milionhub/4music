@@ -4,6 +4,7 @@ import type {
   ArtistProfileResponse,
   BiographyResponse,
   DiscoveryResponse,
+  EssentialsResponse,
   SearchResponse,
   StoriesResponse,
   TrackInterpretationResponse,
@@ -42,6 +43,10 @@ const STORIES_TIMEOUT_MS = 60000;
 
 export function getStories(mbid: string) {
   return getJson<StoriesResponse>(`/v1/artists/${encodeURIComponent(mbid)}/stories`, STORIES_TIMEOUT_MS);
+}
+
+export function getEssentials(mbid: string) {
+  return getJson<EssentialsResponse>(`/v1/artists/${encodeURIComponent(mbid)}/essentials`, STORIES_TIMEOUT_MS);
 }
 
 export function getBiography(mbid: string) {

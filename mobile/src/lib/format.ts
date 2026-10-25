@@ -117,6 +117,28 @@ export function platformSearchUrl(platform: 'spotify' | 'soundcloud', query: str
   return platform === 'spotify' ? `https://open.spotify.com/search/${q}` : `https://soundcloud.com/search?q=${q}`;
 }
 
+/** «Escuchar» del perfil de artista: siempre estas cuatro, en este orden. */
+const ARTIST_PLATFORMS = [
+  { label: 'Spotify', search: (q: string) => `https://open.spotify.com/search/${q}/artists` },
+  { label: 'Apple Music', search: (q: string) => `https://music.apple.com/search?term=${q}` },
+  { label: 'SoundCloud', search: (q: string) => `https://soundcloud.com/search/people?q=${q}` },
+  { label: 'Discogs', search: (q: string) => `https://www.discogs.com/search/?q=${q}&type=artist` },
+] as const;
+
+/**
+ * Plataformas del perfil: Spotify, Apple Music, SoundCloud y Discogs. El enlace directo si MusicBrainz lo documenta
+ * (el perfil del artista, no una canción); si no, una búsqueda por nombre, marcada como tal (`detail: 'Búsqueda'`) para
+ * no presentarla como su perfil. El resto de webs sigue en «Información técnica».
+ */
+export function artistPlatforms(links: Link[], name: string): Link[] {
+  const q = encodeURIComponent(name.trim());
+  return ARTIST_PLATFORMS.flatMap((p): Link[] => {
+    const direct = links.find((l) => l.platform === p.label || l.label === p.label);
+    if (direct) return [{ ...direct, label: p.label, detail: null }];
+    return q ? [{ url: p.search(q), label: p.label, platform: p.label, kinds: [], detail: 'Búsqueda', primary: true }] : [];
+  });
+}
+
 // --- TrackDNA de canciones (T2.0) ---
 
 /** «2009 · 10:34 · Álbum»: solo con los datos que existen. */
@@ -210,7 +232,7 @@ const LISTEN_PLATFORMS: { key: string; label: string; aliases: string[]; search:
   { key: 'apple', label: 'Apple Music', aliases: ['Apple Music', 'iTunes'], search: null },
   { key: 'soundcloud', label: 'SoundCloud', aliases: ['SoundCloud'], search: 'soundcloud' },
 ];
-const PHYSICAL: [RegExp, string][] = [[/vinyl/i, 'vinilo'], [/cd/i, 'CD'], [/cassette/i, 'casete']];
+const PHYSICAL: [RegExp, string][] = [[/vinyl/i, 'vinilo'], [/\bcd\b/i, 'CD'], [/cassette/i, 'casete']];
 
 /**
  * «Escuchar» (v5.1): solo Spotify, Apple Music, SoundCloud y Discogs. Primero el enlace documentado a la pista; si no,

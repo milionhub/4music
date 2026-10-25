@@ -140,6 +140,20 @@ export type ArtistImage = {
 
 export type ArtistImageResponse = { mbid: string; image: ArtistImage | null; reason: string | null };
 
+/** Tracks esenciales del artista: `id` es un MBID (TrackDNA completo) o `deezer:<id>` (catálogo de reserva). */
+export type EssentialTrack = {
+  id: string;
+  catalog: 'musicbrainz' | 'deezer';
+  title: string;
+  artist_name: string;
+  length_ms: number | null;
+  year: string | null;
+  cover_url: string | null;
+  release_title: string | null;
+  deezer_url: string | null;
+};
+export type EssentialsResponse = { artist_mbid: string; status: 'ready' | 'unavailable'; tracks: EssentialTrack[]; basis: string | null; sources: SourceRef[] };
+
 export type BiographyResponse = { artist_mbid: string; status: 'ready' | 'unavailable'; bio: Bio | null };
 /** Historia de «Más allá de la cabina»: breve, en español, con las fuentes de los hechos que cita. */
 export type Story = { key: 'inicios' | 'universo' | 'momento'; title: string; text: string; sources: SourceRef[] };
