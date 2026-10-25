@@ -414,9 +414,20 @@ export function VersionList({ rows, accent }: { rows: VersionRow[]; accent: Acce
 
 // --- Escuchar -----------------------------------------------------------------------------------------------------
 /** Enlace directo («Canción», «EP»…) o búsqueda explícita; nunca una búsqueda presentada como la canción. */
-/** Canción de Discogs (V5.6): atribución obligatoria junto a los datos y aviso de no afiliación (API Terms of Use). */
-export function SourceNote({ url }: { url: string }) {
+/** Canción fuera de MusicBrainz: atribución junto a los datos y aviso de no afiliación. Discogs (V5.6) lo exige en sus
+ * API Terms of Use; Deezer (V6.1), por coherencia y porque sus datos solo se usan sin fines comerciales. */
+export function SourceNote({ url, provider }: { url: string; provider: 'Discogs' | 'Deezer' }) {
   const S = SHEET.base;
+  if (provider === 'Deezer') {
+    return (
+      <View style={{ paddingHorizontal: GUTTER, paddingBottom: Space.xxxl, gap: Space.xs }}>
+        <Text onPress={() => openBrowserAsync(url, BROWSER_OPTIONS)} accessibilityRole="link" style={[MONO_B, { color: S.ink, textDecorationLine: 'underline' }]}>
+          Datos de Deezer ↗
+        </Text>
+        <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz y Discogs. Uso no comercial. Chromatic Underground no está afiliado a Deezer.</Text>
+      </View>
+    );
+  }
   return (
     <View style={{ paddingHorizontal: GUTTER, paddingBottom: Space.xxxl, gap: Space.xs }}>
       <Text onPress={() => openBrowserAsync(url, BROWSER_OPTIONS)} accessibilityRole="link" style={[MONO_B, { color: S.ink, textDecorationLine: 'underline' }]}>

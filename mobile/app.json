@@ -41,7 +41,8 @@
           "cameraPermission": "Chromatic Underground usa la cámara para fotografiar carteles de fiestas y festivales.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

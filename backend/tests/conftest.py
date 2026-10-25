@@ -2,7 +2,7 @@
 
 import pytest
 
-from app import acousticbrainz, biography, discogs_tracks, reccobeats, sources
+from app import acousticbrainz, biography, deezer, discogs_tracks, reccobeats, sources
 
 
 @pytest.fixture(autouse=True)
@@ -13,5 +13,7 @@ def _isolated_store(tmp_path, monkeypatch):
     monkeypatch.setattr(acousticbrainz, "_default_transport", lambda url: {})  # nunca la API real en las pruebas
     monkeypatch.setattr(reccobeats, "_default_transport", lambda url: {})
     monkeypatch.setattr(discogs_tracks, "_default_transport", lambda url: {})
+    monkeypatch.setattr(deezer, "_default_transport", lambda url: {"error": {"code": 800}})  # nunca Deezer real
+    monkeypatch.setattr(deezer, "MIN_INTERVAL_S", 0.0)
     monkeypatch.setattr(discogs_tracks, "MIN_INTERVAL_S", 0.0)
     monkeypatch.setattr(biography, "_cooldown_until", 0.0)  # la pausa tras un 429 no pasa de una prueba a otra

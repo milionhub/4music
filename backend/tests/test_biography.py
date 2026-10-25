@@ -6,7 +6,7 @@ import time
 
 from fastapi.testclient import TestClient
 
-from app import biography, facts, sources, store
+from app import api, biography, facts, sources, store
 from app.api import get_groq_client
 from app.groq_client import GroqClient
 from app.main import app
@@ -654,7 +654,7 @@ def test_text_is_checked_against_the_selected_facts():
 
 
 def test_old_biographies_are_renewed_on_visit_and_kept_as_legacy_meanwhile():
-    store.put("image", mb.SEED, {"image": None, "reason": "no_image", "v": 2}, 3600)  # otros datos cacheados: intactos
+    store.put("image", mb.SEED, {"image": None, "reason": "no_image", "v": api.IMAGE_RESOLVER_VERSION}, 3600)  # otros datos cacheados: intactos
     old = biography.BiographyRecord(artist_mbid=mb.SEED, biography=GOOD_TEXT, source_urls=["https://wp"],
                                     source_labels=["Wikipedia"], generated_at="2026", model="m", status="ok",
                                     prompt_version=6)
@@ -675,7 +675,7 @@ def test_old_biographies_are_renewed_on_visit_and_kept_as_legacy_meanwhile():
     body = client.get(f"/v1/artists/{mb.SEED}/biography").json()
     saved = store.get(biography.KIND, mb.SEED)
     assert fake.calls == 1 and body["bio"]["legacy"] is False and saved["prompt_version"] == biography.PROMPT_VERSION
-    assert saved["previous"] is None and store.get("image", mb.SEED) == {"image": None, "reason": "no_image", "v": 2}
+    assert saved["previous"] is None and store.get("image", mb.SEED) == {"image": None, "reason": "no_image", "v": api.IMAGE_RESOLVER_VERSION}
     # Un rechazo de una versión anterior no bloquea la nueva generación.
     old_rejected = old.model_copy(update={"status": "rejected", "biography": None, "error_code": "enumera años"})
     store.put(biography.KIND, mb.CO_A, old_rejected.model_dump(), biography.TTL_REJECTED_S)

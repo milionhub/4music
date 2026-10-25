@@ -15,7 +15,7 @@ export type PhotoInfo = {
   author: string | null;
   license: string;
   license_url: string | null;
-  source: 'wikimedia_commons' | 'editorial';
+  source: 'wikimedia_commons' | 'editorial' | 'deezer';
 };
 
 // Misma lista que el backend (app/images.py): CC0, CC BY, CC BY-SA y dominio público; nunca NC ni ND.
@@ -29,17 +29,26 @@ export function verifiablePhoto(p: PhotoInfo | null | undefined): p is PhotoInfo
   const author = (p.author ?? '').trim();
   if (!license) return false;
   if (p.source === 'editorial') return !!author;
+  // Deezer (V6, uso no comercial): sin licencia libre; se muestra como dato de Deezer, con enlace a su ficha.
+  if (p.source === 'deezer') return /^https:\/\/(www\.)?deezer\.com\//.test(p.page_url);
   if (!FREE_LICENSE.test(license) || /\b(NC|ND)\b/i.test(license)) return false;
   return NO_ATTRIBUTION.test(license) || !!author;
 }
 
 /** Crédito completo (nunca truncado): autor, licencia y fuente. */
 export function photoCredit(p: PhotoInfo): string {
+  if (p.source === 'deezer') return `Foto: Deezer · ${p.license}`;
   const where = p.source === 'editorial' ? 'Catálogo editorial de Chromatic Underground' : 'Wikimedia Commons';
   return [p.author ? `Foto: ${p.author}` : 'Foto', p.license, where].join(' · ');
 }
 
 // Sin \b: en JavaScript no hay límite de palabra después de «ó».
+/** Crédito breve sobre la foto (el completo va en «Fuentes»). */
+export function photoShortCredit(p: PhotoInfo): string {
+  if (p.source === 'deezer') return 'Foto · Deezer';
+  return [p.author ? `Foto · ${p.author}` : 'Foto', p.source === 'editorial' ? null : p.license].filter(Boolean).join(' · ');
+}
+
 const BIRTH_WORD = String.raw`(?:naci(?:ó|da|do)|born|fallec\p{L}*|died|murió)(?!\p{L})`;
 // «Capriati, nacido el 25 de julio de 1987 en Caserta, Italia, inició…» → «Capriati inició…»: sale la cláusula (con
 // el país que la cierra), no la frase.

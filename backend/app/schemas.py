@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 
 class Source(BaseModel):
-    provider: Literal["musicbrainz", "discogs"] = "musicbrainz"  # discogs: canción fuera de MusicBrainz (V5.6)
+    provider: Literal["musicbrainz", "discogs", "deezer"] = "musicbrainz"  # canción fuera de MusicBrainz (V5.6, V6.1)
     url: str
     fetched_at: str
     license: str = "CC0 (MusicBrainz core data)"
@@ -172,8 +172,10 @@ class ArtistImage(BaseModel):
     author: str | None = None
     license: str
     license_url: str | None = None
-    source: Literal["wikimedia_commons", "editorial"] = "wikimedia_commons"
-    via: str | None = None       # editorial_catalog | musicbrainz_image | wikidata_p18 | commons_depicts
+    source: Literal["wikimedia_commons", "editorial", "deezer"] = "wikimedia_commons"
+    # editorial_catalog | musicbrainz_image | wikidata_p18 | commons_depicts | deezer_musicbrainz_link | deezer_isrc |
+    # deezer_catalog_match
+    via: str | None = None
     wikidata_id: str | None = None
 
 
@@ -269,7 +271,7 @@ class ErrorResponse(BaseModel):
 class TrackSearchResult(BaseModel):
     """Una grabación de MusicBrainz (o varias idénticas agrupadas: mismo título, créditos y duración)."""
     mbid: str                     # grabación representativa (la que más lanzamientos tiene); en Discogs, «discogs:<release>:<pos>»
-    catalog: Literal["musicbrainz", "discogs"] = "musicbrainz"  # V5.6: discogs solo si MusicBrainz no encuentra nada
+    catalog: Literal["musicbrainz", "discogs", "deezer"] = "musicbrainz"  # discogs (V5.6), deezer (V6.1): si MB no la tiene
     title: str
     artist_credit: list[CreditedArtist]
     artist_name: str              # crédito tal como lo escribe MusicBrainz («A feat. B»)
@@ -387,7 +389,7 @@ class TrackInterpretation(BaseModel):
 
 class TrackResponse(BaseModel):
     mbid: str                     # MBID canónico (MusicBrainz redirige los fusionados); en Discogs, «discogs:<release>:<pos>»
-    catalog: Literal["musicbrainz", "discogs"] = "musicbrainz"  # V5.6: discogs se sirve en /v1/tracks/ext/{id}
+    catalog: Literal["musicbrainz", "discogs", "deezer"] = "musicbrainz"  # discogs y deezer: /v1/tracks/ext/{id}
     title: str
     artist_credit: list[CreditedArtist]
     artist_name: str
@@ -411,8 +413,18 @@ class TrackResponse(BaseModel):
     dna: TrackDna
     interpretation: TrackInterpretation | None = None
     interpretation_status: Literal["ready", "pending", "insufficient_sources", "unavailable"] = "unavailable"
+    # V6.1: la misma grabación en Deezer (ISRC y duración). Con ella hay extracto de 30 s en /tracks/{mbid}/preview.
+    deezer_url: str | None = None
     sources: list[SourceRef]
     source: Source
+
+
+class TrackPreviewResponse(BaseModel):
+    """Extracto de 30 s de Deezer: URL firmada que caduca en minutos (se pide al pulsar «Escuchar», nunca se guarda)."""
+    recording_mbid: str
+    url: str | None = None
+    deezer_url: str | None = None
+    reason: str | None = None     # no_match | no_preview | disabled | unavailable
 
 
 class TrackInterpretationResponse(BaseModel):

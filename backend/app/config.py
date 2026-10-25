@@ -43,6 +43,12 @@ def cover_art_enabled() -> bool:
     return os.environ.get("COVER_ART", "on").strip().lower() not in ("off", "0", "false", "no")
 
 
+def noncommercial_sources() -> bool:
+    """Fuentes cuyas condiciones solo permiten uso no comercial (Deezer…). El proyecto es una demo de portfolio sin
+    ánimo de lucro: activadas por defecto; DATA_USE=commercial las desactiva todas (docs/v6-fuentes-no-comerciales.md)."""
+    return os.environ.get("DATA_USE", "noncommercial").strip().lower() != "commercial"
+
+
 def musicbrainz_contact() -> str:
     """Email o URL de contacto que MusicBrainz exige en el User-Agent. Cadena vacía si no está configurado."""
     return os.environ.get("MUSICBRAINZ_CONTACT", "").strip()

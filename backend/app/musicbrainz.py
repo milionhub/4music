@@ -165,7 +165,9 @@ class MusicBrainzClient(CachedJsonClient):
                                                         "fmt": "json"})
 
     def recordings(self, mbid: str) -> Fetched:
-        return self.get(f"{MB_BASE_URL}/recording", {"artist": mbid, "inc": "artist-credits", "limit": "100", "fmt": "json"})
+        """Grabaciones del artista con créditos e ISRC (el ISRC identifica al artista en Deezer: app/deezer.py)."""
+        return self.get(f"{MB_BASE_URL}/recording", {"artist": mbid, "inc": "artist-credits+isrcs", "limit": "100",
+                                                     "fmt": "json"})
 
     def release_groups(self, mbid: str) -> Fetched:
         """Grupos de lanzamientos acreditados al artista (álbum, EP, single…), con su primera fecha de publicación."""

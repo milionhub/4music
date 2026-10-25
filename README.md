@@ -30,7 +30,7 @@ Configura el contacto que MusicBrainz exige en el User-Agent (email o URL; `back
 Copy-Item .env.example .env   # y rellena MUSICBRAINZ_CONTACT=
 ```
 
-Sin él, `/health` funciona pero `/v1/*` responde `503 provider_not_configured`. Opcionales: `LISTENBRAINZ_TOKEN` (token gratuito de listenbrainz.org; activa «Más escuchadas», que ListenBrainz ya no sirve sin token) y `COVER_ART=off` (desactiva las portadas de Cover Art Archive). Biografías y fotos con permiso: catálogo `backend/app/data/editorial.json`. Biografías con IA (opcional): `GROQ_API_KEY` y `GROQ_MODEL` (por defecto `openai/gpt-oss-20b`) en `backend/.env`; se generan solo en el backend a partir de fuentes verificadas y se guardan en `backend/data/` (SQLite, fuera de Git). El backend es el único que consulta MusicBrainz (y Wikidata/Commons para fotos de artistas con licencia libre): como máximo 1 petición cada 1,1 s a MusicBrainz, caché en memoria de 24 h (se vacía al reiniciar) y como mucho una repetición ante un 503/429. Usa un solo proceso de uvicorn (como en los comandos de abajo) para que el límite sea global.
+Sin él, `/health` funciona pero `/v1/*` responde `503 provider_not_configured`. Opcionales: `LISTENBRAINZ_TOKEN` (token gratuito de listenbrainz.org; activa «Más escuchadas», que ListenBrainz ya no sirve sin token), `COVER_ART=off` (desactiva las portadas de Cover Art Archive) y `DATA_USE=commercial` (desactiva las fuentes de uso solo no comercial, activas por defecto: fotos de artista, extractos de 30 s, sellos y catálogo de reserva de Deezer; ver [V6](docs/v6-fuentes-no-comerciales.md)). Biografías y fotos con permiso: catálogo `backend/app/data/editorial.json`. Biografías con IA (opcional): `GROQ_API_KEY` y `GROQ_MODEL` (por defecto `openai/gpt-oss-20b`) en `backend/.env`; se generan solo en el backend a partir de fuentes verificadas y se guardan en `backend/data/` (SQLite, fuera de Git). El backend es el único que consulta MusicBrainz (y Wikidata/Commons para fotos de artistas con licencia libre): como máximo 1 petición cada 1,1 s a MusicBrainz, caché en memoria de 24 h (se vacía al reiniciar) y como mucho una repetición ante un 503/429. Usa un solo proceso de uvicorn (como en los comandos de abajo) para que el límite sea global.
 
 ### Arrancar
 
@@ -48,6 +48,7 @@ Para el iPhone (u otro dispositivo físico), ver [iPhone](#iphone-expo-go).
 Invoke-RestMethod http://127.0.0.1:8000/health      # -> status: ok
 Invoke-RestMethod "http://127.0.0.1:8000/v1/artists/search?q=traumer"   # consulta real a MusicBrainz
 Invoke-RestMethod "http://127.0.0.1:8000/v1/tracks/search?q=deadmau5%20-%20strobe"   # TrackDNA: canciones
+# Extracto de 30 s de Deezer (V6.1): /v1/tracks/{mbid}/preview
 # Ficha: /v1/tracks/{mbid} · solo ADN: /v1/tracks/{mbid}/dna · IA: /v1/tracks/{mbid}/interpretation
 .\.venv\Scripts\python -m pytest                     # tests sin red (contrato /health y /v1, cliente MusicBrainz)
 .\.venv\Scripts\python eval\evaluate_discovery.py         # evaluación del motor con datos reales (consulta MusicBrainz y Labs)

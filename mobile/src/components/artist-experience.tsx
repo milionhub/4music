@@ -34,6 +34,9 @@ type HeroProps = {
   tags: string[];
   /** Datos verificados breves para el cartel («Rumanía», «Sello Atipic»): nunca inventados. */
   credits: string[];
+  /** Foto con derechos verificados (Commons, catálogo editorial o Deezer) y su crédito breve; sin ella, cartel tipográfico. */
+  photo?: { url: string; credit: string } | null;
+  onPhotoError?: () => void;
 };
 
 /** Nombre en líneas ajustadas al ancho real de sus letras, con la tipografía de la identidad. */
@@ -102,13 +105,35 @@ function Mono({ children, color, size = 11, style }: { children: ReactNode; colo
  * Cabecera-cartel. Cuatro composiciones con recursos propios (no una plantilla con el color cambiado): torre con
  * repetición vertical del nombre, marquesina de filas, diagonal con doble trazo y rejilla de cartel con datos.
  */
-export function ArtistHero({ name, id, width: W, height: H, tags, credits }: HeroProps) {
+export function ArtistHero({ name, id, width: W, height: H, tags, credits, photo, onPhotoError }: HeroProps) {
   const P = id.palette;
   const T = id.type;
   const inner = W - GUTTER * 2;
   const shown = display(name, T);
   const top = Platform.OS === 'ios' ? 104 : 84; // bajo la barra de estado y el botón de volver
   let body: ReactNode;
+
+  if (photo) {
+    // Foto arriba y, debajo, una banda con la paleta del artista: el nombre nunca se superpone a la cara.
+    return (
+      <View style={{ width: W, height: H, overflow: 'hidden', backgroundColor: P.bg }}>
+        <View style={{ flex: 1 }}>
+          <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top"
+            transition={200} onError={onPhotoError} accessibilityIgnoresInvertColors {...decorative} />
+          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: top + 24, backgroundColor: alpha(P.bg, 0.35) }} {...decorative} />
+          <View style={{ position: 'absolute', right: GUTTER, bottom: Space.sm, backgroundColor: alpha(P.bg, 0.75), paddingHorizontal: 6, paddingVertical: 2 }}>
+            <Mono color={P.ink} size={9}>{photo.credit}</Mono>
+          </View>
+        </View>
+        <View style={{ height: 6, backgroundColor: P.pop }} />
+        <View style={{ paddingHorizontal: GUTTER, paddingTop: Space.lg, paddingBottom: Space.xl, gap: Space.md }}>
+          {credits.length ? <Mono color={P.ink}>{credits.join(' · ')}</Mono> : null}
+          <NameStack name={name} id={id} width={inner} maxSize={56} color={P.ink} maxLines={2} />
+          <Tags tags={tags} color={P.ink} border={P.ink} />
+        </View>
+      </View>
+    );
+  }
 
   if (id.composition === 'marquee') {
     // El nombre repetido en filas, cada una entera; la última más presente, las demás como textura.

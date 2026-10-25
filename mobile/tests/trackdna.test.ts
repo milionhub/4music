@@ -67,7 +67,9 @@ test('«Escuchar»: solo Spotify, Apple Music, SoundCloud y Discogs físico; dir
 test('V5.6: canciones de Discogs con id propio; sus artistas solo se enlazan si MusicBrainz da el MBID', async () => {
   const { externalTrack } = await import('../src/lib/format.ts');
   const { trackDna } = await import('../src/lib/track-sheet.ts');
-  assert.ok(externalTrack('discogs:29565955:1'));
+  assert.ok(externalTrack('discogs:29565955:1') && externalTrack('deezer:2782517712'));
+  const { externalCatalog } = await import('../src/lib/format.ts');
+  assert.deepEqual(['discogs:1:A1', 'deezer:1', PAWSA].map(externalCatalog), ['Discogs', 'Deezer', null]);
   assert.ok(!externalTrack(PAWSA) && !externalTrack('') && !externalTrack(null), 'los MBID siguen su ruta de siempre');
   const parts = creditParts([
     { mbid: PAWSA, name: 'Luciano', join_phrase: ', ' }, { mbid: 'discogs:artist:6126490', name: 'Carloh', join_phrase: '' },

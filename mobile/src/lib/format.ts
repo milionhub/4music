@@ -171,9 +171,16 @@ export function artistCardRows(a: { type: string | null; identity?: ArtistIdenti
 const SPECIAL_ARTISTS = new Set(['89ad4ac3-39f7-470e-963a-56509c546377', '125ec42a-7229-4250-afc5-e057484327fe']);
 const MBID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Canción fuera de MusicBrainz (V5.6): `discogs:<release>:<posición>`. Tiene ruta propia y no se guarda (aún). */
+/** Canción fuera de MusicBrainz: `discogs:<release>:<posición>` (V5.6) o `deezer:<id>` (V6.1). Tiene ruta propia y no
+ * se guarda (aún). */
 export function externalTrack(id: string | null | undefined): boolean {
-  return !!id && id.startsWith('discogs:');
+  return externalCatalog(id) !== null;
+}
+
+/** Catálogo externo de una canción, o null si es de MusicBrainz. */
+export function externalCatalog(id: string | null | undefined): 'Discogs' | 'Deezer' | null {
+  if (!id) return null;
+  return id.startsWith('discogs:') ? 'Discogs' : id.startsWith('deezer:') ? 'Deezer' : null;
 }
 
 /** Solo se enlaza un artista con MBID válido (identidad de MusicBrainz), nunca por coincidencia de nombre. */

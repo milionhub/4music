@@ -11,7 +11,7 @@ import { CoverPlate, decorative, EmptyPoster, Kicker, TagPill } from '@/componen
 import { StateView } from '@/components/ui';
 import { C, Fonts, Radius, Space } from '@/constants/theme';
 import { alpha, type ArtistIdentity, identityFor, surfaces } from '@/lib/artist-identity';
-import { externalTrack, trackFacts, withUniqueKeys } from '@/lib/format';
+import { externalCatalog, trackFacts, withUniqueKeys } from '@/lib/format';
 import { describeError } from '@/services/api-client';
 import { searchTracks } from '@/services/music';
 import type { TrackSearchResult } from '@/types/music';
@@ -149,7 +149,7 @@ function TrackResultRow({ item, index, line }: { item: TrackSearchResult; index:
           </Text>
           <View style={styles.resultMeta}>
             {item.version ? <TagPill label={item.version} color={P.glow} ink={P.onGlow} /> : null}
-            {externalTrack(item.mbid) ? <TagPill label="Discogs" color={C.faint} ink={C.bg} /> : null}
+            {externalCatalog(item.mbid) ? <TagPill label={externalCatalog(item.mbid)!} color={C.faint} ink={C.bg} /> : null}
             {facts ? <Text style={styles.mono} numberOfLines={1}>{facts}</Text> : null}
           </View>
         </View>

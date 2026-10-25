@@ -7,6 +7,7 @@ import type {
   SearchResponse,
   StoriesResponse,
   TrackInterpretationResponse,
+  TrackPreviewResponse,
   TrackResponse,
   TrackSearchResponse,
 } from '@/types/music';
@@ -61,6 +62,11 @@ export function getTrack(mbid: string) {
   // Canciones de Discogs (V5.6): ruta aparte, mismo contrato. /v1/tracks/{mbid} solo acepta MBID.
   const path = externalTrack(mbid) ? `/v1/tracks/ext/${encodeURIComponent(mbid)}` : `/v1/tracks/${encodeURIComponent(mbid)}`;
   return getJson<TrackResponse>(path, TRACK_TIMEOUT_MS);
+}
+
+export function getTrackPreview(mbid: string) {
+  const base = externalTrack(mbid) ? '/v1/tracks/ext' : '/v1/tracks';
+  return getJson<TrackPreviewResponse>(`${base}/${encodeURIComponent(mbid)}/preview`, TRACK_TIMEOUT_MS);
 }
 
 export function getTrackInterpretation(mbid: string) {

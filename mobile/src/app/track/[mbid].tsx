@@ -15,11 +15,12 @@ import { StatusBarScrim } from '@/components/status-bar-scrim';
 import {
   ArtDivider, ArtHero, ArtistList, ArtSave, DnaCard, GUTTER, heroTop, ListenList, SourceNote, StoryCard, VersionList,
 } from '@/components/track-art';
+import { PreviewPlayer } from '@/components/track-preview';
 import { StateView } from '@/components/ui';
 import { C, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { useRemote } from '@/hooks/use-remote';
 import { contrast } from '@/lib/artist-identity';
-import { externalTrack, listenOptions } from '@/lib/format';
+import { externalCatalog, externalTrack, listenOptions } from '@/lib/format';
 import { savedTrackFrom } from '@/lib/preferences';
 import { SHEET, sheetAccent, type TrackArt, trackArt } from '@/lib/track-art';
 import { hasDna, trackArtists, trackDna, trackStory, trackVersions } from '@/lib/track-sheet';
@@ -98,6 +99,7 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
   const pageWidth = Math.min(width, MaxContentWidth);
   // Guardados se identifican por MBID: una canción de Discogs aún no se puede guardar (sin botón, no a medias).
   const external = externalTrack(data.mbid);
+  const catalog = externalCatalog(data.mbid);
   const saved = !external && lib.isTrackSaved({ mbid: data.mbid, isrcs: data.isrcs, version: data.version });
   const accent = sheetAccent(P);
 
@@ -108,12 +110,18 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
   const artists = trackArtists(data);
   const versions = trackVersions(data);
   const listen = listenOptions(data.links, `${data.artist_name} ${data.title}`);
+  const preview = data.deezer_url ?? null; // V6.1: extracto de 30 s de Deezer (MBID con la misma grabación o catálogo Deezer)
   const sections = [
     hasDna(dna) && { key: 'dna', title: 'ADN musical', body: <DnaCard dna={dna} accent={accent} width={pageWidth} /> },
     story && { key: 'story', title: 'La historia del track', body: <StoryCard story={story} accent={accent} /> },
     artists.length > 0 && { key: 'artists', title: artists.length > 1 ? 'Artistas' : 'Artista', body: <ArtistList artists={artists} /> },
     versions.length > 0 && { key: 'versions', title: 'Versiones', body: <VersionList rows={versions} accent={accent} /> },
-    listen.length > 0 && { key: 'listen', title: 'Escuchar', body: <ListenList options={listen} /> },
+    (listen.length > 0 || preview) && { key: 'listen', title: 'Escuchar', body: (
+      <>
+        {preview ? <PreviewPlayer mbid={data.mbid} deezerUrl={preview} accent={accent.color} /> : null}
+        {listen.length > 0 ? <ListenList options={listen} /> : null}
+      </>
+    ) },
   ].filter((x): x is { key: string; title: string; body: ReactElement } => !!x);
 
   return (
@@ -130,7 +138,7 @@ function TrackProfile({ data, art }: { data: TrackResponse; art: TrackArt }) {
               </SheetSection>
             ))}
             {sections.length === 0 ? <View style={{ height: Space.xxxl * 2 }} /> : null}
-            {external && data.sources[0] ? <SourceNote url={data.sources[0].url} /> : null}
+            {catalog && data.sources[0] ? <SourceNote url={data.sources[0].url} provider={catalog} /> : null}
           </Animated.View>
         </View>
       </Animated.ScrollView>

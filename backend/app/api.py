@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends, Request
 
-from app import (acousticbrainz, biography, config, discogs, discogs_tracks, editorial, facts, images, normalize, poster_identity,
+from app import (acousticbrainz, biography, config, deezer, discogs, discogs_tracks, editorial, facts, images, normalize, poster_identity,
                  posters, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient, GroqError
@@ -54,15 +54,18 @@ def get_groq_client() -> GroqClient:
 IMAGE_KIND = "image"
 IMAGE_TTL_OK_S = 14 * 24 * 3600
 IMAGE_TTL_NONE_S = 24 * 3600  # «sin foto» se revisa a diario (Wikidata/Commons pueden añadirla)
-# v2: Wikidata también por el ID de Discogs y fotos de Commons que representan (P180) al artista. Los «sin foto»
-# guardados con la v1 se resuelven de nuevo una vez; las fotos ya encontradas no se tocan.
-IMAGE_RESOLVER_VERSION = 2
+# v2: Wikidata también por el ID de Discogs y fotos de Commons que representan (P180) al artista.
+# v3: foto de Deezer (V6) cuando no hay ninguna con licencia libre. Los «sin foto» guardados con una versión anterior se
+# resuelven de nuevo una vez; las fotos ya encontradas no se tocan.
+IMAGE_RESOLVER_VERSION = 3
 
 
 def _image_hit(mbid: str) -> dict | None:
     hit = store.get(IMAGE_KIND, mbid)
     if hit is not None and not hit.get("image") and hit.get("v", 1) < IMAGE_RESOLVER_VERSION:
         return None
+    if hit is not None and (hit.get("image") or {}).get("source") == "deezer" and not config.noncommercial_sources():
+        return None  # con DATA_USE=commercial no se sirve una foto de Deezer guardada antes
     return hit
 
 
@@ -72,8 +75,26 @@ def _canonical(fetched: Fetched, mbid: str) -> str:
     return real if isinstance(real, str) and normalize.is_mbid(real) else mbid
 
 
-def _image_for(fetched: Fetched, mbid: str, wiki: WikimediaClient, wd: wikidata.WikidataInfo | None = None):
-    """Foto verificada con caché persistente por MBID (la comparten ficha, tarjetas y, en el futuro, Carteles).
+def _deezer_image(client: MusicBrainzClient, fetched: Fetched, mbid: str) -> tuple[schemas.ArtistImage | None, bool]:
+    """Foto de la ficha de Deezer verificada por identificadores (app/deezer.py). (imagen, fallo temporal)."""
+    def recordings():
+        rec, _ = _section(lambda: client.recordings(mbid))
+        return [x for x in (rec.data.get("recordings") or []) if isinstance(x, dict)] if rec else []
+
+    def titles():
+        rg, _ = _section(lambda: client.release_groups(mbid))
+        return [str(g.get("title") or "") for g in (rg.data.get("release-groups") or []) if isinstance(g, dict)] if rg else []
+
+    try:
+        return deezer.artist_image(deezer.resolve(fetched.data, mbid, recordings, titles)), False
+    except deezer.Unavailable:
+        return None, True
+
+
+def _image_for(fetched: Fetched, mbid: str, wiki: WikimediaClient, wd: wikidata.WikidataInfo | None = None,
+               client: MusicBrainzClient | None = None):
+    """Foto verificada con caché persistente por MBID (la comparten ficha, tarjetas y Carteles). Primero las de licencia
+    libre o permiso documentado; si no hay, la de Deezer (solo con fuentes no comerciales activadas).
     Se guarda con el MBID pedido y con el canónico, para que todas las vistas encuentren la misma foto."""
     hit = _image_hit(mbid)
     if hit is not None:
@@ -81,6 +102,9 @@ def _image_for(fetched: Fetched, mbid: str, wiki: WikimediaClient, wd: wikidata.
     canonical = _canonical(fetched, mbid)
     wd = wd or wikidata.resolve(fetched.data, canonical, wiki)
     image, reason = images.resolve(fetched, canonical, wiki, wd)
+    if image is None and reason != "unavailable" and client is not None and config.noncommercial_sources():
+        image, failed = _deezer_image(client, fetched, canonical)
+        reason = None if image else ("unavailable" if failed else reason)
     if reason != "unavailable":  # los fallos temporales no se guardan
         payload = {"image": image.model_dump() if image else None, "reason": reason, "v": IMAGE_RESOLVER_VERSION}
         for key in dict.fromkeys((mbid, canonical)):
@@ -158,11 +182,12 @@ def search_artists(q: str = "", limit: str = "", client: MusicBrainzClient = Dep
                                   source=normalize.source(fetched))
 
 
-def _wikimedia_module(fetched: Fetched, mbid: str, wiki: WikimediaClient, country: str | None):
+def _wikimedia_module(fetched: Fetched, mbid: str, wiki: WikimediaClient, country: str | None,
+                      client: MusicBrainzClient):
     """Wikidata (identidad, estilos, ocupaciones, nombre del país) + foto. Nunca lanza."""
     wd = wikidata.resolve(fetched.data, _canonical(fetched, mbid), wiki)
     labels = wikidata.labels(wiki, wikidata.all_label_ids(wd)) if wd.qid else {}
-    image, image_reason = _image_for(fetched, mbid, wiki, wd)
+    image, image_reason = _image_for(fetched, mbid, wiki, wd, client)
     # Introducción de Wikipedia (una petición, en caché): solo para contrastar y precisar los géneros.
     intro = sources.wikipedia_summary(wiki, wd) if wd.wikipedia else None
     # La introducción literal (misma petición, en caché) para presentar al artista en la vista rápida de Carteles.
@@ -195,7 +220,7 @@ def artist_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
     # Tres proveedores independientes en paralelo (cada cliente mantiene su propio límite de ritmo).
     with ThreadPoolExecutor(max_workers=3) as pool:
         f_mb = pool.submit(_musicbrainz_module, client, mbid)
-        f_wiki = pool.submit(_wikimedia_module, fetched, mbid, wiki, artist.country)
+        f_wiki = pool.submit(_wikimedia_module, fetched, mbid, wiki, artist.country, client)
         f_lb = pool.submit(_listenbrainz_module, lb, mbid)
         rec, rec_error, rg, rg_error = f_mb.result()
         wd, labels, image, image_reason, country_name, intro, summary = f_wiki.result()
@@ -217,7 +242,8 @@ def artist_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
     if intro and any(s.source == "wikipedia" for s in styles):
         sources.append(schemas.SourceRef(label=f"{intro.label} (géneros)", url=intro.url, license=intro.license))
     if image:
-        sources.append(schemas.SourceRef(label="Foto", url=image.page_url, license=image.license))
+        sources.append(schemas.SourceRef(label="Foto (Deezer)" if image.source == "deezer" else "Foto", url=image.page_url,
+                                         license=image.license))
     identity, discogs_ref = _with_discogs(profile.identity(fetched.data, artist, wd, country_name), fetched.data,
                                           artist.name)
     if discogs_ref:
@@ -245,7 +271,7 @@ def artist_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
 @router.get("/artists/{mbid}/image", response_model=schemas.ArtistImageResponse)
 def artist_image(mbid: str, client: MusicBrainzClient = Depends(get_client),
                  wiki: WikimediaClient = Depends(get_wiki_client)):
-    """Foto verificada por MBID (catálogo editorial, MusicBrainz o Wikidata); image = null con motivo si no hay."""
+    """Foto verificada por MBID (catálogo editorial, MusicBrainz, Wikidata o Deezer); image = null con motivo si no hay."""
     mbid = _valid_mbid(mbid)
     hit = _image_hit(mbid)
     if hit is not None:  # sin tocar MusicBrainz: la foto (o su ausencia) ya se resolvió
@@ -256,7 +282,7 @@ def artist_image(mbid: str, client: MusicBrainzClient = Depends(get_client),
         if error == "not_found":
             raise ApiError(404, "not_found", "MusicBrainz no tiene ese artista")
         return schemas.ArtistImageResponse(mbid=mbid, image=None, reason="unavailable")
-    image, reason = _image_for(fetched, mbid, wiki)
+    image, reason = _image_for(fetched, mbid, wiki, client=client)
     return schemas.ArtistImageResponse(mbid=mbid, image=image, reason=reason)
 
 
@@ -602,6 +628,8 @@ def search_tracks(q: str = "", limit: str = "", client: MusicBrainzClient = Depe
     if not results:
         # V5.6: canciones que MusicBrainz no tiene, documentadas en Discogs (catalog = discogs). Nunca un error.
         results = discogs_tracks.search(query, max_results)
+    if not results and config.noncommercial_sources():
+        results = deezer.search_tracks(query, max_results)  # V6.1: ni MusicBrainz ni Discogs la tienen
     return schemas.TrackSearchResponse(query=query, results=results, omitted_mix_fragments=omitted,
                                        source=normalize.source(fetched))
 
@@ -701,9 +729,33 @@ def _track_bundle(mbid: str, client: MusicBrainzClient, wiki: WikimediaClient) -
 
 @router.get("/tracks/ext/{track_id}", response_model=schemas.TrackResponse)
 def external_track(track_id: str, client: MusicBrainzClient = Depends(get_client)):
-    """Ficha de una canción fuera de MusicBrainz (`discogs:<release>:<posición>`), con el mismo contrato que la de un
-    MBID. Ruta aparte: /tracks/{mbid} sigue aceptando solo MBID."""
+    """Ficha de una canción fuera de MusicBrainz (`discogs:<release>:<posición>` o `deezer:<id>`), con el mismo contrato
+    que la de un MBID. Ruta aparte: /tracks/{mbid} sigue aceptando solo MBID."""
+    if track_id.startswith("deezer:"):
+        if not config.noncommercial_sources():
+            raise ApiError(404, "not_found", "Las fuentes de uso no comercial están desactivadas")
+        try:
+            return deezer.track_profile(track_id, client)
+        except deezer.Unavailable:
+            raise ApiError(503, "provider_unavailable", "Deezer no responde") from None
     return discogs_tracks.profile(track_id, client)
+
+
+@router.get("/tracks/ext/{track_id}/preview", response_model=schemas.TrackPreviewResponse)
+def external_track_preview(track_id: str):
+    """Extracto de 30 s de una canción del catálogo de Deezer (`deezer:<id>`), pedido en el momento."""
+    m = deezer.EXT_ID_RE.match(track_id)
+    if not m:
+        raise ApiError(404, "not_found", "Solo las canciones de Deezer tienen extracto")
+    if not config.noncommercial_sources():
+        return schemas.TrackPreviewResponse(recording_mbid=track_id, reason="disabled")
+    record = {"id": m.group(1)}
+    try:
+        url = deezer.preview(record)
+    except deezer.Unavailable:
+        return schemas.TrackPreviewResponse(recording_mbid=track_id, reason="unavailable")
+    return schemas.TrackPreviewResponse(recording_mbid=track_id, url=url, deezer_url=deezer.track_url(record),
+                                        reason=None if url else "no_preview")
 
 
 @router.get("/tracks/{mbid}", response_model=schemas.TrackResponse)
@@ -713,14 +765,47 @@ def track_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
     solo se incluye si ya existe; si se puede generar, interpretation_status = pending (la app pide /interpretation)."""
     track, _wiki = _track_bundle(_valid_mbid(mbid), client, wiki)
     interpretation, status = track_ai.status_for(track.mbid, groq)
+    match = _deezer_track(track)
+    sources_list = track.sources + ([schemas.SourceRef(label="Deezer (extracto y sello)", url=deezer.track_url(match),
+                                                       license=deezer.LICENSE)] if match else [])
     return track.model_copy(update={"interpretation": interpretation, "interpretation_status": status,
-                                    "dna": _measured_dna(track)})
+                                    "dna": _measured_dna(track, match), "deezer_url": deezer.track_url(match),
+                                    "sources": sources_list})
 
 
-def _measured_dna(track: schemas.TrackResponse) -> schemas.TrackDna:
+def _deezer_track(track: schemas.TrackResponse) -> dict | None:
+    """La grabación en Deezer (V6.1, caché propia). None sin fuentes no comerciales o si Deezer no responde."""
+    if not config.noncommercial_sources():
+        return None
+    try:
+        return deezer.track_match(track.mbid, track.isrcs, track.length_ms)
+    except deezer.Unavailable:
+        return None
+
+
+@router.get("/tracks/{mbid}/preview", response_model=schemas.TrackPreviewResponse)
+def track_preview(mbid: str, client: MusicBrainzClient = Depends(get_client),
+                  wiki: WikimediaClient = Depends(get_wiki_client)):
+    """Extracto de 30 s de Deezer para la grabación exacta. La URL se pide en el momento porque caduca en minutos."""
+    track, _wiki = _track_bundle(_valid_mbid(mbid), client, wiki)
+    if not config.noncommercial_sources():
+        return schemas.TrackPreviewResponse(recording_mbid=track.mbid, reason="disabled")
+    try:
+        match = deezer.track_match(track.mbid, track.isrcs, track.length_ms)
+        url = deezer.preview(match)
+    except deezer.Unavailable:
+        return schemas.TrackPreviewResponse(recording_mbid=track.mbid, reason="unavailable")
+    reason = None if url else ("no_preview" if match else "no_match")
+    return schemas.TrackPreviewResponse(recording_mbid=track.mbid, url=url, deezer_url=deezer.track_url(match),
+                                        reason=reason)
+
+
+def _measured_dna(track: schemas.TrackResponse, match: dict | None = None) -> schemas.TrackDna:
     """ADN con BPM y tonalidad medidos en AcousticBrainz si los hay; si falta el tempo, el estimado por ReccoBeats
-    (por ISRC y duración). Cada fuente con su caché propia, aparte de la ficha; un fallo no bloquea nada."""
-    dna = acousticbrainz.with_measurements(track.dna, acousticbrainz.lookup(track.mbid, track.length_ms))
+    (por ISRC y duración); si falta el sello, el de Deezer (V6.1, misma grabación y año). Cada fuente con su caché
+    propia, aparte de la ficha; un fallo no bloquea nada."""
+    dna = deezer.with_label(track.dna, match, track.first_release_date)
+    dna = acousticbrainz.with_measurements(dna, acousticbrainz.lookup(track.mbid, track.length_ms))
     if any(t.key == "bpm" and t.status == "unavailable" for t in dna.traits):
         dna = reccobeats.with_tempo(dna, reccobeats.lookup(track.mbid, track.isrcs, track.length_ms))
     return dna
@@ -729,7 +814,8 @@ def _measured_dna(track: schemas.TrackResponse) -> schemas.TrackDna:
 @router.get("/tracks/{mbid}/dna", response_model=schemas.TrackDna)
 def track_dna(mbid: str, client: MusicBrainzClient = Depends(get_client), wiki: WikimediaClient = Depends(get_wiki_client)):
     """Solo el ADN (base para comparar canciones o SetLab en el futuro). Comparte caché con la ficha."""
-    return _measured_dna(_track_bundle(_valid_mbid(mbid), client, wiki)[0])
+    track = _track_bundle(_valid_mbid(mbid), client, wiki)[0]
+    return _measured_dna(track, _deezer_track(track))
 
 
 @router.get("/tracks/{mbid}/interpretation", response_model=schemas.TrackInterpretationResponse)

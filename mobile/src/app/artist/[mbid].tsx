@@ -1,6 +1,6 @@
 /**
  * Ficha de artista — Artist Experience v4 (pantalla secundaria desde v5: se abre desde las canciones; los artistas ya
- * no se guardan en Guardados): cartel tipográfico con la identidad visual del artista (sin fotos), que se
+ * no se guardan en Guardados): cartel con la identidad visual del artista (con su foto si tiene derechos verificables, V6; si no, tipográfico), que se
  * prolonga en los acentos sobre la base común de las fichas (V5.4, igual que TrackDNA), «Conoce al artista», historias de
  * «Más allá de la cabina» con sus fuentes, música con criterio explícito y plataformas con iconos.
  * Solo datos verificables; cada módulo es opcional y la ficha nunca queda a medias.
@@ -21,6 +21,7 @@ import { C, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { useRemote } from '@/hooks/use-remote';
 import { alpha, type ArtistIdentity, identityFor } from '@/lib/artist-identity';
 import { artistCardRows, sectionMessage, uniqueBy } from '@/lib/format';
+import { photoShortCredit, verifiablePhoto } from '@/lib/poster-quick';
 import { SHEET } from '@/lib/track-art';
 import { describeError } from '@/services/api-client';
 import { getArtist, getStories } from '@/services/music';
@@ -82,6 +83,7 @@ function LoadingSkeleton({ id }: { id: ArtistIdentity | null }) {
 function Profile({ data, onRetry }: { data: ArtistProfileResponse; onRetry: () => void }) {
   const { width } = useWindowDimensions();
   const [technical, setTechnical] = useState(false);
+  const [photoFailed, setPhotoFailed] = useState(false);
   const { artist, styles: artistStyles, top_tracks, recent_releases, platforms } = data;
   // Historias: se investigan aparte (caché en el servidor) para que la ficha nunca las espere.
   const storiesRemote = useRemote(`stories:${artist.mbid}`, () => getStories(artist.mbid));
@@ -99,7 +101,8 @@ function Profile({ data, onRetry }: { data: ArtistProfileResponse; onRetry: () =
   const rows = artistCardRows({ type: artist.type, identity: ident });
   const labelCredit = ident?.founded_labels?.[0] ?? ident?.run_labels?.[0];
   const credits = [ident?.country_name, labelCredit ? `Sello ${labelCredit}` : null].filter((x): x is string => Boolean(x));
-  const sources = data.sources.filter((s) => s.label !== 'Foto'); // la ficha no muestra fotos
+  const photo = data.image && verifiablePhoto(data.image) && !photoFailed ? data.image : null;
+  const sources = photo ? data.sources : data.sources.filter((s) => !s.label.startsWith('Foto')); // sin foto, sin su fuente
   const storySources = stories.flatMap((s) => s.sources);
   const others = artist.links.filter((l) => !l.primary);
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -113,7 +116,8 @@ function Profile({ data, onRetry }: { data: ArtistProfileResponse; onRetry: () =
       <Animated.ScrollView ref={scrollRef} style={{ backgroundColor: S.screen }} contentContainerStyle={{ paddingBottom: Space.xxxl * 2 }}
         contentInsetAdjustmentBehavior="never">
         <View style={{ alignSelf: 'center' }}>
-          <ArtistHero name={artist.name} id={id} width={heroWidth} height={heroHeight} tags={genres} credits={credits} />
+          <ArtistHero name={artist.name} id={id} width={heroWidth} height={heroHeight} tags={genres} credits={credits}
+            photo={photo ? { url: photo.url, credit: photoShortCredit(photo) } : null} onPhotoError={() => setPhotoFailed(true)} />
           <SafeAreaView edges={['top']} style={styles.heroTop} pointerEvents="box-none">
             <BackButton floating />
           </SafeAreaView>

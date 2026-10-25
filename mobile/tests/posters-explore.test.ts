@@ -7,7 +7,7 @@ import { COVER_KINDS, eventArt, usableSeeds } from '../src/lib/poster-art.ts';
 import { exploreRows, facets, filterSets, lineupSummary, NO_FILTER, timeLabel, validFilter } from '../src/lib/poster-explore.ts';
 import { applyResolution, chooseIdentity, type Resolution, setArtistStyles } from '../src/lib/poster-identity.ts';
 import { fromExtraction, renameArtist } from '../src/lib/poster-model.ts';
-import { artistSpotlight, fitText, identityLine, licenseUrl, photoCredit, spotlightCredits, SPOTLIGHT_MAX_WORDS, verifiablePhoto } from '../src/lib/poster-quick.ts';
+import { artistSpotlight, fitText, identityLine, licenseUrl, photoCredit, photoShortCredit, spotlightCredits, SPOTLIGHT_MAX_WORDS, verifiablePhoto } from '../src/lib/poster-quick.ts';
 import { parsePosterEvent, serializePosterEvent } from '../src/lib/poster-store.ts';
 import type { ArtistIdentity, ArtistProfileResponse } from '../src/types/music.ts';
 import type { PosterEvent, PosterExtraction } from '../src/types/poster.ts';
@@ -130,6 +130,18 @@ test('vista rápida: foto solo con derechos verificables y crédito completo', (
   assert.ok(verifiablePhoto({ ...base, source: 'editorial', license: 'Permiso del artista' }));
   assert.ok(!verifiablePhoto({ ...base, source: 'editorial', author: null }));
   assert.equal(photoCredit(base), 'Foto: Ana · CC BY-SA 4.0 · Wikimedia Commons');
+  assert.equal(photoShortCredit(base), 'Foto · Ana · CC BY-SA 4.0');
+});
+
+test('V6: foto de Deezer solo enlazada a su ficha, con crédito propio', () => {
+  const dz = { url: 'https://cdn-images.dzcdn.net/images/artist/6c2b/1000x1000-000000-80-0-0.jpg', page_url: 'https://www.deezer.com/artist/5359276',
+    author: null, license: '© titulares de derechos · Deezer API (uso no comercial)', license_url: 'https://developers.deezer.com/termsofuse',
+    source: 'deezer' as const };
+  assert.ok(verifiablePhoto(dz));
+  assert.ok(!verifiablePhoto({ ...dz, page_url: 'https://example.com/artist/1' }));
+  assert.ok(!verifiablePhoto({ ...dz, url: 'http://cdn-images.dzcdn.net/a.jpg' }));
+  assert.equal(photoCredit(dz), 'Foto: Deezer · © titulares de derechos · Deezer API (uso no comercial)');
+  assert.equal(photoShortCredit(dz), 'Foto · Deezer');
 });
 
 // Perfiles reales de GET /v1/artists/{mbid} (2026-10-23), reducidos a lo que usa «Sobre el artista».

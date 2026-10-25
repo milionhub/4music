@@ -123,7 +123,8 @@ export type Highlight = {
   evidence_count: number;
 };
 
-/** Foto verificada por MBID: catálogo editorial con permiso o Wikimedia Commons con licencia libre. */
+/** Foto verificada por MBID: catálogo editorial con permiso, Wikimedia Commons con licencia libre o, si no hay ninguna,
+ * la de Deezer (uso no comercial, V6). */
 export type ArtistImage = {
   url: string;
   width: number | null;
@@ -132,7 +133,7 @@ export type ArtistImage = {
   author: string | null;
   license: string;
   license_url: string | null;
-  source: 'wikimedia_commons' | 'editorial';
+  source: 'wikimedia_commons' | 'editorial' | 'deezer';
   via: string | null;
   wikidata_id: string | null;
 };
@@ -227,7 +228,7 @@ export type ArtistRef = { mbid: string; name: string; disambiguation: string | n
 export type CreditedArtist = { mbid: string; name: string; join_phrase: string };
 
 /** V5.6: «discogs» solo si MusicBrainz no encuentra la canción; su id es `discogs:<release>:<posición>` (no un MBID). */
-export type TrackCatalog = 'musicbrainz' | 'discogs';
+export type TrackCatalog = 'musicbrainz' | 'discogs' | 'deezer';
 
 export type TrackSearchResult = {
   mbid: string;
@@ -341,9 +342,14 @@ export type TrackResponse = {
   dna: TrackDna;
   interpretation: TrackInterpretation | null;
   interpretation_status: 'ready' | 'pending' | 'insufficient_sources' | 'unavailable';
+  /** V6.1: la misma grabación en Deezer (ISRC y duración); con ella hay extracto de 30 s en /preview. */
+  deezer_url?: string | null;
   sources: SourceRef[];
   source: Source;
 };
+
+/** Extracto de 30 s: URL firmada por Deezer que caduca en minutos (se pide al pulsar, nunca se guarda). */
+export type TrackPreviewResponse = { recording_mbid: string; url: string | null; deezer_url: string | null; reason: string | null };
 
 export type TrackInterpretationResponse = {
   recording_mbid: string;
