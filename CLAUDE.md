@@ -1,6 +1,6 @@
 # Instrucciones para Claude
 
-Monorepo: `mobile/` (Expo SDK 57, ver también `mobile/AGENTS.md`), `backend/` (FastAPI, Python 3.11, venv en `backend/.venv`), `docs/`. Comandos en `README.md`.
+Monorepo: `mobile/` (Expo SDK 58, ver también `mobile/AGENTS.md`), `backend/` (FastAPI, Python 3.11, venv en `backend/.venv`), `docs/`. Comandos en `README.md`.
 
 ## Forma de trabajar
 

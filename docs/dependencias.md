@@ -1,6 +1,17 @@
 # Dependencias móviles: estado de `npm audit`
 
-Revisión: 2026-10-16 · Expo SDK 57 (`expo@57.0.30`, `expo-router@57.0.28`, `react-native@0.86.3`).
+Revisión: 2026-10-25 · **Expo SDK 58** (`expo@58.0.19`, `expo-router@58.0.26`, `react-native@0.88.0`, `react@19.3.0`).
+
+**Estado actual (SDK 58, 2026-10-25): `npm audit` da 5 avisos altos con 2 causas raíz, `node-forge` y `zod@3.25.76`, ambas solo en Expo CLI (herramienta del PC).** Ninguno llega al bundle de la app. Los párrafos siguientes son el historial con el SDK 57.
+
+**Actualización SDK 58 (2026-10-25):** Expo Go del iPhone pasó a admitir solo el SDK 58. Se actualiza con `npx expo install` (versiones elegidas por Expo para el SDK 58), sin `--force` ni `--legacy-peer-deps`:
+- `npx expo install expo@^58.0.0 --fix` falló por un conflicto de resolución de npm (`expo-router@58` con su *peer* opcional `expo-symbols@58`, aunque las versiones son compatibles: el árbol y el lockfile antiguos fijaban `expo-router@57`). Se resolvió **regenerando `package-lock.json`** con las versiones que había escrito `expo install` en `package.json` (copia del lockfile del SDK 57 en el commit `13679e3`). `@types/react` y `eslint-config-expo` se devolvieron a `devDependencies`, y `expo` se fijó como `~58.0.19`.
+- Saltos destacados: React Native 0.86 → 0.88, React 19.2 → 19.3, `react-native-gesture-handler` 2 → 3 (la app no lo importa directamente), Reanimated 4.5 → 4.7 y Worklets 0.10 → 0.13.
+- Nueva dependencia directa: `expo-asset`, que `expo-doctor` exige como *peer* de `expo-audio` (con su config plugin en `app.json`).
+- Comprobaciones: `npx expo install --check` sin pendientes · `npx expo-doctor@latest` 20/20 · `npx tsc --noEmit` sin errores · `npm test` 113/113 · `npx expo export --platform ios` genera el bundle (1789 módulos).
+- Código: sin cambios. La huella de los carteles usa `File.info({ md5: true })`, que en el SDK 58 no está obsoleta (lo obsoleto es `File.md5`): las huellas guardadas siguen valiendo.
+- `npm audit`: **5 avisos altos**. Desaparecen `decode-uri-component` (el único que afectaba a la app en el móvil) y `uuid`; `zod@4` (vía `eslint-config-expo`) ya está corregido y quedan `zod@3.25.76` y `node-forge@1.4.0` en `@expo/cli`.
+- **Sin probar en dispositivo** (pendiente: navegación, pestañas, Carteles con cámara, reproductor y fichas con foto).
 
 `npm audit` informa **29 avisos (11 moderados, 18 altos)**. Proceden de **4 avisos raíz**; los otros 25 son paquetes que solo «dependen de una versión vulnerable» (expo, react-native, metro, reanimated, worklets…). La «solución» que propone `npm audit fix --force` baja a `expo@44`, `react-native@0.72` o sube a `expo-router@58` (SDK 58): incompatible con SDK 57 / Expo Go, así que **no se aplica**. `npm audit fix` sin `--force` no cambia nada.
 
@@ -20,14 +31,15 @@ Revisión: 2026-10-16 · Expo SDK 57 (`expo@57.0.30`, `expo-router@57.0.28`, `re
 
 | Aviso raíz | Ruta | Uso afectado | Exposición | ¿Arreglo compatible? |
 |---|---|---|---|---|
-| `braces@3.0.3` — DoS por patrones muy anidados ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)), alto | `expo` → `@expo/metro` → `metro-file-map` → `micromatch` → `braces` | Metro (bundler en el PC) al vigilar archivos con globs | Solo herramienta de desarrollo en el PC; los patrones vienen de la configuración del proyecto, no de entrada externa. No va en el bundle de la app. | No: 3.0.3 es la última versión publicada. |
+| ~~`braces@3.0.3`~~ (ya no aparece desde V6.1) — DoS por patrones muy anidados ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)), alto | `expo` → `@expo/metro` → `metro-file-map` → `micromatch` → `braces` | Metro (bundler en el PC) al vigilar archivos con globs | Solo herramienta de desarrollo en el PC; los patrones vienen de la configuración del proyecto, no de entrada externa. No va en el bundle de la app. | No: 3.0.3 es la última versión publicada. |
 | `node-forge@1.4.0` — verificación de firmas RSA PKCS#1 v1.5 permisiva ([GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)), alto | `expo` → `@expo/cli` (y `@expo/code-signing-certificates`) → `node-forge` | Expo CLI: firma de código de actualizaciones (expo-updates) y certificados en `run:ios` | En el PC. Este proyecto no usa firma de actualizaciones ni `run:ios`. Pasará a importar si se activan EAS Update con code signing. | No: 1.4.0 es la última versión publicada. |
-| `decode-uri-component@0.2.2` — DoS por decodificación exponencial ([GHSA-vcc3-ghjq-m6fr](https://github.com/advisories/GHSA-vcc3-ghjq-m6fr)), moderado | `expo-router` → `query-string@7.1.3` → `decode-uri-component` | **Runtime de la app**: Expo Router lo usa para parsear la query de rutas y enlaces profundos (`getStateFromPath`) | **Está en el bundle** que corre en el móvil. Un enlace profundo malicioso (`mobile://…?<percent-encoding malformado>`) podría bloquear la app (DoS local, sin fuga de datos). Hoy la app no procesa enlaces de terceros. | No en SDK 57: el parche (0.5.0) está fuera del rango `^0.2.2` de `query-string@7`; corregido en `expo-router@58.0.13+` (SDK 58). Un override forzaría un salto mayor sin compatibilidad verificada. |
-| `uuid@7.0.3` — falta de comprobación de límites en v3/v5/v6 con `buf` ([GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq)), moderado | `expo-splash-screen` → `@expo/config-plugins` → `xcode@3.0.1` → `uuid` | Generación del proyecto iOS en `prebuild` (config plugins) | En el PC durante prebuild. `xcode` solo llama a `uuid.v4()` sin `buf`, que no es la función afectada. | No: `xcode@3.0.1` (última) pide `uuid@^7`; el parche está en ≥11.1.1 (mayor). |
+| ~~`decode-uri-component@0.2.2`~~ (**resuelto con el SDK 58**) — DoS por decodificación exponencial ([GHSA-vcc3-ghjq-m6fr](https://github.com/advisories/GHSA-vcc3-ghjq-m6fr)), moderado | `expo-router` → `query-string@7.1.3` → `decode-uri-component` | **Runtime de la app**: Expo Router lo usa para parsear la query de rutas y enlaces profundos (`getStateFromPath`) | **Está en el bundle** que corre en el móvil. Un enlace profundo malicioso (`mobile://…?<percent-encoding malformado>`) podría bloquear la app (DoS local, sin fuga de datos). Hoy la app no procesa enlaces de terceros. | No en SDK 57: el parche (0.5.0) está fuera del rango `^0.2.2` de `query-string@7`; corregido en `expo-router@58.0.13+` (SDK 58). Un override forzaría un salto mayor sin compatibilidad verificada. |
+| ~~`uuid@7.0.3`~~ (**resuelto con el SDK 58**) — falta de comprobación de límites en v3/v5/v6 con `buf` ([GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq)), moderado | `expo-splash-screen` → `@expo/config-plugins` → `xcode@3.0.1` → `uuid` | Generación del proyecto iOS en `prebuild` (config plugins) | En el PC durante prebuild. `xcode` solo llama a `uuid.v4()` sin `buf`, que no es la función afectada. | No: `xcode@3.0.1` (última) pide `uuid@^7`; el parche está en ≥11.1.1 (mayor). |
+
+| `zod@3.25.76` — agotamiento de memoria con colecciones enormes ([GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)), alto | `expo` → `@expo/cli` → `zod` | Validación interna de Expo CLI | Solo en el PC, con datos del propio proyecto. No va en el bundle. | No sin un salto mayor (zod 4) dentro de `@expo/cli`: esperar a una versión de Expo CLI que lo actualice. |
 
 ## Seguimiento
 
-- Al migrar a **Expo SDK 58**: repetir `npm audit`; debería resolver `decode-uri-component` (expo-router ≥58.0.13). Prioridad media porque afecta al runtime.
-- Antes de **aceptar enlaces profundos externos** o publicar la app: resolver o mitigar `decode-uri-component`.
+- ~~Al migrar a Expo SDK 58, resolver `decode-uri-component`~~: hecho el 2026-10-25.
 - Antes de activar **EAS Update con firma de código**: revisar si `node-forge` tiene versión corregida.
 - `braces` y `uuid`: revisar en cada actualización de SDK; sin acción mientras sigan limitados a herramientas del PC.

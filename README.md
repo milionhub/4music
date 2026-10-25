@@ -4,7 +4,7 @@ Proyecto móvil de descubrimiento de música electrónica (nombre provisional).
 Estado actual: **Fase 2, hito T1 implementado y pendiente de validación en el móvil** — primer recorrido de TrackDNA: bienvenida opcional, artistas favoritos buscados en MusicBrainz, descubrimiento por conexiones verificables, ficha de artista y Guardados ([plan T1](docs/t1-plan-implementacion.md), [contrato de datos](docs/t0-contrato-datos.md)). **T2.0 TrackDNA (canciones) implementado y pendiente de validación en el iPhone**: pestaña TrackDNA, búsqueda de grabaciones de MusicBrainz y ficha con ADN de procedencia trazable (sin BPM, tonalidad ni energía: no hay fuente autorizada). Fases 0 y 1 cerradas ([conclusiones de la Fase 1](docs/fase-1-conclusiones.md)).
 
 ```
-mobile/    App Expo SDK 57 (TypeScript, Expo Router), probada con Expo Go
+mobile/    App Expo SDK 58 (TypeScript, Expo Router), probada con Expo Go
 backend/   API FastAPI (Python 3.11): GET /health y /v1 (artistas y descubrimiento vía MusicBrainz)
 docs/      Documentación compartida (dependencias, decisiones)
 ```
