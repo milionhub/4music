@@ -6,7 +6,7 @@ import { contrast, fitSize } from '../src/lib/artist-identity.ts';
 import { EDITORIAL_PICKS } from '../src/lib/home-catalog.ts';
 import { COVER_SURFACE, dayIndexOf, editionFor, fitLines, HEADLINES, LAYOUTS, localDayKey } from '../src/lib/home-edition.ts';
 import {
-  behindFact, dailySlots, formatsEs, frequency, FREQUENCY_LOOKUPS, isRealCover, mainArtist, radarFact, releaseFact, songFamily, soundFacts,
+  behindFact, dailySlots, formatsEs, frequency, FREQUENCY_LOOKUPS, isRealCover, mainArtist, radarFact, releaseFact, songFamily, songTitle, soundFacts,
   versionClass,
 } from '../src/lib/home-picks.ts';
 import type { SavedTrack } from '../src/lib/preferences.ts';
@@ -370,4 +370,33 @@ test('Tu frecuencia: un invitado («feat.») no se presenta como artista princip
   const f = frequency({ saved: [s], details: {}, dayIndex: 2, size: 20 });
   assert.equal(f.items.find((i) => i.mbid === main.mbid)?.reason, `Más de ${main.artist}`);
   assert.equal(f.items.find((i) => i.mbid === guest.mbid)?.reason, `${guest.artist}, invitado en «Crazy»`);
+});
+
+// --- V6.1: afines y remixes firmados por el remezclador --------------------------------------------------------------
+const DZ = (n: number) => `https://cdn-images.dzcdn.net/images/cover/${String(n).padStart(32, 'a')}/1000x1000-000000-80-0-0.jpg`;
+const essential = (id: string, title: string, artist_name: string, cover_url: string | null = DZ(1)) =>
+  ({ id, catalog: 'deezer' as const, title, artist_name, length_ms: null, year: null, cover_url, release_title: null, deezer_url: null });
+
+test('V6.1: Tu frecuencia propone afines de cada Guardado y nunca otra versión suya, aunque la firme otro artista', () => {
+  const s = saved(uuid(400), 'Hoodlum', 'Traumer');
+  const affinities = { [s.mbid]: { recording_mbid: s.mbid, status: 'ready' as const, seed_artist: 'Traumer', basis: null, tracks: [
+    essential('deezer:1', 'Hoodlum (Chris Stussy Remix)', 'Chris Stussy', DZ(2)),
+    essential('deezer:2', 'Desire', 'Chris Stussy', DZ(3)),
+    essential('deezer:3', 'Nouvelle', 'Arapu', DZ(4)),
+  ] } };
+  const f = frequency({ saved: [s], details: {}, affinities, dayIndex: 4 });
+  // Ronda 1: el remix del Guardado queda fuera; ronda 2: el segundo afín.
+  assert.ok(!f.items.some((i) => i.title.startsWith('Hoodlum')), 'un remix del Guardado no se recomienda');
+  assert.deepEqual(f.items.filter((i) => i.kind === 'affinity').map((i) => [i.title, i.reason]), [['Desire', 'Afín a Traumer']]);
+  const two = { [s.mbid]: { ...affinities[s.mbid], tracks: affinities[s.mbid].tracks.slice(1) } };
+  assert.deepEqual(frequency({ saved: [s], details: {}, affinities: two, dayIndex: 4 }).items.filter((i) => i.kind === 'affinity')
+    .map((i) => [i.title, i.reason]), [['Desire', 'Cerca de «Hoodlum»'], ['Nouvelle', 'Afín a Traumer']]);
+  // Mismo título base, cualquier artista y cualquier marca de versión.
+  assert.equal(songTitle('Hoodlum (DeWalta Dub)'), songTitle('Hoodlum'));
+  assert.equal(songTitle('Hoodlum - Extended Mix'), 'hoodlum');
+  assert.equal(songTitle('Go'), '', 'títulos muy cortos no bloquean nada');
+  // Portadas de Deezer: válidas con su hash; la genérica (hash vacío) no.
+  assert.ok(isRealCover(DZ(5)));
+  assert.ok(!isRealCover('https://cdn-images.dzcdn.net/images/cover/d41d8cd98f00b204e9800998ecf8427e/1000x1000.jpg'));
+  assert.ok(!isRealCover('https://cdn-images.dzcdn.net/images/artist/abc/1000x1000.jpg'));
 });

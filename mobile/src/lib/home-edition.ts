@@ -55,7 +55,10 @@ export type Edition = {
   trio: TypeTrio;
   headline: Headline;
   head: SectionHead;
-  /** Superficies de En el radar, Tu frecuencia y Detrás del sonido (sin dos seguidas iguales ni pegadas a la portada). */
+  /**
+   * Superficies de En el radar, Tu frecuencia y Detrás del sonido (sin dos seguidas iguales ni pegadas a la portada).
+   * Nunca `night`: es el fondo sobre el que flotan las islas de color (V6.1).
+   */
   rhythm: [SurfaceKey, SurfaceKey, SurfaceKey];
 };
 
@@ -79,7 +82,7 @@ export function rotate<T>(list: readonly T[], dayIndex: number, step: number, tr
   return list[(((dayIndex * step + offset) % list.length) + list.length) % list.length];
 }
 
-const SURFACES: SurfaceKey[] = ['hero', 'alt', 'paper', 'night'];
+const SURFACES: SurfaceKey[] = ['hero', 'alt', 'paper'];
 /** Todas las secuencias de tres superficies sin dos seguidas iguales. */
 const RHYTHMS: [SurfaceKey, SurfaceKey, SurfaceKey][] = SURFACES.flatMap((a) => SURFACES.flatMap((b) => SURFACES.map((c) => [a, b, c] as [SurfaceKey, SurfaceKey, SurfaceKey])))
   .filter(([a, b, c]) => a !== b && b !== c);

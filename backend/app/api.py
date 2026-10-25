@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends, Request
 
-from app import (acousticbrainz, biography, config, deezer, discogs, essentials, discogs_tracks, editorial, facts, images, normalize, poster_identity,
+from app import (acousticbrainz, affinity, biography, config, deezer, discogs, essentials, discogs_tracks, editorial, facts, images, normalize, poster_identity,
                  posters, profile, reccobeats, recommend,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient, GroqError
@@ -792,6 +792,30 @@ def track_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
     return track.model_copy(update={"interpretation": interpretation, "interpretation_status": status,
                                     "dna": _measured_dna(track, match), "deezer_url": deezer.track_url(match),
                                     "sources": sources_list})
+
+
+@router.get("/tracks/{mbid}/affinity", response_model=schemas.AffinityResponse)
+def track_affinity(mbid: str, client: MusicBrainzClient = Depends(get_client),
+                   wiki: WikimediaClient = Depends(get_wiki_client)):
+    """Canciones afines (app/affinity.py) para «Tu frecuencia». Sin fuentes no comerciales, sin la grabación en Deezer
+    o si Deezer no responde, `unavailable` (la app sigue con sus otros motivos). Si la grabación no está en Deezer por
+    ISRC, se parte de la ficha de Deezer de su artista principal."""
+    track, _wiki = _track_bundle(_valid_mbid(mbid), client, wiki)
+    if not config.noncommercial_sources():
+        return schemas.AffinityResponse(recording_mbid=track.mbid, status="unavailable")
+    def seed():
+        found = affinity.seed_from_track(_deezer_track(track))
+        main = next((a for a in track.artist_credit if normalize.is_mbid(a.mbid)), None)
+        if found or not main:
+            return found
+        fetched = client.artist(main.mbid)
+        canonical = _canonical(fetched, main.mbid)
+        return affinity.seed_from_artist(_deezer_record(client, fetched, canonical), main.name, track.title)
+
+    try:
+        return affinity.cached_or_build(track.mbid, seed, client)
+    except (deezer.Unavailable, ProviderError):
+        return schemas.AffinityResponse(recording_mbid=track.mbid, status="unavailable")
 
 
 def _deezer_track(track: schemas.TrackResponse) -> dict | None:

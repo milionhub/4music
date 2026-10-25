@@ -215,6 +215,16 @@ class EssentialsResponse(BaseModel):
     sources: list[SourceRef] = []
 
 
+class AffinityResponse(BaseModel):
+    """Canciones afines a una grabación (Inicio, «Tu frecuencia»): temas de artistas relacionados en Deezer.
+    `seed_artist` es el artista de la canción de partida en Deezer. Sin Deezer o sin afines, `unavailable`."""
+    recording_mbid: str
+    status: Literal["ready", "unavailable"]
+    seed_artist: str | None = None
+    tracks: list[EssentialTrack] = []
+    basis: str | None = None
+
+
 class StoriesResponse(BaseModel):
     """generated: redactadas y validadas contra los hechos citados; structured: plantillas con datos verificados;
     mixed: ambas. Sin historias posibles, `unavailable` (la app no muestra la sección)."""

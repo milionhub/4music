@@ -2,7 +2,8 @@
  * Contenido de Inicio (V6), lógica pura probada en tests/home.test.ts:
  * - `dailySlots`: canciones editoriales del día para la portada, En el radar y Detrás del sonido (con reservas).
  * - `soundFacts`: datos verdaderos de una ficha TrackDNA (samples, versiones, créditos, edición original…).
- * - `frequency`: Tu frecuencia, recomendaciones explicables a partir de Guardados, artistas y estilos declarados.
+ * - `frequency`: Tu frecuencia, recomendaciones explicables a partir de Guardados (samples y artistas afines), artistas y
+ *   estilos declarados.
  *
  * Reglas: solo grabaciones con MBID (TrackDNA las abre); ningún motivo sin el dato que lo respalda (no se habla de
  * género si la ficha no lo documenta); originales y versiones oficiales antes que remezclas, y lo no oficial (bootlegs,
@@ -13,7 +14,7 @@ import { creditParts, joinEs } from './format.ts';
 import { EDITORIAL_PICKS, type EditorialPick } from './home-catalog.ts';
 import { mixed } from './track-art.ts';
 import type { SavedTrack } from './preferences.ts';
-import type { TrackLink, TrackRelease, TrackResponse } from '@/types/music';
+import type { AffinityResponse, TrackLink, TrackRelease, TrackResponse } from '@/types/music';
 
 /** Guardados más recientes cuya ficha se consulta para Tu frecuencia (una petición cada uno, en caché). */
 export const FREQUENCY_SEEDS = 4;
@@ -239,13 +240,13 @@ export function behindFact(sources: (TrackResponse | undefined)[], shown: Set<st
 }
 
 // --- Tu frecuencia -------------------------------------------------------------------------------------------------
-export type FrequencyKind = 'relation' | 'artist' | 'label' | 'genre' | 'style' | 'editorial';
+export type FrequencyKind = 'relation' | 'affinity' | 'artist' | 'label' | 'genre' | 'style' | 'editorial';
 export type FrequencyItem = {
   mbid: string;
   title: string;
   /** Crédito completo (con invitados), tal como lo da MusicBrainz. */
   artist: string;
-  /** Portada real (Cover Art Archive): nunca null en el carrusel. */
+  /** Portada real (Cover Art Archive o, en los afines, la del lanzamiento en Deezer): nunca null en el carrusel. */
   cover: string;
   reason: string;
   kind: FrequencyKind;
@@ -253,9 +254,11 @@ export type FrequencyItem = {
 
 /** Géneros demasiado amplios para justificar una recomendación. */
 const GENERIC_GENRES = new Set(['electronica', 'electronic', 'pop', 'dance']);
-/** Diversidad: un artista principal por carrusel y como mucho dos propuestas (una por relación) de cada Guardado. */
+/** Diversidad: un artista principal por carrusel y como mucho tres propuestas (una por sample) de cada Guardado. */
 const MAX_PER_ARTIST = 1;
-const MAX_PER_SEED = 2;
+const MAX_PER_SEED = 3;
+/** Afines de cada Guardado que entran como candidatos (alternando Guardados). */
+const AFFINITY_PER_SEED = 2;
 const MAX_RELATIONS_PER_SEED = 1;
 /** Fichas de candidatos por relación que se piden para conocer su portada: por Guardado y en total (caché en sesión y servidor). */
 const LOOKUPS_PER_SEED = 2;
@@ -270,6 +273,11 @@ export type FrequencyInput = {
    * comprobar que no son una versión de un Guardado. undefined = aún no ha llegado; null = no se pudo cargar.
    */
   candidates?: Record<string, TrackResponse | null | undefined>;
+  /**
+   * Canciones afines de cada Guardado (clave: MBID guardado; GET /v1/tracks/{mbid}/affinity): artistas relacionados
+   * en Deezer y su tema propio más escuchado. undefined = aún no ha llegado; null = sin afines.
+   */
+  affinities?: Record<string, AffinityResponse | null | undefined>;
   /** Portadas que no se pudieron mostrar en el dispositivo (URL): el candidato sale del carrusel. */
   failedCovers?: string[];
   favorites?: { mbid: string; name: string }[];
@@ -290,12 +298,17 @@ export type Frequency = {
   discarded: { duplicates: number; noCover: number };
 };
 
-/** Portada real y utilizable: una imagen de Cover Art Archive (la fuente que ya usan la API y la selección editorial). */
+/**
+ * Portada real y utilizable: una imagen de Cover Art Archive (la fuente que ya usan la API y la selección editorial) o
+ * la portada de un lanzamiento en Deezer (afines; con su hash: el hash vacío es la imagen genérica de Deezer).
+ */
 export function isRealCover(url: string | null | undefined): url is string {
   if (!url) return false;
   try {
     const u = new URL(url);
-    return u.protocol === 'https:' && (u.hostname === 'coverartarchive.org' || u.hostname.endsWith('.archive.org'))
+    if (u.protocol !== 'https:') return false;
+    if (u.hostname.endsWith('.dzcdn.net')) return /^\/images\/cover\/(?!d41d8cd98f00b204e9800998ecf8427e\/)[0-9a-f]{32}\//i.test(u.pathname);
+    return (u.hostname === 'coverartarchive.org' || u.hostname.endsWith('.archive.org'))
       && /^\/release(-group)?\/[0-9a-f-]{36}\//i.test(u.pathname);
   } catch {
     return false;
@@ -314,6 +327,17 @@ export function songFamily(title: string, artist: string): string {
   return `${norm(versioned ? main : title)}|${norm(mainArtist(artist))}`;
 }
 
+/**
+ * Título base de una canción, sin su marca de versión ni el artista: un remix de un Guardado firmado por el
+ * remezclador («Hoodlum (Chris Stussy Remix)», de Chris Stussy) comparte título base con él. Vacío si es muy corto.
+ */
+export function songTitle(title: string): string {
+  const { main, aside } = splitTitle(title);
+  const versioned = !!aside && (OFFICIAL_VERSION.test(aside.trim()) || VERSION_MARK.test(aside) || UNOFFICIAL.test(aside));
+  const core = norm(versioned ? main : title);
+  return core.length >= 3 ? core : '';
+}
+
 type Candidate = { mbid: string; title: string; artist: string; cover: string | null; reason: string; kind: FrequencyKind; seed?: string; pending?: boolean };
 
 const fromPick = (p: EditorialPick, reason: string, kind: FrequencyKind, seed?: string): Candidate =>
@@ -327,12 +351,14 @@ function sameSong(t: TrackResponse): { ids: string[]; families: string[] } {
 
 /**
  * Recomendaciones explicables y variadas, en orden de evidencia: samples documentados de tus canciones (una por
- * Guardado; un sample une dos canciones distintas, no las fusiona), mismo artista principal, mismo sello, género
+ * Guardado; un sample une dos canciones distintas, no las fusiona), artistas afines en Deezer (su tema más escuchado,
+ * hasta dos por Guardado), mismo artista principal, mismo sello, género
  * compartido según MusicBrainz y estilos que declaraste; si faltan, la selección de la redacción (dicho así).
  *
  * Nunca entra la misma canción que un Guardado o que otra propuesta: ni la grabación, ni sus remezclas, edits,
- * extended u original enlazados en MusicBrainz, ni otra versión con el mismo título base y artista principal. Tampoco
- * bootlegs ni mashups. Cada propuesta lleva portada real; sin ella se descarta y entra la siguiente. Con pocos
+ * extended u original enlazados en MusicBrainz, ni otra versión con el mismo título base y artista principal. De tus
+ * Guardados, tampoco nada con su mismo título base aunque lo firme otro artista (remixes acreditados al remezclador,
+ * covers). Ni bootlegs ni mashups. Cada propuesta lleva portada real; sin ella se descarta y entra la siguiente. Con pocos
  * candidatos válidos el carrusel es más corto: nunca se rellena con variantes.
  */
 export function frequency(input: FrequencyInput): Frequency {
@@ -353,15 +379,18 @@ export function frequency(input: FrequencyInput): Frequency {
   const shownElsewhere = new Set(input.exclude ?? []);
   const blockedIds = new Set(saved.map((s) => s.mbid));
   const blockedFamilies = new Set(saved.map((s) => songFamily(s.title, s.artist_name)));
+  const blockedTitles = new Set(saved.map((s) => songTitle(s.title)));
   for (const s of saved) {
     const d = details[s.mbid];
     if (!d) continue;
     const same = sameSong(d); // MBID canónico (fusiones), remezclas, edits y original
     same.ids.forEach((m) => blockedIds.add(m));
     same.families.forEach((f) => blockedFamilies.add(f));
+    blockedTitles.add(songTitle(d.title));
   }
+  blockedTitles.delete('');
   const isDuplicate = (c: { mbid: string; title: string; artist: string }) => {
-    if (blockedIds.has(c.mbid) || blockedFamilies.has(songFamily(c.title, c.artist))) return true;
+    if (blockedIds.has(c.mbid) || blockedFamilies.has(songFamily(c.title, c.artist)) || blockedTitles.has(songTitle(c.title))) return true;
     const d = candidates[c.mbid]; // su ficha confirma que no es una versión de un Guardado
     return !!d && (blockedIds.has(d.mbid) || sameSong(d).ids.some((m) => blockedIds.has(m)));
   };
@@ -397,6 +426,18 @@ export function frequency(input: FrequencyInput): Frequency {
       const d = candidates[row.l.mbid];
       relations.push({ mbid: row.l.mbid, title: row.l.title, artist: row.l.artist_name, cover: d?.cover_url ?? null, pending: d === undefined,
         reason: row.reason, kind: 'relation', seed: row.seed });
+    }
+  }
+
+  // Afines de cada Guardado (alternando Guardados): el primero «cerca» de la canción, el segundo afín a su artista.
+  const byAffinity: Candidate[] = [];
+  for (let round = 0; round < AFFINITY_PER_SEED; round++) {
+    for (const s of seeds) {
+      const a = input.affinities?.[s.mbid];
+      const t = a?.tracks[round];
+      if (!a || !t) continue;
+      const reason = round === 0 ? `Cerca de «${s.title}»` : `Afín a ${a.seed_artist || mainArtist(s.artist_name)}`;
+      byAffinity.push({ mbid: t.id, title: t.title, artist: t.artist_name, cover: t.cover_url, reason, kind: 'affinity', seed: s.mbid });
     }
   }
 
@@ -466,7 +507,7 @@ export function frequency(input: FrequencyInput): Frequency {
       if (c.kind === 'relation') perSeedRelations.set(c.seed, (perSeedRelations.get(c.seed) ?? 0) + 1);
     }
   };
-  for (const c of [...relations, ...byArtist, ...byLabel, ...byGenre, ...byStyle]) accept(c);
+  for (const c of [...relations, ...byAffinity, ...byArtist, ...byLabel, ...byGenre, ...byStyle]) accept(c);
   const personal = items.length;
   for (const p of pool) accept(fromPick(p, 'Selección de la redacción', 'editorial'));
   return { items, personal, lookups, discarded };

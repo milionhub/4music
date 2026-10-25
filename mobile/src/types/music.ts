@@ -152,6 +152,8 @@ export type EssentialTrack = {
   release_title: string | null;
   deezer_url: string | null;
 };
+/** Canciones afines a una grabación (Tu frecuencia): temas de artistas relacionados en Deezer. */
+export type AffinityResponse = { recording_mbid: string; status: 'ready' | 'unavailable'; seed_artist: string | null; tracks: EssentialTrack[]; basis: string | null };
 export type EssentialsResponse = { artist_mbid: string; status: 'ready' | 'unavailable'; tracks: EssentialTrack[]; basis: string | null; sources: SourceRef[] };
 
 export type BiographyResponse = { artist_mbid: string; status: 'ready' | 'unavailable'; bio: Bio | null };

@@ -1,7 +1,7 @@
 /**
  * Inicio V6 de Chromatic Underground: revista underground con edición diaria (lib/home-edition.ts) y descubrimiento
  * de música real (lib/home-picks.ts). Portada con la canción del día, En el radar, Tu frecuencia (a partir de tus
- * Guardados) y Detrás del sonido. Todo sale de fichas TrackDNA (GET /v1/tracks/{mbid}, en caché en el backend):
+ * Guardados y sus artistas afines, GET /v1/tracks/{mbid}/affinity) y Detrás del sonido. Todo sale de fichas TrackDNA (GET /v1/tracks/{mbid}, en caché en el backend):
  * como mucho tres fichas editoriales, las de tus cuatro Guardados más recientes y hasta cuatro de candidatos de Tu
  * frecuencia (para su portada real); cada una se pinta al llegar.
  */
@@ -12,10 +12,11 @@ import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
-  BehindBody, EditionCover, EditionFooter, FrequencyBody, HomeSection, type LoadState, Masthead, type Protagonist, RadarBody,
+  BehindBody, EditionCover, EditionFooter, FrequencyBody, HomeSection, ISLAND, type LoadState, Masthead, type Protagonist, RadarBody,
 } from '@/components/home';
 import { openTrack } from '@/components/track';
 import { MaxContentWidth } from '@/constants/theme';
+import { useAffinity } from '@/hooks/use-affinity';
 import { type TrackState, useTracks } from '@/hooks/use-tracks';
 import { duration } from '@/lib/format';
 import type { EditorialPick } from '@/lib/home-catalog';
@@ -55,6 +56,8 @@ export default function Home() {
   const lib = useLibrary();
   const { width } = useWindowDimensions();
   const pageWidth = Math.min(width, MaxContentWidth);
+  // Las secciones son islas de color sobre la noche de la edición; la portada sigue a sangre.
+  const island = pageWidth - ISLAND * 2;
   const dayKey = useDayKey();
   const ed = useMemo(() => editionFor(dayKey), [dayKey]);
   const P = ed.palette;
@@ -88,12 +91,14 @@ export default function Home() {
 
   // Tu frecuencia: sin nada de lo que ya está en la portada o en el radar (ni la canción de Detrás del sonido).
   const details = Object.fromEntries(seeds.map((s) => [s.mbid, dataOf(tracks.stateOf(s.mbid))]));
+  const affinities = useAffinity(seeds.map((s) => s.mbid));
   const onCover = [coverTrack?.mbid, radarTrack?.mbid, coverPick?.mbid, radarPick?.mbid].filter((m): m is string => !!m);
   const freqInput = {
     saved: lib.savedTracks,
     details,
     favorites: lib.favorites,
     declaredStyles: lib.preferences.declared_styles,
+    affinities,
     exclude: [...onCover, ...(behindPick ? [behindPick.mbid] : [])],
     dayIndex: ed.dayIndex,
   };
@@ -108,7 +113,7 @@ export default function Home() {
   }));
   const freq = frequency({ ...freqInput, candidates, failedCovers });
   const onCoverError = (url: string) => setFailedCovers((prev) => (prev.includes(url) ? prev : [...prev, url]));
-  const seedsLoading = seeds.some((s) => loadOf(tracks.stateOf(s.mbid)) === 'loading');
+  const seedsLoading = seeds.some((s) => loadOf(tracks.stateOf(s.mbid)) === 'loading' || affinities[s.mbid] === undefined);
   // Detrás del sonido: primero tus Guardados, luego la selección del día; nunca algo que ya se ve en Inicio.
   const shown = new Set([...onCover, ...freq.items.map((i) => i.mbid)]);
   const behind = behindFact([...seeds.map((s) => details[s.mbid]), behindData], shown);
@@ -138,21 +143,21 @@ export default function Home() {
           <EditionCover ed={ed} width={pageWidth} track={coverTrack} state={coverTrack ? loadOf(coverState) : 'error'}
             onOpen={() => coverTrack && openTrack(coverTrack.mbid)} onSearch={() => router.navigate('/trackdna')} />
 
-          <Animated.View entering={FadeIn.duration(250).reduceMotion(ReduceMotion.System)}>
-            <HomeSection ed={ed} s={radarS} index={1} title="En el radar" width={pageWidth}
+          <Animated.View entering={FadeIn.duration(250).reduceMotion(ReduceMotion.System)} style={{ paddingBottom: 48 }}>
+            <HomeSection ed={ed} s={radarS} index={1} title="En el radar" width={island}
               intro="Una canción de la selección de la redacción para descubrir hoy, con un dato documentado.">
-              <RadarBody ed={ed} s={radarS} width={pageWidth} track={radarTrack} state={radarTrack ? loadOf(radarState) : 'error'}
+              <RadarBody ed={ed} s={radarS} width={island} track={radarTrack} state={radarTrack ? loadOf(radarState) : 'error'}
                 meta={radarMeta || null} fact={radarData ? radarFact(radarData) : null}
                 onOpen={() => radarTrack && openTrack(radarTrack.mbid)} onRetry={tracks.retry} />
             </HomeSection>
 
-            <HomeSection ed={ed} s={freqS} index={2} title="Tu frecuencia" width={pageWidth} intro={intro}>
+            <HomeSection ed={ed} s={freqS} index={2} title="Tu frecuencia" width={island} intro={intro}>
               <FrequencyBody s={freqS} items={freq.items} onOpen={openTrack} onCoverError={onCoverError} />
             </HomeSection>
 
             {behind ? (
-              <HomeSection ed={ed} s={behindS} index={3} title="Detrás del sonido" width={pageWidth}>
-                <BehindBody ed={ed} s={behindS} width={pageWidth} fact={behind} personal={behindPersonal} onOpen={openTrack} />
+              <HomeSection ed={ed} s={behindS} index={3} title="Detrás del sonido" width={island}>
+                <BehindBody ed={ed} s={behindS} width={island} fact={behind} personal={behindPersonal} onOpen={openTrack} />
               </HomeSection>
             ) : null}
           </Animated.View>

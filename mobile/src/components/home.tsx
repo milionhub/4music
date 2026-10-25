@@ -1,6 +1,11 @@
 /**
- * Piezas editoriales de Inicio (V6, lib/home-edition.ts): cabecera de revista, portada del día en cinco composiciones
- * (no recoloreadas: cambia la distribución) y secciones a sangre sobre las superficies de la paleta de la edición.
+ * Piezas editoriales de Inicio (V6, lib/home-edition.ts): cabecera de revista, portada del día a sangre en cinco
+ * composiciones (no recoloreadas: cambia la distribución) y secciones como islas de color sobre la noche de la edición,
+ * separadas por aire (V6.1: cada color se lee por separado).
+ *
+ * Jerarquía (V6.1): la tipografía gigante solo en la portada; los encabezados de sección van a cuerpo fijo; el texto
+ * corrido en sans 16–17 con interlineado amplio y en la tinta principal; la mono solo en rótulos cortos, desde 12 px.
+ * Espacios: SECTION_GAP entre secciones, HEAD_GAP del encabezado al contenido, GROUP_GAP dentro de un grupo.
  *
  * Reglas (las de TrackDNA V5.3): el texto va siempre en la tinta de su superficie (contraste ≥ 4,5:1 comprobado en
  * las pruebas); los acentos solo pintan formas y bandas; los textos gigantes se ajustan al ancho real de sus letras
@@ -17,6 +22,11 @@ import type { FrequencyItem, SoundFact } from '@/lib/home-picks';
 import type { Surface } from '@/lib/track-art';
 
 export const GUTTER = Space.lg;
+/** Margen lateral de las islas de color sobre el fondo de la edición. */
+export const ISLAND = Space.md;
+const SECTION_GAP = Space.xxxl;
+const HEAD_GAP = Space.xl;
+const GROUP_GAP = Space.md;
 const SERIFS = new Set([ABRIL.key, DM_SERIF.key, DM_SERIF_ITALIC.key, 'serif']);
 
 /** Estilo de una tipografía medida (cada peso es una familia: nunca `fontWeight`). */
@@ -24,10 +34,12 @@ function type(face: Typeface, size: number, color: string, line = face.lineFacto
   return { fontFamily: face.family, fontSize: size, lineHeight: Math.round(size * line), letterSpacing: face.tracking, color, includeFontPadding: false };
 }
 
-const MONO = { fontFamily: Fonts.mono, fontSize: 11, letterSpacing: 0.6 };
-const MONO_B = { fontFamily: Fonts.monoBold, fontSize: 11, letterSpacing: 1.4, textTransform: 'uppercase' as const };
+const MONO = { fontFamily: Fonts.mono, fontSize: 12, letterSpacing: 0.4 };
+const MONO_B = { fontFamily: Fonts.monoBold, fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' as const };
 /** Los textos ya ajustados al ancho no crecen con la letra del sistema (se saldrían); el resto sí. */
 const FIXED = { maxFontSizeMultiplier: 1, allowFontScaling: false } as const;
+/** Cuerpo de los encabezados de sección. */
+const HEAD_SIZE = 34;
 
 /** Canción protagonista: datos de la selección editorial mientras carga su ficha; nunca inventados. */
 export type Protagonist = { mbid: string; title: string; artist: string; cover: string | null; year: string | null };
@@ -81,7 +93,7 @@ function Ticker({ text, s, accent }: { text: string; s: Surface; accent: string 
 /** Texto de la canción del día (kicker, título, artista y año) para cualquier composición. */
 function SongText({ track, s, ed, width, max, face }: { track: Protagonist; s: Surface; ed: Edition; width: number; max?: number; face?: Typeface }) {
   return (
-    <View style={{ gap: 6, width }}>
+    <View style={{ gap: Space.sm, width }}>
       <Text style={[MONO_B, { color: s.soft }]} numberOfLines={1}>La canción del día</Text>
       <FitTitle title={track.title} face={face ?? ed.trio.title} voice={ed.trio.voice} width={width} color={s.ink} max={max} />
       <Text style={[styles.artist, { color: s.ink }]} numberOfLines={2}>{track.artist}</Text>
@@ -346,47 +358,50 @@ function CoverBlocks({ ed, width, track, state, onOpen, onSearch }: CoverProps) 
 }
 
 // --- Secciones ---------------------------------------------------------------------------------------------------
-/** Sección a sangre con el encabezado de la edición: banda de tinta, filete con la voz de contraste o bloque gigante. */
+/**
+ * Isla de color con el encabezado de la edición: banda de tinta, filete editorial o bloque de acento. El encabezado va
+ * a cuerpo fijo (HEAD_SIZE; solo encoge si no cabe) en la tipografía titular: no compite con la portada. `width` es
+ * el de la isla (ver ISLAND).
+ */
 export function HomeSection({ ed, s, index, title, intro, width, children }: {
   ed: Edition; s: Surface; index: number; title: string; intro?: string; width: number; children: ReactNode;
 }) {
   const inner = width - GUTTER * 2;
   const T = ed.trio.title;
-  const V = ed.trio.voice;
   const num = String(index).padStart(2, '0');
   let head: ReactNode;
   if (ed.head === 'band') {
     const text = display(title, T);
     head = (
       <View style={[styles.bandHead, { backgroundColor: s.ink }]}>
-        <Text {...FIXED} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit style={[type(T, fitSize(text, inner - 40, T, 38, 18), s.bg, 1.1), { flex: 1 }]}>{text}</Text>
+        <Text {...FIXED} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit style={[type(T, fitSize(text, inner - 40, T, HEAD_SIZE, 18), s.bg, 1.1), { flex: 1 }]}>{text}</Text>
         <Text {...decorative} style={[MONO_B, { color: s.bg }]}>{num}</Text>
       </View>
     );
   } else if (ed.head === 'rule') {
-    const text = display(title, V);
+    const text = display(title, T);
     head = (
       <View style={{ paddingHorizontal: GUTTER, paddingTop: Space.xl, gap: Space.sm }}>
         <View {...decorative} style={{ height: 5, backgroundColor: s.ink }} />
         <Text {...decorative} style={[MONO_B, { color: s.soft }]}>{`Sección ${num}`}</Text>
-        <Text {...FIXED} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit style={type(V, fitSize(text, inner, V, 60, 22), s.ink, 1.1)}>{text}</Text>
+        <Text {...FIXED} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit style={type(T, fitSize(text, inner, T, HEAD_SIZE, 18), s.ink, 1.1)}>{text}</Text>
       </View>
     );
   } else {
     const text = display(title, T);
-    const mark = 44;
+    const mark = 28;
     head = (
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: Space.md, paddingHorizontal: GUTTER, paddingTop: Space.xl }}>
         <View {...decorative} style={{ width: mark, height: mark, backgroundColor: ed.palette.accent }} />
         <Text {...FIXED} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit
-          style={[type(T, fitSize(text, inner - mark - Space.md, T, 64, 20), s.ink, 1.0), { flex: 1 }]}>{text}</Text>
+          style={[type(T, fitSize(text, inner - mark - Space.md, T, HEAD_SIZE, 18), s.ink, 1.05), { flex: 1 }]}>{text}</Text>
       </View>
     );
   }
   return (
-    <View style={{ backgroundColor: s.bg, paddingBottom: Space.xl, gap: Space.lg }}>
+    <View style={[styles.island, { backgroundColor: s.bg }]}>
       {head}
-      {intro ? <Text style={[styles.intro, { color: s.soft, paddingHorizontal: GUTTER }]}>{intro}</Text> : null}
+      {intro ? <Text style={[styles.intro, { color: s.ink, paddingHorizontal: GUTTER }]}>{intro}</Text> : null}
       {children}
     </View>
   );
@@ -401,12 +416,12 @@ function Skeleton({ s, widths }: { s: Surface; widths: `${number}%`[] }) {
   );
 }
 
-/** Dato de una canción: palabra gigante decorativa, rótulo y la frase documentada. */
+/** Dato de una canción: palabra decorativa (por debajo del encabezado de la portada), rótulo y la frase documentada. */
 function FactBlock({ fact, s, face, width, heading }: { fact: SoundFact; s: Surface; face: Typeface; width: number; heading?: string }) {
   const word = display(fact.word, face);
   return (
     <View style={{ gap: Space.sm }}>
-      <Text {...decorative} {...FIXED} numberOfLines={1} style={type(face, fitSize(word, width, face, 120, 36), s.ink, 1.0)}>{word}</Text>
+      <Text {...decorative} {...FIXED} numberOfLines={1} style={type(face, fitSize(word, width, face, 52, 28), s.ink, 1.05)}>{word}</Text>
       <Text style={[MONO_B, { color: s.soft }]}>{heading ?? fact.kicker}</Text>
       <Text style={[styles.factText, { color: s.ink }]}>{fact.text}</Text>
     </View>
@@ -430,35 +445,35 @@ export function RadarBody({ ed, s, width, track, state, meta, fact, onOpen, onRe
   const cover = Math.round(Math.min(inner * 0.5, 240));
   const column = inner - cover - Space.lg;
   return (
-    <View style={{ paddingHorizontal: GUTTER, gap: Space.xl }}>
+    <View style={{ paddingHorizontal: GUTTER, gap: HEAD_GAP }}>
       <Pressable onPress={onOpen} disabled={state !== 'ok'} accessibilityRole="button" accessibilityLabel={`${track.title}, ${track.artist}. Abrir en TrackDNA`}
         style={({ pressed }) => [{ flexDirection: 'row', gap: Space.lg, alignItems: 'flex-end' }, pressed && { opacity: 0.85 }]}>
         <CoverPlate uri={track.cover} seed={track.mbid} title={track.title} size={cover} radius={0} />
-        <View style={{ width: column, gap: 6 }}>
+        <View style={{ width: column, gap: Space.sm }}>
           <FitTitle title={track.title} face={ed.trio.title} voice={ed.trio.voice} width={column} color={s.ink} max={42} min={18} />
           <Text style={[styles.artist, { color: s.ink }]} numberOfLines={2}>{track.artist}</Text>
           {meta ? <Text style={[MONO, { color: s.soft }]}>{meta}</Text> : null}
         </View>
       </Pressable>
       {state === 'loading' ? <Skeleton s={s} widths={['40%', '95%', '70%']} /> : null}
-      {fact ? <FactBlock fact={fact} s={s} face={ed.trio.voice} width={inner} heading={`El dato · ${fact.kicker}`} /> : null}
+      {fact ? <FactBlock fact={fact} s={s} face={ed.trio.title} width={inner} heading={`El dato · ${fact.kicker}`} /> : null}
       <OpenButton s={s} label={ctaLabel(state)} disabled={state !== 'ok'} onPress={onOpen} />
     </View>
   );
 }
 
 // --- Tu frecuencia -------------------------------------------------------------------------------------------------
-const CARD = 152;
+const CARD = 156;
 
 export function FrequencyBody({ s, items, onOpen, onCoverError }: {
   s: Surface; items: FrequencyItem[]; onOpen: (mbid: string) => void; onCoverError?: (url: string) => void;
 }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: GUTTER, gap: Space.md }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: GUTTER, gap: Space.lg }}>
       {items.map((it) => (
         <Pressable key={it.mbid} onPress={() => onOpen(it.mbid)} accessibilityRole="button"
           accessibilityLabel={`${it.title}, ${it.artist}. ${it.reason}. Abrir en TrackDNA`}
-          style={({ pressed }) => [{ width: CARD, gap: 6 }, pressed && { opacity: 0.8 }]}>
+          style={({ pressed }) => [{ width: CARD, gap: Space.sm }, pressed && { opacity: 0.8 }]}>
           <CoverPlate uri={it.cover} seed={it.mbid} title={it.title} size={CARD} radius={0} onFail={onCoverError} />
           <Text numberOfLines={2} style={[styles.reason, it.kind === 'editorial' ? { color: s.ink, borderColor: s.ink, borderWidth: 1.5 } : { color: s.bg, backgroundColor: s.ink }]}>
             {it.reason}
@@ -478,7 +493,7 @@ export function BehindBody({ ed, s, width, fact, personal, onOpen }: {
   const inner = width - GUTTER * 2;
   const links = [{ mbid: fact.track.mbid, title: fact.track.title }, ...(fact.other ? [{ mbid: fact.other.mbid, title: fact.other.title }] : [])];
   return (
-    <View style={{ paddingHorizontal: GUTTER, gap: Space.lg }}>
+    <View style={{ paddingHorizontal: GUTTER, gap: HEAD_GAP }}>
       <FactBlock fact={fact} s={s} face={ed.trio.title} width={inner} heading={personal ? `${fact.kicker} · de tus Guardados` : fact.kicker} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Space.sm }}>
         {links.map((l) => (
@@ -492,13 +507,12 @@ export function BehindBody({ ed, s, width, fact, personal, onOpen }: {
   );
 }
 
-/** Pie de la edición: procedencia de los datos, en pequeño. */
+/** Pie de la edición: su nombre y fecha (sin fuentes ni metadatos, V6.1). */
 export function EditionFooter({ ed }: { ed: Edition }) {
   const N = ed.palette.night;
   return (
-    <View style={{ backgroundColor: N.bg, padding: GUTTER, paddingBottom: Space.xxxl, gap: 4 }}>
-      <Text style={[MONO_B, { color: N.ink }]}>Edición {ed.palette.name} · {ed.dateLabel}</Text>
-      <Text style={[MONO, { color: N.soft }]}>Datos de MusicBrainz (CC0) y portadas de Cover Art Archive. La edición cambia cada día.</Text>
+    <View style={{ backgroundColor: N.bg, padding: GUTTER, paddingBottom: Space.xxxl }}>
+      <Text style={[MONO_B, { color: N.soft }]}>Edición {ed.palette.name} · {ed.dateLabel}</Text>
     </View>
   );
 }
@@ -511,10 +525,11 @@ const styles = StyleSheet.create({
   band: { position: 'absolute', paddingHorizontal: Space.lg, overflow: 'hidden' },
   ruleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: Space.sm },
   block: { padding: Space.lg, overflow: 'hidden' },
+  island: { marginHorizontal: ISLAND, marginTop: SECTION_GAP, paddingBottom: Space.xl, gap: HEAD_GAP, borderRadius: 4, overflow: 'hidden' },
   bandHead: { flexDirection: 'row', alignItems: 'center', gap: Space.md, paddingHorizontal: GUTTER, paddingVertical: Space.md },
-  intro: { fontFamily: Fonts.sans, fontSize: 15, lineHeight: 21 },
-  factText: { fontFamily: Fonts.sans, fontSize: 18, lineHeight: 26 },
-  reason: { alignSelf: 'flex-start', fontFamily: Fonts.monoBold, fontSize: 10, lineHeight: 14, letterSpacing: 0.6, textTransform: 'uppercase', paddingHorizontal: 6, paddingVertical: 3 },
+  intro: { fontFamily: Fonts.sans, fontSize: 16, lineHeight: 24, marginTop: -Space.sm },
+  factText: { fontFamily: Fonts.sans, fontSize: 17, lineHeight: 26 },
+  reason: { alignSelf: 'flex-start', fontFamily: Fonts.sansBold, fontSize: 12, lineHeight: 16, paddingHorizontal: 6, paddingVertical: 3 },
   cardTitle: { fontFamily: Fonts.sansBold, fontSize: 15, lineHeight: 19 },
   cardArtist: { fontFamily: Fonts.sans, fontSize: 13, lineHeight: 17 },
   link: { borderWidth: 2, paddingHorizontal: Space.md, minHeight: 44, justifyContent: 'center', maxWidth: '100%' },

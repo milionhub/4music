@@ -159,3 +159,17 @@ Piloto con fuentes reales: `backend/eval/pilot_profiles.py` (Traumer, PAWSA, Chr
   - Perfil sin «Su música» ni «Temas más escuchados» (los esenciales ya llevan a la música con su TrackDNA), sin el
     bloque «Información técnica y fuentes» y sin la línea de fuentes de cada historia. El crédito de la foto, que su
     licencia exige (CC BY-SA en Commons), sigue sobre la foto y ahora abre su página de origen.
+
+## 8. Inicio: islas de color y afines en «Tu frecuencia»
+
+- **Lectura**: la portada sigue a sangre; En el radar, Tu frecuencia y Detrás del sonido son islas de color sobre la
+  noche de la edición (nunca en `night`), separadas por 48 px. Encabezados de sección a cuerpo fijo (34 px) en la
+  tipografía titular; texto corrido en sans 16–17; mono desde 12 px. El pie ya no lista fuentes.
+- **Afines** (`GET /v1/tracks/{mbid}/affinity`, `app/affinity.py`): artistas que Deezer relaciona con el de cada
+  Guardado y su tema propio más escuchado (sin remixes, dubs ni edits; nunca el mismo título que la canción de
+  partida). Partida: la grabación en Deezer por ISRC y duración o, si no está, la ficha de Deezer de su artista.
+  MBID por ISRC (mismo nombre de artista y duración ±3 %) cuando MusicBrainz lo tiene; si no, `deezer:<id>`. Caché
+  de 7 días. Motivos en la app: «Cerca de «X»» y «Afín a {artista}».
+- **Sin versiones de lo guardado**: además de grabación, relaciones de MusicBrainz y familia (título + artista), Tu
+  frecuencia bloquea cualquier propuesta con el mismo título base que un Guardado (`songTitle`), aunque la firme el
+  remezclador.
