@@ -80,6 +80,31 @@ const endsNextDay = (start: string | null, end: string | null) => !!(start && en
 
 const B2B_SPLIT = /\s+(b2b|b3b|b4b|vs\.?)\s+/i;
 
+/**
+ * 3.6: ISO solo si su año está impreso en esa misma fecha («2026» suelto o «10.09.26» con el mismo día y mes) y la fecha
+ * existe. Un año de la cabecera («3-7 SEPTEMBER 2026») o de una marca («IBIZA26») no pasa a otras fechas.
+ */
+export function printedIso(text: string | null, iso: string | null): string | null {
+  if (!text || !iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  const [y, mo, d] = iso.split('-').map(Number);
+  const real = new Date(Date.UTC(y, mo - 1, d));
+  if (real.getUTCMonth() !== mo - 1 || real.getUTCDate() !== d) return null;
+  if (new RegExp(`(?<!\\d)${y}(?!\\d)`).test(text)) return iso;
+  const same = (a: number[]) => a.sort((p, q) => p - q).join() === [d, mo].sort((p, q) => p - q).join();
+  for (const m of text.matchAll(/(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](\d{2}|\d{4})(?!\d)/g)) {
+    if (m[3].slice(-2) === iso.slice(2, 4) && same([Number(m[1]), Number(m[2])])) return iso;
+  }
+  return null;
+}
+
+/** «03.09 THURSDAY NIGHTTIME» (día y franja en un texto, como en el piloto SW38) → día «03.09» y bloque «THURSDAY NIGHTTIME». */
+const DAY_AND_BLOCK = /^(\d{1,2}[./-]\d{1,2}(?:[./-]\d{2,4})?)\s+(\p{L}.*)$/u;
+
+function dayAndBlock(text: string | null, label: string | null): { day: string | null; block: string | null } {
+  const m = text && !clean(label) ? DAY_AND_BLOCK.exec(text.trim()) : null;
+  return m ? { day: m[1], block: m[2] } : { day: text, block: label };
+}
+
 function connectorOf(text: string | null, size: number): string {
   const m = text ? /\b(b2b|b3b|b4b|vs)\b/i.exec(text) : null;
   return m ? m[1].toUpperCase() : size > 2 ? `B${size}B` : 'B2B';
@@ -123,9 +148,14 @@ function draftOf(ext: PosterExtraction): DraftSet[] {
         }
         used.add(k);
         members.forEach((m) => emitted.add(normName(m)));
-        out.push({ ...base, names: members, connector: connectorOf(n.text ?? g?.text ?? null, members.length),
-          start: block?.start ?? null, end: block?.end ?? null, timeScope: block ? 'block' : null,
-          printed: n.text ?? g?.text ?? members.join(' B2B ') });
+        // Hora impresa junto al B2B: la de sus miembros (o la del texto conjunto) si coincide en todos.
+        const text = n.text ?? g?.text ?? null;
+        const own = [...members.map((m) => times.get(normName(m))), text ? times.get(normName(text)) : null].filter((t) => !!t);
+        const shared = own.length && own.every((t) => t.start === own[0].start && t.end === own[0].end) ? own[0] : null;
+        const t = shared ?? block;
+        out.push({ ...base, names: members, connector: connectorOf(text, members.length),
+          start: t?.start ?? null, end: t?.end ?? null, timeScope: shared ? 'set' : block ? 'block' : null,
+          printed: text ?? members.join(' B2B ') });
         continue;
       }
       used.add(k);
@@ -138,11 +168,12 @@ function draftOf(ext: PosterExtraction): DraftSet[] {
   }
 
   for (const s of ext.sessions) {
-    emit(s.artists, () => ({ day: s.date?.text ?? null, dayIso: s.date?.iso ?? null, stage: s.stage, block: s.label, time: s.time }));
+    const { day, block } = dayAndBlock(s.date?.text ?? null, s.label);
+    emit(s.artists, () => ({ day, dayIso: printedIso(day, s.date?.iso ?? null), stage: s.stage, block, time: s.time }));
   }
   if (ext.artists.length) {
     // El día de un artista solo lleva fecha ISO si coincide con una fecha impresa que la tiene (año visible).
-    const isoOf = (day: string | null) => ext.dates.find((d) => day !== null && normName(d.text) === normName(day))?.iso ?? null;
+    const isoOf = (day: string | null) => printedIso(day, ext.dates.find((d) => day !== null && normName(d.text) === normName(day))?.iso ?? null);
     emit(ext.artists.map((a) => a.name), (i) => ({ day: ext.artists[i].day, dayIso: isoOf(ext.artists[i].day), stage: ext.artists[i].stage, block: null, time: null }));
   }
   // B2B cuyos miembros no aparecieron en ningún bloque: se conserva la actuación conjunta tal cual.
@@ -221,6 +252,7 @@ export function mergeExtraction(event: PosterEvent, ext: PosterExtraction, now: 
   ext.stages.forEach((s) => stageId(s));
 
   const uncertain = new Set(ext.uncertain.map(normName));
+  const created = new Set<string>();
   const artistId = (name: string): string | null => {
     const k = normName(name);
     if (!k || discarded.has(k)) return null;
@@ -228,11 +260,13 @@ export function mergeExtraction(event: PosterEvent, ext: PosterExtraction, now: 
     if (found) return found.id;
     const id = nextId(e.artists.map((a) => a.id), 'a');
     const flags: Flag[] = uncertain.has(k) ? ['model_uncertain'] : [];
+    created.add(id);
     e.artists.push({ id, name: name.trim(), meta: meta('ai', name.trim(), flags), link: { status: 'pending', catalog: null, refId: null } });
     return id;
   };
 
   const sameCtx = (a: string | null, b: string | null) => a === null || b === null || a === b;
+  const before = [...e.sets]; // lo que ya había: solo eso protege o se propone reestructurar
   let order = e.sets.reduce((m, s) => Math.max(m, s.order + 1), 0);
   for (const d of draftOf(ext)) {
     const ids = [...new Set(d.names.map(artistId).filter((x): x is string => x !== null))];
@@ -251,10 +285,14 @@ export function mergeExtraction(event: PosterEvent, ext: PosterExtraction, now: 
       }
       continue;
     }
+    // Parte de una actuación conjunta que ya existía en ese contexto (zona que corta un B2B, o una actuación duplicada
+    // que el usuario borró): no se crea otra.
+    if (before.some((s) => s.artistIds.length > ids.length && ids.every((id) => s.artistIds.includes(id))
+      && sameCtx(s.dayId, ctx.dayId) && sameCtx(s.stageId, ctx.stageId) && sameCtx(s.block, ctx.block))) continue;
     if (ids.length > 1) {
-      // B2B nuevo sobre actuaciones individuales ya existentes: no se reestructura solo, se sugiere.
-      const solos = ids.map((id) => e.sets.find((s) => s.artistIds.length === 1 && s.artistIds[0] === id && sameCtx(s.dayId, ctx.dayId) && sameCtx(s.stageId, ctx.stageId)));
-      if (solos.every(Boolean)) {
+      // B2B nuevo sobre actuaciones individuales ya existentes (aunque sea una): no se reestructura solo, se sugiere.
+      const solos = ids.map((id) => before.find((s) => s.artistIds.length === 1 && s.artistIds[0] === id && sameCtx(s.dayId, ctx.dayId) && sameCtx(s.stageId, ctx.stageId)));
+      if (solos.some(Boolean)) {
         suggest({ target: 'set', targetId: null, field: 'b2b', value: ids.join(','),
           label: `Unir en B2B: ${ids.map((id) => e.artists.find((a) => a.id === id)?.name).join(' + ')}` });
         continue;
@@ -266,6 +304,9 @@ export function mergeExtraction(event: PosterEvent, ext: PosterExtraction, now: 
       order: order++, meta: meta('ai', d.printed),
     });
   }
+
+  // Un nombre nuevo que solo venía en un B2B propuesto sigue mientras la propuesta exista; sin ella, no queda suelto.
+  e.artists = e.artists.filter((a) => !created.has(a.id) || inUse(e).has(a.id));
 
   const reviewNotes = ext.review.map((r) => (r.value ? `${r.reason}: ${r.value}` : r.reason));
   const incomplete = ext.mode === 'region' ? e.analysis.incomplete : !ext.complete;
@@ -516,15 +557,32 @@ export function applySuggestion(e: PosterEvent, id: string, now: string): Poster
   }
   if (s.field === 'start' && s.targetId) return updateSet(rest, s.targetId, { start: s.value }, now);
   if (s.field === 'b2b') {
-    const ids = s.value.split(',');
+    // Une las actuaciones individuales que haya y añade al B2B los miembros que solo estaban en la propuesta.
+    const ids = s.value.split(',').filter((aid) => rest.artists.some((a) => a.id === aid));
     const solos = ids.map((aid) => rest.sets.find((x) => x.artistIds.length === 1 && x.artistIds[0] === aid)?.id).filter((x): x is string => !!x);
-    return joinSets(rest, solos, now);
+    if (!solos.length) return touch(pruneUnused(rest), now);
+    const joined = solos.length > 1 ? joinSets(rest, solos, now) : rest;
+    const keep = joined.sets.find((x) => solos.includes(x.id))!;
+    const artistIds = [...new Set([...ids, ...keep.artistIds])];
+    const set = { ...keep, artistIds, connector: artistIds.length > 2 ? `B${artistIds.length}B` : 'B2B', meta: lock({ ...keep.meta, origin: 'user' }, 'artistIds') };
+    return touch({ ...joined, sets: joined.sets.map((x) => (x.id === keep.id ? set : x)) }, now);
   }
   return touch(rest, now);
 }
 
 export const dismissSuggestion = (e: PosterEvent, id: string, now: string): PosterEvent =>
-  touch({ ...e, suggestions: e.suggestions.filter((x) => x.id !== id) }, now);
+  touch(pruneUnused({ ...e, suggestions: e.suggestions.filter((x) => x.id !== id) }), now);
+
+/** Artistas con actuación o en un B2B propuesto. */
+function inUse(e: PosterEvent): Set<string> {
+  return new Set([...e.sets.flatMap((s) => s.artistIds), ...e.suggestions.filter((x) => x.field === 'b2b').flatMap((x) => x.value.split(','))]);
+}
+
+/** Sin actuación ni propuesta, un artista no aparece en ninguna parte: se quita (no se descarta: el cartel puede volver a proponerlo). */
+function pruneUnused(e: PosterEvent): PosterEvent {
+  const used = inUse(e);
+  return { ...e, artists: e.artists.filter((a) => used.has(a.id)) };
+}
 
 export const confirmEvent = (e: PosterEvent, now: string): PosterEvent => touch({ ...e, status: 'confirmed' }, now);
 

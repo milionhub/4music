@@ -135,3 +135,38 @@ def test_continuacion_y_region_envian_contexto():
     assert "THURSDAY NIGHTTIME" in prompt and '"CUKY"' in prompt
     call(t, mode="region")
     assert "CROPPED FRAGMENT" in t.calls[1]["messages"][0]["content"][0]["text"]
+
+
+# --- 3.6A: casos reproducidos con los pilotos (sin llamadas reales) ---------------------------------------------------
+
+def extract(over):
+    return posters.sanitize({**SW38_LIKE, **over}, "full", True, "m")
+
+
+def test_b2b_con_hora_propia_la_conserva_y_una_hora_repetida_entre_solistas_no():
+    times = [{"name": "CUKY", "time": "23:00 - 01:00"}, {"name": "PERSIC", "time": "23:00 - 01:00"}]
+    d = extract({"individual_times": times})
+    assert [t.name for t in d.individual_times] == ["CUKY", "PERSIC"]  # misma hora: es la de su B2B, no del bloque
+    d = extract({"individual_times": times, "b2b": []})
+    assert d.individual_times == []  # sin B2B, dos solistas con la misma hora sigue siendo la del bloque
+
+
+def test_anio_impreso_se_conserva_y_el_de_la_cabecera_no_se_atribuye():
+    dates = [{"text": "10.09.26", "iso": "2026-09-10"}, {"text": "SEPTEMBER 10 2026", "iso": "2026-09-10"},
+             {"text": "10.09", "iso": "2026-09-10"}, {"text": "10.09.25", "iso": "2026-09-10"},
+             {"text": "31.02.2026", "iso": "2026-02-31"}, {"text": "IBIZA26", "iso": "2026-01-01"}]
+    d = extract({"dates": dates})
+    assert [x.iso for x in d.dates] == ["2026-09-10", "2026-09-10", None, None, None, None]
+    assert d.sessions[0].date.iso is None  # «03.09» bajo «3-7 SEPTEMBER 2026»: el año no es suyo
+
+
+def test_piloto_sw38_cortado_dentro_de_los_b2b():
+    # Forma real del piloto compacto de Fase 1.4: el día y la franja en el mismo texto, «B2B X» en dos líneas.
+    real = {**SW38_LIKE, "sessions": [
+        {"date": {"text": "05.09 SATURDAY NIGHTTIME", "iso": None}, "label": None, "stage": "1", "time": "22:00",
+         "artists": ["JOE VANDITTI", "MAHONY", "JAMIE JONES", "JOSEPH CAPRIATI"]}]}
+    text = json.dumps(real)
+    cut = text[: text.index('"B2B JOSEPH CAPRIATI"') - 30]
+    d = call(Transport(content=cut, finish="length")).json()
+    assert d["complete"] is False and len(d["sessions"]) == 1 and d["sessions"][0]["artists"][-1] == "JOSEPH CAPRIATI"
+    assert [b["artists"] for b in d["b2b"]] == [["CUKY", "PERSIC"]]  # el B2B cortado no se rellena

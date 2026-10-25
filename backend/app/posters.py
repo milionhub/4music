@@ -68,6 +68,7 @@ Names cut by the edge of the fragment go to "uncertain" with the visible part on
 
 _HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 _ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_NUM_DATE = re.compile(r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](\d{2}|\d{4})(?!\d)")
 
 _limit_lock = threading.Lock()
 _daily: dict[str, int] = {}
@@ -214,27 +215,45 @@ def sanitize(obj: object, mode: str, complete: bool, model: str) -> schemas.Post
     return audit(ext)
 
 
+def year_printed(text: str, iso: str) -> bool:
+    """El año de `iso` está impreso en esa misma fecha: «2026» suelto, o «10.09.26» con el mismo día y mes. Una fecha
+    imposible (31 de febrero) no cuenta. Un año de otra parte del cartel (cabecera, «IBIZA26») tampoco."""
+    try:
+        d = date.fromisoformat(iso)
+    except ValueError:
+        return False
+    if re.search(rf"(?<!\d){d.year}(?!\d)", text):
+        return True
+    return any(y[-2:] == iso[2:4] and {int(a), int(b)} == {d.day, d.month} for a, b, y in _NUM_DATE.findall(text))
+
+
 def audit(ext: schemas.PosterExtraction) -> schemas.PosterExtraction:
     """Auditoría de Fase 1.4 sobre el esquema compacto:
-    - Hora individual igual a la de su bloque o repetida en varios artistas del bloque → se descarta.
+    - Hora individual igual a la de su bloque o repetida en varios artistas del bloque → se descarta. Los miembros de
+      un mismo B2B comparten su hora: cuentan como uno.
     - Fecha ISO cuyo año no está impreso en su propio texto → iso = null.
     """
     block_of: dict[str, int] = {}
     for i, s in enumerate(ext.sessions):
         for name in s.artists:
             block_of.setdefault(name.casefold(), i)
-    per_block: dict[tuple[int, str], int] = {}
+    pair_of = {n.casefold(): j for j, b in enumerate(ext.b2b) for n in b.artists}
+
+    def unit(name: str) -> object:
+        return pair_of.get(name.casefold(), name.casefold())
+
+    per_block: dict[tuple[int, str], set[object]] = {}
     for t in ext.individual_times:
         i = block_of.get(t.name.casefold())
         if i is not None:
-            per_block[(i, t.time)] = per_block.get((i, t.time), 0) + 1
+            per_block.setdefault((i, t.time), set()).add(unit(t.name))
     kept = []
     for t in ext.individual_times:
         i = block_of.get(t.name.casefold())
         reason = None
         if i is not None and ext.sessions[i].time and t.time.strip() == ext.sessions[i].time.strip():
             reason = "igual a la hora de inicio de su bloque"
-        elif i is not None and per_block[(i, t.time)] > 1:
+        elif i is not None and len(per_block[(i, t.time)]) > 1:
             reason = "misma hora repetida en varios artistas del bloque"
         if reason:
             ext.review.append(schemas.PosterReview(field="individual_times", value=f"{t.name} {t.time}",
@@ -243,7 +262,7 @@ def audit(ext: schemas.PosterExtraction) -> schemas.PosterExtraction:
             kept.append(t)
     ext.individual_times = kept
     for d in list(ext.dates) + [s.date for s in ext.sessions if s.date]:
-        if d.iso and d.iso[:4] not in d.text:
+        if d.iso and not year_printed(d.text, d.iso):
             ext.review.append(schemas.PosterReview(field="iso", value=f"{d.text} → {d.iso}", action="descartado",
                                                    reason="año no impreso en esa fecha"))
             d.iso = None

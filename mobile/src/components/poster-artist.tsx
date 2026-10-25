@@ -13,9 +13,9 @@
  * se queda con la altura que tenía al empezar a animarse.
  */
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { openBrowserAsync } from 'expo-web-browser';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, BackHandler, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, ReduceMotion, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -56,13 +56,14 @@ export function ArtistQuickView({ event, setId, artistId, resolveError, art, onS
   const members = (set?.artistIds ?? [artistId]).map((id) => event.artists.find((a) => a.id === id)).filter((a): a is PosterArtist => !!a);
   const S = art.surfaces;
 
-  useEffect(() => {
+  // Atrás en Android cierra la hoja solo con el evento en primer plano: con el perfil o TrackDNA encima, vuelve atrás.
+  useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       onClose();
       return true;
     });
     return () => sub.remove();
-  }, [onClose]);
+  }, [onClose]));
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">

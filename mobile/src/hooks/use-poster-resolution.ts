@@ -50,10 +50,14 @@ export function usePosterResolution(eventId: string | undefined, onEvent: (e: Po
         next = applyResolution(next, artists[i].id, res);
       }
     });
-    if (next) {
-      const saved = saveEvent(next);
-      onEvent(next);
-      if (!saved.ok) setError(saved.message);
+    if (!next) return false;
+    const saved = saveEvent(next);
+    onEvent(next);
+    if (!saved.ok) {
+      // Sin guardar, el siguiente lote volvería a pedir los mismos nombres sin fin: se detiene hasta «Reintentar».
+      artists.forEach((a) => failed.current.add(a.id));
+      setError(saved.message);
+      return false;
     }
     setError(ok ? null : 'MusicBrainz no responde ahora mismo. Lo ya identificado está guardado.');
     return ok;

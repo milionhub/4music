@@ -59,11 +59,12 @@ export default function ReviewPoster() {
       const result = kind === 'continue'
         ? await analyzePoster({ image: await readBase64(uri), mode: 'continue', ...knownContext(e) })
         : await analyzePoster({ image: await cropRegionBase64(uri, e.image.width, e.image.height, kind), mode: 'region' });
-      // Se relee el evento guardado: la fusión parte siempre de las últimas correcciones.
-      const base = loadEvent(e.id) ?? e;
+      // Se relee el evento guardado: la fusión parte siempre de las últimas correcciones. Si el último guardado falló,
+      // las correcciones solo están en memoria y se parte de ellas (releer las perdería).
+      const base = (saveError ? null : loadEvent(e.id)) ?? e;
       apply(result.ok ? mergeExtraction(base, result.data, now()) : recordError(base, describePosterError(result.error), now()));
     } catch (error) {
-      apply(recordError(loadEvent(e.id) ?? e, `No se pudo preparar la imagen: ${error instanceof Error ? error.message : String(error)}`, now()));
+      apply(recordError((saveError ? null : loadEvent(e.id)) ?? e,`No se pudo preparar la imagen: ${error instanceof Error ? error.message : String(error)}`, now()));
     } finally {
       setBusy(null);
     }

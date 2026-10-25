@@ -8,7 +8,7 @@
 import { Image } from 'expo-image';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { STATUS_LABEL } from '@/components/poster';
@@ -34,6 +34,7 @@ export default function PosterEventScreen() {
   const [loaded, setLoaded] = useState(false);
   const [filterState, setFilter] = useState<ExploreFilter>(NO_FILTER);
   const [zoom, setZoom] = useState(false);
+  const [zoomBox, setZoomBox] = useState<{ width: number; height: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useFocusEffect(useCallback(() => {
@@ -196,7 +197,15 @@ export default function PosterEventScreen() {
       {zoom ? (
         <Modal animationType="fade" onRequestClose={() => setZoom(false)} supportedOrientations={['portrait', 'landscape']}>
           <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }} edges={['bottom', 'left', 'right']}>
-            <Image source={{ uri: posterImageUri(e.id) }} style={{ flex: 1 }} contentFit="contain" accessibilityLabel="Cartel original completo" />
+            {/* Pellizco para ampliar con el zoom nativo de ScrollView (iOS). En Android no hay zoom: se ve completo. */}
+            <ScrollView style={{ flex: 1 }} maximumZoomScale={4} minimumZoomScale={1} centerContent bouncesZoom
+              showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}
+              onLayout={(ev) => setZoomBox({ width: ev.nativeEvent.layout.width, height: ev.nativeEvent.layout.height })}>
+              {zoomBox ? (
+                <Image source={{ uri: posterImageUri(e.id) }} style={zoomBox} contentFit="contain"
+                  accessibilityLabel="Cartel original completo. Pellizca para ampliar." />
+              ) : null}
+            </ScrollView>
             <Pressable onPress={() => setZoom(false)} accessibilityRole="button" accessibilityLabel="Cerrar cartel" hitSlop={12}
               style={[styles.zoomClose, { top: insets.top + Space.md }]}>
               <Text style={styles.zoomCloseText}>✕  Cerrar</Text>

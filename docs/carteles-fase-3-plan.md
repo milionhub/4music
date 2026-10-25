@@ -11,7 +11,7 @@ Fecha: 2026-10-21. Documento de diseño: no implica código. Base: `docs/fase-1-
 | 3.3 Biblioteca local | **Cerrada**. Tests de la lógica pura y validación manual en iPhone: las ediciones persisten, Movement Detroit queda guardado en la biblioteca y los eventos se reabren correctamente. No se ha probado matar la app durante el análisis. |
 | 3.4 Artistas y música | **Cerrada** (2026-10-22). `pytest` con MusicBrainz simulado, tests de Node y validación manual en iPhone con MusicBrainz real: Carl Craig B2B Cajmere abre a cada artista por separado; las vistas rápidas cargan imagen, información y canciones; perfil completo y TrackDNA funcionan; Colette muestra 8 homónimos sin enlace automático y la elección manual persiste al reabrir; Paco Osuna correcto. |
 | 3.5 Experiencia editorial | **Cerrada** (2026-10-23), con los ajustes 3.5B y 3.5C. Tests de Node y `pytest`, y validación manual en iPhone: portadas editoriales de Now Here y Movement, biblioteca y explorador, vista rápida «Sobre el artista», fotografías permitidas y atribuciones accesibles, apertura y reapertura de la hoja sin cortes, cambio entre artistas B2B y navegación a perfiles y TrackDNA. Falta la comprobación en Android (pasa a 3.6). |
-| 3.6 | Sin empezar. |
+| 3.6 | **3.6A implementada** (2026-10-23): auditoría y estabilización con tests (ver abajo). Pendiente: 3.6B en dispositivo (iPhone y Android) y el cierre. |
 | 3.7 | Sin empezar (añadida al plan el 2026-10-23). |
 
 **Decisiones de 3.5**:
@@ -44,11 +44,39 @@ Fecha: 2026-10-21. Documento de diseño: no implica código. Base: `docs/fase-1-
   - Tarjetas enmarcadas con la paleta del evento y botón de acciones (editar o eliminar).
   - Estado vacío con los tres pasos.
 
+**3.6A — Auditoría focalizada y estabilización (2026-10-23)**. Sin llamadas reales a Groq. Casos tomados de los pilotos de Fase 1.4 (SW38 compacto, Circoloco) y de respuestas simuladas. No hay fixture de Movement.
+- **Errores reproducidos y corregidos**:
+  - Día y franja en un mismo texto («03.09 THURSDAY NIGHTTIME», salida real de SW38) creaban 8 días en vez de 4. Ahora, si empieza por una fecha numérica y no hay etiqueta, se separa en día y bloque (`dayAndBlock`).
+  - Hora impresa de un B2B: el backend la descartaba como «repetida» y el móvil usaba la del bloque. Ahora los miembros de un B2B cuentan como uno y la actuación conserva su hora (`timeScope: 'set'`) si coincide en todos.
+  - Año: se perdía uno impreso con dos cifras («10.09.26») y se aceptaba una fecha imposible (`2026-02-31`). Ahora `year_printed` (backend) y `printedIso` (móvil, como defensa) solo aceptan el año impreso en esa misma fecha. El de la cabecera o el de una marca («IBIZA26») sigue sin atribuirse.
+  - Reanalizar una zona que corta un B2B creaba una actuación individual duplicada del miembro, y una actuación duplicada que el usuario había borrado volvía con un reanálisis. Ahora no se crea una actuación contenida en otra ya existente en el mismo contexto.
+  - B2B nuevo con un solo miembro ya presente: se creaba y duplicaba a ese miembro. Ahora es una propuesta. Al aplicarla se forma el B2B y al descartarla no quedan nombres sueltos.
+  - Un fallo de escritura durante la identificación repetía las mismas peticiones sin fin y el aviso se borraba. Ahora se detiene y muestra el error hasta «Reintentar».
+  - Recuperar (continuar o zona) tras un guardado fallido releía el almacenamiento y perdía las correcciones en memoria. Ahora parte de ellas.
+  - Atrás en Android seguía cerrando la hoja con el perfil o TrackDNA encima (se consumía la pulsación). Ahora solo actúa con el evento en primer plano.
+- **Mejora**: el cartel ampliado admite pellizco en iOS (zoom nativo de `ScrollView`, sin dependencias). En Android sigue sin zoom: haría falta un gesto propio con gesture-handler, que queda como mejora no bloqueante.
+- **Comprobado sin cambios**: PETER GROCE queda `none` con «Peter Croce» como nombre parecido y su evidencia, sin renombrar. Una corrección del usuario no la pisa ni la resolución ni un reanálisis. `9999999999` se señala y no se elimina. Un colectivo y sus miembros entre paréntesis no se separan (aviso `collective`). Un artista puede tener varias actuaciones en bloques distintos. Un JSON cortado dentro de los B2B solo conserva los completos, y la continuación propone unir los que faltan. El bloque mezclado de SW38 (10 artistas) se señala con `possible_merge`.
+- **Jerarquía**: `tier` no existe en el modelo ni en la extracción. No se añade: se mantiene el orden del cartel sin destacar a nadie.
+- **Tests añadidos**: `mobile/tests/posters-stability.test.ts` (11 casos; 7 fallaban antes de corregir) y 3 en `backend/tests/test_posters.py` (2 fallaban).
+- **Limitaciones conocidas**:
+  - Un bloque que mezcla dos franjas (SW38 «04.09 FRIDAY DAYTIME» con 22:00) solo se señala; su hora no se puede corregir sola.
+  - Una actuación borrada vuelve si un reanálisis la lee en otro contexto (otro día o escenario) y su artista sigue en el evento.
+  - Un artista de un B2B propuesto cuenta en el total hasta que se aplica o se descarta la propuesta.
+  - Sin fixture real de Movement.
+  - Persistencia y red (escritura en disco, cierre de la app durante el análisis) sin tests automáticos: dependen de módulos nativos.
+  - La errata de PETER GROCE solo está probada con MusicBrainz simulado.
+
+**Plan de pruebas 3.6B (iPhone y Android, en dispositivo)**:
+1. **Android**: portadas, biblioteca y explorador. La vista rápida se abre y se cierra 5 veces. En un B2B se cambia de artista. Perfil → Atrás vuelve al evento con la hoja abierta. Otro Atrás cierra la hoja y otro sale del evento. Áreas seguras con barra de gestos y con botones.
+2. **Ambos**: filtros y scroll se conservan al volver de un perfil y de TrackDNA. La barra de filtros queda fija. Nombres largos en las 4 familias de portada.
+3. **Cartel ampliado**: en iPhone, pellizcar, desplazar y cerrar, en vertical y en horizontal. En Android, que se vea completo y Atrás cierre.
+4. **Recuperación**: activar el modo avión durante el análisis (aviso y reintento sin borrador). Matar la app justo después de recibir el análisis: el borrador debe seguir al reabrir. «Continuar análisis» y «Reanalizar zona» en un cartel con B2B, comprobando que lo editado y lo borrado se respetan.
+5. **SW38 o Movement real** (con presupuesto fijado, en 3.6): 4 días, B2B correctos y ninguna hora inventada. PETER GROCE con MusicBrainz real.
+
 **Pendiente para 3.6** (además de lo anotado abajo):
-- Revisión visual en Android (no se ha probado): portadas, biblioteca, explorador, vista rápida y su hoja, y Atrás del sistema.
-- Revisión visual en iPhone con las 4 portadas con nombres largos, la barra de filtros fija y el cartel ampliado (Now Here y Movement ya validados).
-- Ampliación con pellizco del cartel original: hoy solo encaja la imagen completa.
-- Jerarquía del line-up (`tiers`): sin ella, la portada no destaca a ningún artista.
+- Ejecutar el plan 3.6B en iPhone y Android (Android nunca se ha probado).
+- Zoom por pellizco en Android (mejora no bloqueante).
+- Jerarquía del line-up: sin detección fiable, la portada no destaca a ningún artista (posterior a V1).
 
 **Decisiones técnicas de 3.4**:
 - **Resolución** (`backend/app/poster_identity.py`): `POST /v1/posters/resolve` (1–20 nombres, en serie al ritmo del cliente de MusicBrainz).
