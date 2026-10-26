@@ -12,7 +12,9 @@ Cada fuente lleva un id (S1, S2…): el modelo solo puede citar esos ids, así n
 
 from __future__ import annotations
 
+import ipaddress
 import re
+import socket
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -133,15 +135,43 @@ def _clip(text: str, limit: int = MAX_SOURCE_CHARS) -> str:
     return text[:limit].rsplit(" ", 1)[0] + "…"
 
 
+def _public_url(url: str) -> bool:
+    """http(s) hacia un host cuyas direcciones son todas públicas. La URL viene de datos editables por cualquiera
+    (MusicBrainz/Wikidata): sin esto, el backend podría leer servicios de la red local o de la propia máquina (SSRF)."""
+    parts = urllib.parse.urlsplit(url)
+    if parts.scheme not in ("http", "https") or not parts.hostname:
+        return False
+    try:
+        infos = socket.getaddrinfo(parts.hostname, parts.port or (443 if parts.scheme == "https" else 80),
+                                   proto=socket.IPPROTO_TCP)
+    except (socket.gaierror, UnicodeError, ValueError, OSError):
+        return False
+    addresses = [ipaddress.ip_address(str(info[4][0]).split("%", 1)[0]) for info in infos]
+    return bool(addresses) and all(
+        (a.ipv4_mapped or a).is_global if isinstance(a, ipaddress.IPv6Address) else a.is_global for a in addresses)
+
+
+class _PublicRedirects(urllib.request.HTTPRedirectHandler):
+    """Cada redirección se valida igual que la URL inicial."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not _public_url(newurl):
+            raise urllib.error.URLError("redirección a un destino no público")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_official_opener = urllib.request.build_opener(_PublicRedirects)
+
+
 def official_site_text(url: str, user_agent: str) -> str | None:
     """Extracto de la web oficial si robots.txt lo permite. None ante cualquier problema (nunca bloquea)."""
     parts = urllib.parse.urlsplit(url)
-    if parts.scheme not in ("http", "https") or not parts.netloc:
+    if not _public_url(url):
         return None
     robots = urllib.robotparser.RobotFileParser(f"{parts.scheme}://{parts.netloc}/robots.txt")
     try:
         robots_req = urllib.request.Request(robots.url, headers={"User-Agent": user_agent})
-        with urllib.request.urlopen(robots_req, timeout=OFFICIAL_TIMEOUT_S) as r:
+        with _official_opener.open(robots_req, timeout=OFFICIAL_TIMEOUT_S) as r:
             robots.parse(r.read(50_000).decode("utf-8", "replace").splitlines())
     except urllib.error.HTTPError as exc:
         if exc.code in (401, 403):
@@ -153,7 +183,7 @@ def official_site_text(url: str, user_agent: str) -> str | None:
         return None
     try:
         req = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "text/html"})
-        with urllib.request.urlopen(req, timeout=OFFICIAL_TIMEOUT_S) as r:
+        with _official_opener.open(req, timeout=OFFICIAL_TIMEOUT_S) as r:
             if "html" not in (r.headers.get("Content-Type") or ""):
                 return None
             html = r.read(OFFICIAL_MAX_BYTES).decode("utf-8", "replace")
