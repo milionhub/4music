@@ -53,7 +53,7 @@ export function PreviewPlayer({ mbid, deezerUrl, accent }: { mbid: string; deeze
         accessibilityLabel={`${label} de 30 segundos (Deezer)`} accessibilityState={{ disabled: phase === 'none', busy: phase === 'loading' }}
         style={({ pressed }) => [styles.row, { borderColor: B.ink }, pressed && { opacity: 0.7 }]}>
         <View style={[styles.button, { backgroundColor: phase === 'none' ? B.soft : accent }]}>
-          {phase === 'loading' ? <ActivityIndicator color={B.bg} /> : <Text style={[styles.glyph, { color: B.bg }]}>{playing ? '❚❚' : '▶'}</Text>}
+          {phase === 'loading' ? <ActivityIndicator color={B.bg} /> : <PlayGlyph playing={playing} color={B.bg} />}
         </View>
         <View style={{ flex: 1, gap: 6 }}>
           <Text style={[styles.label, { color: B.ink }]} numberOfLines={1}>{label}</Text>
@@ -70,10 +70,25 @@ export function PreviewPlayer({ mbid, deezerUrl, accent }: { mbid: string; deeze
   );
 }
 
+/** Reproducir / pausar dibujados con formas: los caracteres «▶» y «❚❚» se convierten en emoji en iOS. */
+function PlayGlyph({ playing, color }: { playing: boolean; color: string }) {
+  if (playing) {
+    return (
+      <View style={{ flexDirection: 'row', gap: 4 }}>
+        <View style={{ width: 5, height: 16, borderRadius: 1, backgroundColor: color }} />
+        <View style={{ width: 5, height: 16, borderRadius: 1, backgroundColor: color }} />
+      </View>
+    );
+  }
+  return (
+    <View style={{ marginLeft: 3, width: 0, height: 0, borderTopWidth: 9, borderBottomWidth: 9, borderLeftWidth: 15,
+      borderTopColor: 'transparent', borderBottomColor: 'transparent', borderLeftColor: color }} />
+  );
+}
+
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Space.md, minHeight: 64, borderWidth: 1.5, borderRadius: Radius.sm, padding: Space.sm },
   button: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
-  glyph: { fontSize: 16, fontFamily: Fonts.sansBold },
   label: { fontFamily: Fonts.sansBold, fontSize: 16 },
   track: { height: 4, borderRadius: 2, overflow: 'hidden' },
 });

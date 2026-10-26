@@ -35,7 +35,7 @@ def artist(id_=5359276, name="CHRIS STASSY", pic=PHOTO):
     return {"id": id_, "name": name, "link": f"https://www.deezer.com/artist/{id_}", "picture_xl": pic}
 
 
-def mb_artist(name="Chris Stussy", relations=(), aliases=()):
+def mb_artist(name="Chris Stassy", relations=(), aliases=()):
     return {"id": MBID, "name": name, "relations": list(relations), "aliases": [{"name": a} for a in aliases]}
 
 
@@ -61,7 +61,7 @@ def test_musicbrainz_link_first_without_searching():
 
 
 def test_two_matching_isrcs_survive_a_name_change():
-    # Chris Stussy figura en Deezer como «CHRIS STASSY»: el nombre no coincide, pero dos ISRC sí.
+    # Chris Stassy figura en Deezer como «CHRIS STASSY»: el nombre no coincide, pero dos ISRC sí.
     routes = {"track/isrc:QM4TW2437510": track(5359276, "CHRIS STASSY"), "track/isrc:QM4TW2437511": track(5359276, "CHRIS STASSY"),
               "artist/5359276": artist()}
     found, _ = run(mb_artist(), routes, [rec("QM4TW2437510"), rec("QM4TW2437511")])
@@ -72,7 +72,7 @@ def test_one_isrc_needs_the_name_too_and_collaborations_are_ignored():
     routes = {"track/isrc:A": track(9, "Someone Else"), "artist/9": artist(9, "Someone Else")}
     assert run(mb_artist(), routes, [rec("A")])[0] is None, "un ISRC con otro nombre: no basta"
     store.put(deezer.KIND, MBID, {}, 1)  # sin caché entre casos
-    routes = {"track/isrc:A": track(5, "Chris Stussy"), "artist/5": artist(5, "Chris Stussy")}
+    routes = {"track/isrc:A": track(5, "Chris Stassy"), "artist/5": artist(5, "Chris Stassy")}
     assert run(mb_artist(), routes, [rec("A")])[0]["id"] == "5"
     assert deezer.recording_isrcs([rec("B", MBID, OTHER), rec("A")], MBID) == ["A"], "con colaboradores, no"
 
@@ -141,7 +141,7 @@ def test_api_commercial_mode_never_calls_or_serves_deezer(monkeypatch):
 
 
 # --- V6.1: canciones ---
-REC = "9d619150-6b0f-4f14-b038-8503ae4c6c8f"  # Desire (Chris Stussy), single digital de 2:52
+REC = "9d619150-6b0f-4f14-b038-8503ae4c6c8f"  # Desire (Chris Stassy), single digital de 2:52
 
 
 def dz_track(isrc="QM4TW2437510", duration=171, album=630, artist_id=5359276):
@@ -222,3 +222,34 @@ def test_several_musicbrainz_links_pick_the_card_with_a_photo():
               "artist/68540642": {**artist(68540642, "Stardust"), "nb_fan": 22209}}
     found, _ = run(mb_artist("Stardust", relations=links), routes)
     assert found["id"] == "68540642" and found["via"] == "musicbrainz_link"
+
+
+def test_v64_sin_isrc_busqueda_verificada_por_artista_titulo_y_duracion():
+    hits = {"data": [{"id": 1, "title": "Ride On Me (Kyle Remix)", "duration": 230, "artist": {"name": "PAWSA"}},
+                     {"id": 2, "title": "Ride On Me", "duration": 300, "artist": {"name": "PAWSA"}},
+                     {"id": 3, "title": "Ride On Me (Original Mix)", "duration": 230, "artist": {"name": "PAWSA"}}]}
+    fake = Fake({"search": hits, "track/3": {"id": 3, "isrc": "GBKQU2500001", "bpm": 0, "album": {"id": 7},
+                                             "artist": {"id": 5}}, "album/7": {"label": "Solid Grooves Records"}})
+    rec = deezer.track_match("rec-sin-isrc", [], 229845, fake, artist_name="PAWSA", title="Ride On Me")
+    assert rec and rec["id"] == "3" and rec["isrc"] == "GBKQU2500001" and rec["matched_by"] == "search"
+    assert deezer.track_match("rec-2", [], 229845, Fake({"search": hits}), artist_name="Otro", title="Ride On Me") is None
+
+
+def test_v66_pista_de_discogs_sin_duracion_por_artista_titulo_y_lanzamiento():
+    shonk = {"id": 4, "title": "Coco Feel and Love Shonk", "duration": 460, "artist": {"name": "Shonky"},
+             "album": {"title": "Coco Feel And Love Shonk EP"}}
+    other = {"id": 5, "title": "Coco Feel And Love Shonk", "duration": 460, "artist": {"name": "Shonky"},
+             "album": {"title": "Freakest Hits"}}
+    fake = Fake({"search": {"data": [other, shonk]}, "track/4": {**shonk, "isrc": "DEGS20800071", "bpm": 0,
+                                                                 "album": {"id": 8}, "artist": {"id": 5}},
+                 "album/8": {"label": "Contexterrior"}})
+    rec = deezer.track_match("discogs:1:a1", [], None, fake, artist_name="Shonky", title="Coco Feel And Love Shonk",
+                             release_title="Coco Feel And Love Shonk")
+    assert rec and rec["id"] == "4" and rec["duration"] == 460 and rec["isrc"] == "DEGS20800071"
+    assert deezer.cached_match("discogs:1:a1")["id"] == "4"
+    # Dos ediciones del mismo lanzamiento con duraciones distintas: ninguna.
+    edit = {**shonk, "id": 6, "duration": 240}
+    assert deezer.track_match("discogs:2:a1", [], None, Fake({"search": {"data": [shonk, edit]}}), artist_name="Shonky",
+                              title="Coco Feel And Love Shonk", release_title="Coco Feel And Love Shonk") is None
+    # Sin lanzamiento ni duración, no se pregunta.
+    assert deezer.track_match("discogs:3:a1", [], None, fake, artist_name="Shonky", title="Coco Feel And Love Shonk") is None

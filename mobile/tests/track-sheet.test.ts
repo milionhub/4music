@@ -63,13 +63,13 @@ const MSBWY = track({
   traits: [trait('genre', 'community', ['House', 'Electro', 'French House']), trait('label', 'verified', ['Virgin', 'Roulé', 'Virgin France S.A.']),
     trait('bpm', 'measured', ['124']), trait('key', 'measured', ['Sib menor', '3A'])],
 });
-const DESIRE = track({ title: 'Desire', artist_name: 'Chris Stussy', length_ms: 172000, original_release: release({ title: 'Desire' }),
+const DESIRE = track({ title: 'Desire', artist_name: 'Chris Stassy', length_ms: 172000, original_release: release({ title: 'Desire' }),
   traits: [trait('genre', 'unavailable', []), trait('label', 'unavailable', []), trait('bpm', 'unavailable', [])] });
 
 test('Hoodlum: ADN completo con BPM y tonalidad estimados, Camelot integrado, sin historia ni versiones de relleno', () => {
   const d = trackDna(HOODLUM);
-  assert.deepEqual(d.genre, { family: 'House', styles: [], note: null });
-  assert.deepEqual(d.bpm, { value: '123', note: 'estimado' });
+  assert.deepEqual(d.genre, { family: 'House', styles: [], note: null, inferred: false });
+  assert.deepEqual(d.bpm, { value: '123', note: 'estimado', context: 'En el rango habitual del house (118–130)' });
   assert.deepEqual(d.key, { value: 'Sol# menor', camelot: '1A', note: 'estimado' });
   assert.deepEqual(d.rows.map((r) => [r.label, r.value]), [['Duración', '6:55'], ['Sello', 'Desolat'], ['Formato', 'EP'], ['Versión', 'Original']]);
   assert.equal(trackStory(HOODLUM), null, 'pertenecer a un EP o salir en DJ mixes no es una historia');
@@ -78,8 +78,8 @@ test('Hoodlum: ADN completo con BPM y tonalidad estimados, Camelot integrado, si
 
 test('Lovelee Dae: House con Deep House del lanzamiento, BPM estimado, un remix y ningún mashup ni bootleg', () => {
   const d = trackDna(LOVELEE);
-  assert.deepEqual(d.genre, { family: 'House', styles: ['Deep House'], note: 'del lanzamiento' });
-  assert.deepEqual(d.bpm, { value: '124', note: 'estimado' });
+  assert.deepEqual(d.genre, { family: 'House', styles: ['Deep House'], note: 'del lanzamiento', inferred: false });
+  assert.deepEqual(d.bpm, { value: '124', note: 'estimado', context: 'En el rango habitual del house (118–130)' });
   assert.equal(d.key, null);
   assert.equal(d.rows.find((r) => r.key === 'label')?.value, 'Urban Tracks · Classic');
   assert.ok(!JSON.stringify(d).includes('Garage House'), 'el estilo del artista no es ADN de la canción');
@@ -114,7 +114,8 @@ test('Music Sounds Better With You: sample como historia, un solo artista y solo
 
 test('Desire: cobertura limitada, sin inventar nada; la ficha se compone con lo que hay', () => {
   const d = trackDna(DESIRE);
-  assert.deepEqual(d, { genre: null, bpm: null, key: null, rows: [{ key: 'length', label: 'Duración', value: '2:52' }, { key: 'format', label: 'Formato', value: 'Single' }] });
+  assert.deepEqual(d, { genre: null, releaseStyles: [], bpm: null, key: null, profile: [], vocals: null, context: [], reading: null,
+    rows: [{ key: 'length', label: 'Duración', value: '2:52' }, { key: 'format', label: 'Formato', value: 'Single' }] });
   assert.ok(hasDna(d));
   assert.equal(trackStory(DESIRE), null);
   assert.deepEqual(trackVersions(DESIRE), []);
@@ -166,4 +167,46 @@ test('claves de listas: uniqueBy quita duplicados reales y withUniqueKeys nunca 
   const items = [{ url: 'a' }, { url: 'b' }, { url: 'a' }];
   assert.deepEqual(uniqueBy(items, (x) => x.url).map((x) => x.url), ['a', 'b']);
   assert.deepEqual(withUniqueKeys(items, (x) => x.url).map((x) => x.key), ['a', 'b', 'a#1']);
+});
+
+test('V6.3: perfil sonoro, tempo en su contexto y una lectura que solo junta datos', () => {
+  const t = track({ title: 'Desire', artist_name: 'Chris Stassy', length_ms: 432000, original_release: release({ title: 'Desire' }),
+    traits: [trait('genre', 'community', ['House', 'Deep House']), trait('bpm', 'measured', ['134']), trait('energy', 'measured', ['79']),
+      trait('danceability', 'measured', ['73']), trait('valence', 'measured', ['28']), trait('vocals', 'measured', ['instrumental', '90'])] });
+  const d = trackDna(t);
+  assert.equal(d.bpm?.context, 'Rápido para el house (habitual 118–130)');
+  assert.deepEqual(d.profile.map((m) => [m.label, m.value]), [['Energía', 79], ['Bailabilidad', 73], ['Ánimo', 28]]);
+  assert.equal(d.vocals, 'Instrumental');
+  assert.equal(d.reading, 'Instrumental de deep house a 134 BPM, con energía alta y tono oscuro. Dura 7:12: duración típica de un tema de club, pensado para mezclarse.');
+  // Un solo dato no es una lectura; los estilos de un EP mezclado se muestran como del lanzamiento.
+  const thin = trackDna(track({ title: 'X', length_ms: 300000, traits: [trait('bpm', 'measured', ['124'])] }));
+  assert.equal(thin.reading, null);
+  assert.equal(thin.bpm?.context, null, 'sin género no hay rango con el que comparar');
+  const ep = trackDna(track({ title: 'Y', traits: [trait('genre', 'community', ['Electrónica']), trait('release_styles', 'community', ['Techno', 'House', 'Tech House'])] }));
+  assert.deepEqual(ep.releaseStyles, ['Techno', 'House', 'Tech House']);
+});
+
+test('V6.4: sin clasificación, contexto de su sello y su artista (dicho así) y lectura con él', () => {
+  const t = track({ title: 'Ride On Me', artist_name: 'PAWSA', length_ms: 229845, original_release: release({ title: 'Ride On Me' }),
+    traits: [trait('genre', 'unavailable', []), trait('label', 'verified', ['Solid Grooves Records']),
+      trait('label_styles', 'community', ['Tech House', 'Minimal Techno']), trait('artist_style', 'community', ['tech house'])] });
+  const d = trackDna(t);
+  assert.deepEqual(d.context.map((c) => [c.label, c.name, c.values]), [
+    ['Su sello', 'Solid Grooves Records', ['Tech House', 'Minimal Techno']], ['Su artista', 'PAWSA', ['Tech House']]]);
+  assert.equal(d.reading, 'Aún sin clasificación propia: su sello, Solid Grooves Records, publica sobre todo tech house y minimal techno, y PAWSA se mueve en el tech house. Dura 3:50: formato corto, de radio o de single.');
+  // Con género propio, el contexto sobra.
+  const g = trackDna(track({ title: 'Z', traits: [trait('genre', 'community', ['House']), trait('label', 'verified', ['X']), trait('label_styles', 'community', ['Techno'])] }));
+  assert.deepEqual(g.context, []);
+});
+
+test('V6.5: género deducido de su artista o su sello, dicho así, sin pasar por propio', () => {
+  const t = track({ title: 'Ride On Me', artist_name: 'PAWSA', length_ms: 229845, original_release: release({ title: 'Ride On Me' }),
+    traits: [trait('genre', 'community', ['House', 'Tech House'], 'label'), trait('label', 'verified', ['Solid Grooves Records']),
+      trait('label_styles', 'community', ['Tech House', 'Minimal Techno']), trait('artist_style', 'community', ['tech house'])] });
+  const d = trackDna(t);
+  assert.deepEqual(d.genre, { family: 'House', styles: ['Tech House'], inferred: true, note: 'por su sello' });
+  assert.equal(d.context.length, 2, 'el contexto que lo explica sigue a la vista');
+  assert.match(d.reading ?? '', /^Aún sin clasificación propia/);
+  const a = trackDna(track({ traits: [trait('genre', 'community', ['Techno'], 'artist')] }));
+  assert.equal(a.genre?.note, 'por su artista');
 });

@@ -101,7 +101,7 @@ export function ArtSave({ saved, onPress, s }: { saved: boolean; onPress: () => 
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: saved }}
       accessibilityLabel={saved ? 'Canción guardada' : 'Guardar canción'} accessibilityHint={saved ? 'Pulsa para quitarla de Guardados' : undefined}
       style={({ pressed }) => [styles.save, saved ? { borderColor: s.ink } : { backgroundColor: s.ink, borderColor: s.ink }, pressed && { opacity: 0.8 }]}>
-      <Text style={{ fontFamily: Fonts.sansBold, fontSize: 17, color: saved ? s.ink : s.bg }}>{saved ? '♥ Guardada' : '♡ Guardar canción'}</Text>
+      <Text style={{ fontFamily: Fonts.sansBold, fontSize: 17, color: saved ? s.ink : s.bg }}>{saved ? '\u2665\uFE0E Guardada' : '\u2661\uFE0E Guardar canción'}</Text>
     </Pressable>
   );
 }
@@ -298,6 +298,7 @@ export function DnaCard({ dna, accent, width }: { dna: SheetDna; accent: Accent;
   const g = dna.genre;
   const word = g ? display(g.family, ANTON) : null;
   const hasMeasures = !!(dna.bpm || dna.key);
+  const hasProfile = dna.profile.length > 0 || !!dna.vocals;
   const rule = { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: R.line, paddingTop: Space.lg };
   return (
     <View style={[styles.card, { backgroundColor: R.bg, borderTopColor: accent.color }]}>
@@ -308,6 +309,33 @@ export function DnaCard({ dna, accent, width }: { dna: SheetDna; accent: Accent;
           {g.styles.length ? <Text style={styles.styleLine}>{g.styles.join(' · ')}</Text> : null}
         </View>
       ) : null}
+      {dna.releaseStyles.length ? (
+        <View style={{ gap: 4 }} accessible accessibilityLabel={`Estilos del lanzamiento: ${dna.releaseStyles.join(', ')}`}>
+          <Text style={[MONO_B, { color: R.soft }]}>Estilos del lanzamiento</Text>
+          <Text style={styles.styleLine}>{dna.releaseStyles.join(' · ')}</Text>
+        </View>
+      ) : null}
+      {dna.context.length ? (
+        <View style={{ gap: Space.sm }}>
+          <Text style={[MONO_B, { color: R.soft }]}>Contexto del sonido</Text>
+          {dna.context.map((c) => (
+            <View key={c.key} style={styles.dnaRow} accessible accessibilityLabel={`${c.label}, ${c.name}: ${c.values.join(', ')}`}>
+              <Text style={[MONO_B, { color: R.soft, width: 92, fontSize: 10 }]}>{c.label}</Text>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={styles.rowValue}>{c.values.join(' · ')}</Text>
+                <Text style={[MONO, { color: R.soft, fontSize: 10 }]} numberOfLines={1}>{c.name}</Text>
+              </View>
+            </View>
+          ))}
+          <Text style={[MONO, { color: R.soft, fontSize: 10 }]}>Estilos habituales en Discogs · no clasifican esta pista</Text>
+        </View>
+      ) : null}
+      {dna.reading ? (
+        <View style={[styles.reading, { borderLeftColor: accent.color }]} accessible accessibilityLabel={`Lectura: ${dna.reading}`}>
+          <Text style={[MONO_B, { color: R.soft }]}>Lectura</Text>
+          <Text style={styles.readingText}>{dna.reading}</Text>
+        </View>
+      ) : null}
       {hasMeasures ? (
         <View style={[{ flexDirection: 'row', gap: Space.lg }, g && rule]}>
           {dna.bpm ? (
@@ -315,6 +343,7 @@ export function DnaCard({ dna, accent, width }: { dna: SheetDna; accent: Accent;
               <Text style={[MONO_B, { color: R.soft }]}>BPM</Text>
               <Text numberOfLines={1} style={type(ANTON, 52, R.ink, 1.05)}>{dna.bpm.value}</Text>
               <Text style={[MONO, { color: R.soft }]}>{dna.bpm.note}</Text>
+              {dna.bpm.context ? <Text style={styles.context}>{dna.bpm.context}</Text> : null}
             </View>
           ) : null}
           {dna.key ? (
@@ -332,8 +361,32 @@ export function DnaCard({ dna, accent, width }: { dna: SheetDna; accent: Accent;
           ) : null}
         </View>
       ) : null}
+      {hasProfile ? (
+        <View style={[{ gap: Space.md }, (g || hasMeasures) && rule]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: Space.sm }}>
+            <Text style={[MONO_B, { color: R.soft }]}>Perfil sonoro</Text>
+            {dna.vocals ? <Text style={[MONO_B, styles.camelot, { backgroundColor: accent.color, color: accent.ink }]}>{dna.vocals}</Text> : null}
+          </View>
+          {dna.profile.map((m) => (
+            <View key={m.key} style={{ gap: 4 }} accessible accessibilityLabel={`${m.label}: ${m.value} sobre 100, de ${m.low.toLowerCase()} a ${m.high.toLowerCase()}`}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={styles.meterLabel}>{m.label}</Text>
+                <Text style={[MONO_B, { color: R.ink }]}>{m.value}</Text>
+              </View>
+              <View style={[styles.meter, { backgroundColor: R.line }]}>
+                <View style={{ width: `${m.value}%`, height: '100%', backgroundColor: accent.color }} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={[MONO, { color: R.soft, fontSize: 10 }]}>{m.low}</Text>
+                <Text style={[MONO, { color: R.soft, fontSize: 10 }]}>{m.high}</Text>
+              </View>
+            </View>
+          ))}
+          <Text style={[MONO, { color: R.soft, fontSize: 10 }]}>Estimado por análisis de audio · ReccoBeats</Text>
+        </View>
+      ) : null}
       {dna.rows.length ? (
-        <View style={[{ gap: Space.sm }, (g || hasMeasures) && rule]}>
+        <View style={[{ gap: Space.sm }, (g || hasMeasures || hasProfile) && rule]}>
           {dna.rows.map((r) => (
             <View key={r.key} style={styles.dnaRow} accessible accessibilityLabel={`${r.label}: ${r.value}`}>
               <Text style={[MONO_B, { color: R.soft, width: 92, fontSize: 10 }]}>{r.label}</Text>
@@ -456,6 +509,11 @@ export function ListenList({ options }: { options: ListenOption[] }) {
 }
 
 const styles = StyleSheet.create({
+  reading: { borderLeftWidth: 3, paddingLeft: Space.md, gap: 4 },
+  readingText: { fontFamily: Fonts.sans, fontSize: 16, lineHeight: 24, color: R.ink },
+  context: { fontFamily: Fonts.sans, fontSize: 13, lineHeight: 18, color: R.soft, marginTop: 2 },
+  meter: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  meterLabel: { fontFamily: Fonts.sansBold, fontSize: 15, color: R.ink },
   top: { paddingHorizontal: GUTTER, paddingTop: Space.sm, paddingBottom: Space.md, zIndex: 2 },
   tag: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: Radius.pill, overflow: 'hidden', maxWidth: 240, fontSize: 10 },
   save: { minHeight: 54, borderRadius: Radius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center', paddingHorizontal: Space.xl },

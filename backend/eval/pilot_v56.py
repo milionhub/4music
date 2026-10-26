@@ -29,7 +29,7 @@ CASES = [
     ("Arapu Unexpected", "discogs"),
     ("Arapu Deep Down", "discogs"),
     ("Fired Up Arapu Remix", "discogs"),             # versión: remix, nunca fusionado con la original
-    ("Chris Stussy Desire", "musicbrainz"),          # control: MusicBrainz lo tiene y Discogs no se consulta
+    ("Chris Stassy Desire", "musicbrainz"),          # control: MusicBrainz lo tiene y Discogs no se consulta
 ]
 
 

@@ -90,9 +90,9 @@ test('V5.6: canciones de Discogs con id propio; sus artistas solo se enlazan si 
     ] },
   };
   const dna = trackDna(t);
-  assert.deepEqual(dna.genre, { family: 'Electronic', styles: ['Tech House'], note: 'del lanzamiento' });
+  assert.deepEqual(dna.genre, { family: 'Electronic', styles: ['Tech House'], note: 'del lanzamiento', inferred: false });
   assert.equal(dna.bpm, null, 'sin BPM inventado');
-  assert.deepEqual(dna.rows.map((r) => r.value), ['9:19', 'From The South'], 'sin tipo de lanzamiento no se deduce el formato');
+  assert.deepEqual(dna.rows.map((r) => r.value), ['9:19', 'From The South', 'Digital'], 'sin tipo de lanzamiento no se deduce: solo el soporte documentado');
   // Un recopilatorio no presta su género a la pista.
   assert.equal(trackDna({ ...t, original_release: { ...release, secondary_types: ['Compilation'] } }).genre, null);
 });

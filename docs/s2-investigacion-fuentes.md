@@ -3,7 +3,7 @@
 Consulta y pruebas: **19 de octubre de 2026**. Sin integrar nada, sin claves nuevas, sin Groq. Consultas reales, secuenciales y
 dentro de los límites publicados (Discogs 25/min sin autenticar, Openverse 20/min anónimo, Wikidata con espera ante 429).
 
-Artistas: los 10 del piloto + 2 elegidos antes de probar (**Chris Stussy**, **Archie Hamilton**). Identidad siempre por
+Artistas: los 10 del piloto + 2 elegidos antes de probar (**Chris Stassy**, **Archie Hamilton**). Identidad siempre por
 identificador (MBID → enlace de MusicBrainz a Discogs/Wikidata), nunca por nombre.
 
 Legenda de permisos: **Permitido** (explícito) · **Condicionado** (requisitos) · **No permitido** · **No confirmado**.
@@ -14,7 +14,7 @@ Legenda de permisos: **Permitido** (explícito) · **Condicionado** (requisitos)
 |---|---|---|---|---|---|---|---|
 | MusicBrainz (ya integrada) | Identidad, relaciones (sello fundado, miembro, alias, eventos), enlaces a Discogs/Wikidata | Sí | Sin clave, 1 req/s | **Permitido** (datos núcleo CC0) | — | Etiquetas/géneros y datos suplementarios: CC BY-NC-SA ([licencia](https://musicbrainz.org/doc/About/Data_License)) | Mantener |
 | Wikidata (ya integrada) | Ítem por MBID o ID de Discogs, P18, géneros, sitelinks a todas las Wikipedias | Sí | Sin clave (429 si se abusa) | **Permitido** (CC0) | P18 → Commons | Géneros discutibles | Mantener |
-| Wikipedia (es/en integradas) | Trayectoria, sellos, fiestas, residencias | Sí | Sin clave | **Condicionado** (CC BY-SA: atribución) | — | **No se leen otros idiomas**: ANOTR solo tiene de/nl/sv, Chris Stussy nl | Ampliar idiomas (con cautela) |
+| Wikipedia (es/en integradas) | Trayectoria, sellos, fiestas, residencias | Sí | Sin clave | **Condicionado** (CC BY-SA: atribución) | — | **No se leen otros idiomas**: ANOTR solo tiene de/nl/sv, Chris Stassy nl | Ampliar idiomas (con cautela) |
 | Wikimedia Commons (integrada) | Fotos con licencia por archivo | Sí | Sin clave | **Condicionado** (licencia del archivo) | Sí, si la licencia es libre | Hay fotos sin P18/P180 que el pipeline no ve (Jamie Jones, ANOTR) | Mantener + curación manual |
 | **Discogs API** | Perfil del artista, integrantes, grupos, alias, enlaces; perfil de sellos | Sí | Sin clave para `/artists` y `/labels` (25/min) | **Condicionado**: nombres, notas y lanzamientos son **CC0**; aviso «Data provided by Discogs» con enlace y aviso de no afiliación; frescura ≤ 6 h y caché «no más de lo necesario» ([TOU](https://support.discogs.com/hc/en-us/articles/360009334593-API-Terms-of-Use)) | **No**: las imágenes son «Restricted Data» (licencia personal, no transferible) | La regla de 6 h y caché es ambigua para los datos CC0 | **Integrar** |
 | Discogs data dumps | Lo mismo en XML mensual | Sí | Descarga | **Permitido**: «made available under the CC0» ([data.discogs.com](https://data.discogs.com/)) | No incluye imágenes | Volúmenes grandes (cientos de MB) | Alternativa a la API si la caché importa |
@@ -52,7 +52,7 @@ TheAudioDB, Openverse, Deezer, iTunes. TheAudioDB, Deezer e iTunes no suman cobe
 | **Cloonee** | — · — · GEN · — | **PROY**: fundador de **Hellbent Records** | — |
 | Bicep | BIO · — · ? · PROY | PROY (Feel My Bicep con Hammer) | — |
 | Josh Baker | BIO · — · GEN · PROY | (sin perfil) | — |
-| Chris Stussy (extra) | BIO · FOTO · ? · PROY | PROY (Up The Stuss, 2020) | BIO (nl) |
+| Chris Stassy (extra) | BIO · FOTO · ? · PROY | PROY (Up The Stuss, 2020) | BIO (nl) |
 | Archie Hamilton (extra) | BIO · — · ? · PROY | GEN (house/techno) | — |
 
 «?»: el género no está claro en las fuentes reutilizables. Archie Hamilton: el artículo correcto es «Archie Hamilton
@@ -70,7 +70,7 @@ TheAudioDB, Openverse, Deezer, iTunes. TheAudioDB, Deezer e iTunes no suman cobe
 ## D. Fotografías
 
 - **Con identidad verificada y licencia libre (utilizables): 4/12.** Capriati, Carola (CC BY 2.0), Osuna (CC BY-SA 2.0) y
-  Chris Stussy (CC0), todas por P18/P180 en Wikidata/Commons. Ya las resuelve el pipeline actual.
+  Chris Stassy (CC0), todas por P18/P180 en Wikidata/Commons. Ya las resuelve el pipeline actual.
 - **Candidatas con licencia libre, pendientes de verificar a mano: 2.** Jamie Jones (Commons, CC BY-SA 3.0, 2 archivos sin
   P18/P180) y ANOTR (Commons, CC BY-SA 4.0, foto compartida).
 - **Fotos con licencia NC (solo uso no comercial): 4.** Flickr «EXIT Festival» (Capriati, Jones, Carola) y otra de Osuna.
@@ -83,7 +83,7 @@ TheAudioDB, Openverse, Deezer, iTunes. TheAudioDB, Deezer e iTunes no suman cobe
 **Integrar**
 1. **Discogs: perfil del artista (CC0) a partir del enlace de MusicBrainz.** Es lo que más cobertura añade (4/4 artistas
    underground con sello o proyecto confirmado), sin clave, con identidad segura y licencia explícita.
-2. **Wikipedia en otras lenguas por sitelink de Wikidata**, solo cuando falten es/en (ANOTR, Chris Stussy). Misma licencia
+2. **Wikipedia en otras lenguas por sitelink de Wikidata**, solo cuando falten es/en (ANOTR, Chris Stassy). Misma licencia
    que hoy. Ojo: el selector clasifica en inglés y español; con otras lenguas, solo serviría la frase de presentación.
 3. **Fotos de Commons sin enlazar, mediante curación manual** en el catálogo editorial: archivo, licencia y autor revisados
    por una persona. Openverse sirve para encontrarlas, nunca para asignarlas automáticamente.

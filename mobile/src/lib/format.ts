@@ -257,3 +257,16 @@ export function listenOptions(links: Link[], query: string): ListenOption[] {
   }
   return out;
 }
+
+const FORMATS: [RegExp, string][] = [[/^12" vinyl$/i, 'vinilo de 12"'], [/^7" vinyl$/i, 'vinilo de 7"'], [/^10" vinyl$/i, 'vinilo de 10"'],
+  [/vinyl/i, 'vinilo'], [/^(enhanced )?cd$/i, 'CD'], [/^cd-r$/i, 'CD-R'], [/cassette/i, 'casete'], [/^digital media$/i, 'digital']];
+
+/** Formatos documentados, traducidos y sin repetir, en el orden de la fuente (ninguno se considera mejor). */
+export function formatsEs(formats: string[]): string[] {
+  const out: string[] = [];
+  for (const f of formats) {
+    const hit = FORMATS.find(([re]) => re.test(f.trim()))?.[1];
+    if (hit && !out.includes(hit)) out.push(hit);
+  }
+  return out;
+}

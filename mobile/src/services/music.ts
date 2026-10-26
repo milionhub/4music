@@ -48,7 +48,8 @@ export function getStories(mbid: string) {
 
 /** Canciones afines a una grabación (Tu frecuencia); la primera vez tarda (Deezer + MusicBrainz), luego en caché. */
 export function getAffinity(mbid: string) {
-  return getJson<AffinityResponse>(`/v1/tracks/${encodeURIComponent(mbid)}/affinity`, STORIES_TIMEOUT_MS);
+  const base = externalTrack(mbid) ? '/v1/tracks/ext' : '/v1/tracks';
+  return getJson<AffinityResponse>(`${base}/${encodeURIComponent(mbid)}/affinity`, STORIES_TIMEOUT_MS);
 }
 
 export function getEssentials(mbid: string) {

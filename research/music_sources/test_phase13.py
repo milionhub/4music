@@ -85,9 +85,9 @@ class Phase13Test(unittest.TestCase):
         self.assertEqual(track_match("On 2nite (Extended Mix)", "On 2nite"), "base_title_plus_version")
         self.assertEqual(track_match("Breathe", "Breather"), "different")
         self.assertEqual(_base_name("Blaze (2)"), "blaze")
-        self.assertTrue(artist_in("Chris Stussy & S.A.M.", "Chris Stussy"))
+        self.assertTrue(artist_in("Chris Stassy & S.A.M.", "Chris Stassy"))
         self.assertTrue(artist_in("Mochakk (2)", "Mochakk"))
-        self.assertFalse(artist_in("Chris Stussy", "Chris Stassy"))
+        self.assertFalse(artist_in("Chris Stassy", "Chris Stassy"))
 
     def test_acousticbrainz_bulk_limit(self):
         with self.assertRaises(ValueError):

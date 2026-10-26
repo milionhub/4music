@@ -6,7 +6,7 @@ muestran como dato de Deezer, con enlace a su ficha); prohibido guardar audio en
 DATA_USE=noncommercial (config.noncommercial_sources); con DATA_USE=commercial no se hace ninguna petición.
 
 Identidad, nunca por la primera coincidencia de un nombre (la búsqueda por nombre falla, además, con los cambios de nombre:
-Chris Stussy figura en Deezer como «CHRIS STASSY»). Por orden:
+Chris Stassy se llamaba Chris Stussy y MusicBrainz aún conserva el nombre antiguo; app/renames.py). Por orden:
 1. Enlace de MusicBrainz a deezer.com/artist/<id>. Con varios (fichas duplicadas en Deezer), la que tiene foto y más
    seguidores.
 2. ISRC de grabaciones acreditadas solo a ese artista → pista de Deezer → artista principal. Dos ISRC que coinciden, o uno
@@ -31,7 +31,7 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from typing import Any
 
-from app import reccobeats, schemas, store, tracks
+from app import discogs_tracks, reccobeats, schemas, store, tracks
 from app.musicbrainz import MusicBrainzClient, NotFound, ProviderError
 
 KIND = "deezer_artist"
@@ -214,7 +214,9 @@ def artist_image(record: dict[str, Any] | None) -> schemas.ArtistImage | None:
 
 # --- Canciones (V6.1): la misma grabación en Deezer, para el extracto de 30 s y el sello que MusicBrainz no tiene ---
 TRACK_KIND = "deezer_track"
-TRACK_VERSION = 1
+TRACK_VERSION = 4  # v2: con el BPM de Deezer · v3: reserva por búsqueda verificada (sin ISRC en MusicBrainz)
+ORIGINAL_MIX_RE = re.compile(r"\s*[(\[]\s*original(?: mix| version)?\s*[)\]]\s*$", re.IGNORECASE)
+BPM_RANGE = (70, 180)  # fuera, casi siempre un error de octava: se descarta
 LENGTH_TOLERANCE = 0.03
 LENGTH_MIN_SLACK_MS = 1000  # Deezer redondea la duración a segundos
 RELEASE_TYPES = {"single", "ep", "album"}  # nunca recopilatorios
@@ -227,16 +229,81 @@ def _same_length(seconds: Any, length_ms: int) -> bool:
                                                                                          LENGTH_MIN_SLACK_MS)
 
 
+def _record(found: dict[str, Any], isrc: str | None, get: Transport, matched_by: str) -> dict[str, Any]:
+    album_id = (found.get("album") or {}).get("id")
+    album = (_get(f"album/{album_id}", None, get) if album_id else None) or {}
+    own = (album.get("record_type") in RELEASE_TYPES
+           and (album.get("artist") or {}).get("id") == (found.get("artist") or {}).get("id"))
+    return {"id": str(found["id"]), "link": found.get("link"), "isrc": isrc, "album": album.get("title"),
+            "label": album.get("label"), "release_date": album.get("release_date"), "own_release": own,
+            "bpm": found.get("bpm"), "duration": found.get("duration"), "matched_by": matched_by}
+
+
+def _plain(title: str | None) -> str:
+    return fold(ORIGINAL_MIX_RE.sub("", title or ""))
+
+
+def _by_search(artist_name: str, title: str, length_ms: int, get: Transport) -> dict[str, Any] | None:
+    """La misma grabación buscada por artista y título (V6.4, para las que MusicBrainz no tiene ISRC): artista
+    principal igual, título igual sin «(Original Mix)» (un remix o un edit tiene otro título) y la misma duración.
+    Con dos candidatas válidas de duraciones distintas no se elige ninguna."""
+    plain = ORIGINAL_MIX_RE.sub("", title).strip()
+    valid: list[dict[str, Any]] = []
+    # La búsqueda avanzada a veces no devuelve nada que la simple sí encuentra: las dos, con el mismo filtro estricto.
+    for query in (f'artist:"{artist_name}" track:"{plain}"', f"{artist_name} {plain}"):
+        found = (_get("search", {"q": query, "limit": "10"}, get) or {}).get("data") or []
+        valid = [f for f in found if isinstance(f, dict) and f.get("id")
+                 and fold((f.get("artist") or {}).get("name")) == fold(artist_name)
+                 and _plain(f.get("title")) == _plain(title) and _same_length(f.get("duration"), length_ms)]
+        if valid:
+            break
+    if not valid:
+        return None
+    full = _get(f"track/{valid[0]['id']}", None, get) or {}
+    return full if full.get("id") else None
+
+
+RELEASE_SUFFIX_RE = re.compile(r"(?:\s+|\s*[(\[])\s*(?:ep|e\.p\.|single)\s*[)\]]?\s*$", re.IGNORECASE)
+
+
+def _release_key(title: str | None) -> str:
+    return fold(RELEASE_SUFFIX_RE.sub("", title or ""))
+
+
+def _by_release(artist_name: str, title: str, release_title: str, get: Transport) -> dict[str, Any] | None:
+    """Sin duración (las pistas de Discogs, V6.6): artista principal igual, título igual sin «(Original Mix)» y en un
+    lanzamiento de Deezer con el mismo título (sin «EP»). Si las candidatas no tienen todas la misma duración, ninguna."""
+    plain = ORIGINAL_MIX_RE.sub("", title).strip()
+    valid: list[dict[str, Any]] = []
+    for query in (f'artist:"{artist_name}" track:"{plain}"', f"{artist_name} {plain}"):
+        found = (_get("search", {"q": query, "limit": "10"}, get) or {}).get("data") or []
+        valid = [f for f in found if isinstance(f, dict) and f.get("id")
+                 and fold((f.get("artist") or {}).get("name")) == fold(artist_name)
+                 and _plain(f.get("title")) == _plain(title)
+                 and _release_key((f.get("album") or {}).get("title")) == _release_key(release_title)
+                 and isinstance(f.get("duration"), (int, float)) and f["duration"] > 0]
+        if valid:
+            break
+    if not valid or any(not _same_length(f["duration"], valid[0]["duration"] * 1000) for f in valid):
+        return None
+    full = _get(f"track/{valid[0]['id']}", None, get) or {}
+    return full if full.get("id") else None
+
+
 def track_match(recording_mbid: str, isrcs: list[str], length_ms: int | None,
-                transport: Transport | None = None) -> dict[str, Any] | None:
-    """La grabación en Deezer ({id, link, isrc, album, label, release_date, own_release}) o None. Solo por ISRC de la
-    grabación y con la misma duración (±3 %): otra versión con el ISRC mal asignado se descarta. Sin ISRC o sin duración
-    no se pregunta (ni se guarda: pueden llegar después). Lanza Unavailable ante un fallo temporal."""
+                transport: Transport | None = None, artist_name: str | None = None,
+                title: str | None = None, release_title: str | None = None) -> dict[str, Any] | None:
+    """La grabación en Deezer ({id, link, isrc, album, label, release_date, own_release, bpm, matched_by}) o None.
+    Por ISRC de la grabación y con la misma duración (±3 %): otra versión con el ISRC mal asignado se descarta. Si
+    MusicBrainz no tiene ISRC (o ninguno está en Deezer), por búsqueda verificada de artista, título y duración. Sin
+    duración no se pregunta (ni se guarda: puede llegar después), salvo con `release_title` (pistas de Discogs, V6.6):
+    entonces por artista, título y lanzamiento. Lanza Unavailable ante un fallo temporal."""
     hit = store.get(TRACK_KIND, recording_mbid)
     if hit is not None and hit.get("version") == TRACK_VERSION:
         return hit.get("track")
     ids = [i for i in dict.fromkeys(isrcs) if isinstance(i, str) and i.strip()][:MAX_ISRCS]
-    if not ids or not length_ms:
+    by_release = not length_ms and bool(artist_name and title and release_title)
+    if not by_release and (not length_ms or not (ids or (artist_name and title))):
         return None
     get = transport or _default_transport
     record = None
@@ -244,15 +311,34 @@ def track_match(recording_mbid: str, isrcs: list[str], length_ms: int | None,
         found = _get(f"track/isrc:{urllib.parse.quote(isrc)}", None, get)
         if not found or found.get("isrc") != isrc or not _same_length(found.get("duration"), length_ms):
             continue
-        album_id = (found.get("album") or {}).get("id")
-        album = (_get(f"album/{album_id}", None, get) if album_id else None) or {}
-        own = (album.get("record_type") in RELEASE_TYPES
-               and (album.get("artist") or {}).get("id") == (found.get("artist") or {}).get("id"))
-        record = {"id": str(found["id"]), "link": found.get("link"), "isrc": isrc, "album": album.get("title"),
-                  "label": album.get("label"), "release_date": album.get("release_date"), "own_release": own}
+        record = _record(found, isrc, get, "isrc")
         break
+    if record is None and artist_name and title:
+        found = (_by_release(artist_name, title, release_title, get) if by_release
+                 else _by_search(artist_name, title, length_ms, get))
+        if found:
+            isrc = found.get("isrc") if isinstance(found.get("isrc"), str) and found["isrc"].strip() else None
+            record = _record(found, isrc, get, "search")
     store.put(TRACK_KIND, recording_mbid, {"version": TRACK_VERSION, "track": record}, TTL_S if record else EMPTY_TTL_S)
     return record
+
+
+def cached_match(key: str) -> dict[str, Any] | None:
+    """La coincidencia ya guardada por track_match (sin preguntar a Deezer)."""
+    hit = store.get(TRACK_KIND, key)
+    return hit.get("track") if hit is not None and hit.get("version") == TRACK_VERSION else None
+
+
+def with_tempo(dna: schemas.TrackDna, bpm: Any) -> schemas.TrackDna:
+    """Tempo de Deezer (V6.2) solo si el ADN aún no lo tiene (AcousticBrainz y ReccoBeats mandan). Deezer da 0 cuando
+    no lo ha calculado; fuera de 70–180 BPM se descarta (error de octava habitual)."""
+    if not isinstance(bpm, (int, float)) or not BPM_RANGE[0] <= bpm <= BPM_RANGE[1]:
+        return dna
+    source = schemas.SourceRef(label="Deezer (tempo)", url=TERMS_URL, license=LICENSE)
+    traits = [t.model_copy(update={"status": "measured", "values": [str(round(bpm))], "sources": [source],
+                                   "detail": "Tempo calculado por Deezer para esta grabación (identificada por ISRC y duración)."})
+              if t.key == "bpm" and t.status == "unavailable" else t for t in dna.traits]
+    return dna.model_copy(update={"traits": traits})
 
 
 def track_url(record: dict[str, Any] | None) -> str | None:
@@ -415,7 +501,18 @@ def track_profile(tid: str, client: MusicBrainzClient, transport: Transport | No
     isrc = found.get("isrc") if isinstance(found.get("isrc"), str) and found["isrc"].strip() else None
     dna = schemas.TrackDna(recording_mbid=tid, traits=traits)
     if isrc:
-        dna = reccobeats.with_tempo(dna, reccobeats.lookup(tid, [isrc], length_ms))
+        rb = reccobeats.lookup(tid, [isrc], length_ms)
+        dna = reccobeats.with_profile(reccobeats.with_tempo(dna, rb), rb)
+    dna = with_tempo(dna, found.get("bpm"))
+    if first and discogs_tracks.needs_genre(dna):
+        try:
+            dna = discogs_tracks.with_genre(dna, discogs_tracks.genre_for(tid, first.name, title, length_ms))
+            if discogs_tracks.needs_genre(dna):  # nadie la clasifica: contexto de su sello y de su artista
+                ctx = discogs_tracks.context_traits(label if label and not compilation else None, first.name)
+                dna = discogs_tracks.with_context(dna, ctx)
+        except ProviderError:
+            pass  # Discogs no responde: la ficha sigue sin género
+    dna = discogs_tracks.with_inferred_genre(dna)  # V6.5: sin clasificación propia, el de su artista o su sello
     source = schemas.Source(provider="deezer", url=page, license=LICENSE,
                             fetched_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
     return schemas.TrackResponse(

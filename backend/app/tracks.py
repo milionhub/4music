@@ -9,7 +9,7 @@ Reglas de honestidad:
 - Sello: «[no label]» es una autoedición documentada; un `label-info` vacío es solo falta de datos (nunca se
   deduce autoedición de él).
 - Identificadores para cruces futuros (T2.1 §F): solo MBID, ISRC, barcode y URL documentadas en MusicBrainz.
-  Nunca por nombre: los artistas cambian de nombre entre plataformas (Chris Stussy → «CHRIS STASSY» en Deezer).
+  Nunca por nombre: los artistas cambian de nombre y las plataformas tardan en recogerlo (Chris Stussy → Chris Stassy).
 """
 
 from __future__ import annotations
@@ -557,7 +557,21 @@ GENRE_FAMILY = {
     "trance": "Trance", "progressive trance": "Trance", "breakbeat": "Breakbeat", "breaks": "Breakbeat",
     "drum and bass": "Drum and bass", "electro": "Electro", "disco": "Disco", "nu-disco": "Disco",
     "ambient": "Ambient", "downtempo": "Downtempo", "dance-pop": "Pop",
+    # V6.3: estilos habituales de Discogs y MusicBrainz en la electrónica de club.
+    "tribal house": "House", "tribal": "House", "hard house": "House", "italo house": "House", "euro house": "House", "hip-house": "House",
+    "piano house": "House", "vocal house": "House", "latin house": "House", "amapiano": "House", "organic house": "House",
+    "deep techno": "Techno", "industrial techno": "Techno", "peak time techno": "Techno", "raw techno": "Techno",
+    "ambient techno": "Techno", "minimal techno ": "Techno", "electro techno": "Techno",
+    "drum n bass": "Drum and bass", "jungle": "Drum and bass", "liquid funk": "Drum and bass",
+    "dubstep": "Bass", "bassline": "Bass", "uk bass": "Bass", "grime": "Bass", "future garage": "UK garage",
+    "2-step": "UK garage", "italo-disco": "Disco", "italo disco": "Disco", "disco polo": "Disco", "balearic": "Disco",
+    "psy-trance": "Trance", "psytrance": "Trance", "hard trance": "Trance", "uplifting trance": "Trance",
+    "broken beat": "Breakbeat", "big beat": "Breakbeat", "electroclash": "Electro", "electro house ": "House",
+    "chillout": "Downtempo", "trip hop": "Downtempo", "lo-fi": "Downtempo",
 }
+# Estilos que conviven con varias familias: «Minimal» lo mismo es minimal techno que minimal house. No cuentan para
+# decidir si un EP mezcla familias y, si hay otra familia, son un estilo de ella.
+WILDCARD_FAMILIES = {"Minimal"}
 BROAD = {"electronic", "dance", "electronic dance music", "edm", "club"}
 MB_GENRES_LICENSE = "CC BY-NC-SA"
 
@@ -586,9 +600,35 @@ def release_genre_values(names: list[str], secondary_types: list[str], multi_son
     if set(secondary_types) & NON_TRACK_RELEASES:
         return []
     specific = [n for n in names if n not in BROAD]
-    if multi_song and len({GENRE_FAMILY.get(n, _title(n)) for n in specific}) > 1:
+    if multi_song and len(families(specific)) > 1:
         return genre_values([n for n in names if n in BROAD])
     return genre_values(names)
+
+
+def families(names: list[str]) -> set[str]:
+    """Familias distintas de unos géneros concretos (sin las comodín, como Minimal)."""
+    return {GENRE_FAMILY.get(n, _title(n)) for n in names} - WILDCARD_FAMILIES
+
+
+def release_styles(names: list[str], secondary_types: list[str]) -> list[str]:
+    """Estilos de un lanzamiento de varias canciones que mezcla familias: se muestran como estilos del lanzamiento,
+    nunca como el género de la pista. Vacío si es un recopilatorio o no mezcla familias."""
+    if set(secondary_types) & NON_TRACK_RELEASES:
+        return []
+    specific = [n for n in names if n not in BROAD]
+    return [_title(n) for n in dict.fromkeys(specific)][:4] if len(families(specific)) > 1 else []
+
+
+def styles_trait(values: list[str], title: str, source: schemas.SourceRef) -> schemas.DnaTrait:
+    return schemas.DnaTrait(key="release_styles", group="classification", label="Estilos del lanzamiento",
+                            status="community", scope="release", values=values,
+                            detail=f"«{title}» mezcla estilos de varias familias: describen el lanzamiento, no esta pista.",
+                            sources=[source])
+
+
+def is_broad(values: list[str] | None) -> bool:
+    """Solo el género amplio («Electrónica»): no dice qué tipo de electrónica es."""
+    return not values or values == ["Electrónica"]
 
 
 def genre_values(names: list[str]) -> list[str]:
@@ -596,7 +636,8 @@ def genre_values(names: list[str]) -> list[str]:
     specific = [n for n in names if n not in BROAD]
     if not specific:
         return ["Electrónica"] if names else []
-    family = next((GENRE_FAMILY[n] for n in specific if n in GENRE_FAMILY), None) or _title(specific[0])
+    mapped = [GENRE_FAMILY.get(n, _title(n)) for n in specific]
+    family = next((f for f in mapped if f not in WILDCARD_FAMILIES), None) or mapped[0]
     styles = [_title(n) for n in specific if _title(n) != family]
     return [family, *dict.fromkeys(styles)][:3]
 
@@ -611,38 +652,38 @@ def dna(recording_mbid: str, title: str, track_wd: WikidataInfo, release_wd: Wik
     mb = schemas.SourceRef(label="MusicBrainz", url=f"https://musicbrainz.org/recording/{recording_mbid}", license="CC0")
     traits: list[schemas.DnaTrait] = []
 
-    track_genres = [wd_labels[q] for q in track_wd.genre_ids if q in wd_labels][:3]
-    release_genres = [wd_labels[q] for q in release_wd.genre_ids if q in wd_labels][:3]
+    # Etiquetas de Wikidata con la misma forma que las demás (familia y estilos, en mayúscula inicial: V6.3).
+    track_genres = genre_values([wd_labels[q].lower() for q in track_wd.genre_ids if q in wd_labels][:3])
+    release_genres = genre_values([wd_labels[q].lower() for q in release_wd.genre_ids if q in wd_labels][:3])
     mb_rec = genre_values(recording_genres or [])
     mb_rg = (release_genre_values(release_genres_mb or [], release.secondary_types, release.primary_type != "Single")
              if release else [])
     mb_genre_ref = schemas.SourceRef(label="MusicBrainz (géneros)", url=f"https://musicbrainz.org/recording/{recording_mbid}",
                                      license=MB_GENRES_LICENSE)
-    # Prioridad: la propia grabación (MusicBrainz, luego Wikidata) > su lanzamiento original. Nunca el artista.
+    # Prioridad: la propia grabación (MusicBrainz, luego Wikidata) > su lanzamiento original. Nunca el artista. V6.3:
+    # una fuente que solo dice «Electrónica» cede ante la siguiente que concreta (subgénero).
+    rg_ref = mb_genre_ref.model_copy(update={"url": f"https://musicbrainz.org/release-group/{release.mbid}"}) if release else None
+    options: list[tuple[list[str], str, str, schemas.SourceRef]] = []
     if mb_rec:
+        options.append((mb_rec, "track", "Géneros votados por la comunidad de MusicBrainz para esta grabación.", mb_genre_ref))
+    if track_genres and track_wd.qid:
+        options.append((track_genres, "track", "Clasificación de Wikidata para esta canción.", _wd_ref(track_wd.qid)))
+    if mb_rg and release and rg_ref:
+        options.append((mb_rg, "release", f"Géneros de «{release.title}» en MusicBrainz: describen el lanzamiento.", rg_ref))
+    if release_genres and release_wd.qid and release and not set(release.secondary_types) & NON_TRACK_RELEASES:
+        options.append((release_genres, "release",
+                        f"Género de «{release.title}» en Wikidata: describe el lanzamiento, no solo esta pista.",
+                        _wd_ref(release_wd.qid)))
+    chosen = next((o for o in options if not is_broad(o[0])), options[0] if options else None)
+    if chosen:
         traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
-                                       scope="track", values=mb_rec,
-                                       detail="Géneros votados por la comunidad de MusicBrainz para esta grabación.",
-                                       sources=[mb_genre_ref]))
-    elif track_genres and track_wd.qid:
-        traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
-                                       scope="track", values=track_genres,
-                                       detail="Clasificación de Wikidata para esta canción.",
-                                       sources=[_wd_ref(track_wd.qid)]))
-    elif mb_rg and release:
-        traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
-                                       scope="release", values=mb_rg,
-                                       detail=f"Géneros de «{release.title}» en MusicBrainz: describen el lanzamiento.",
-                                       sources=[mb_genre_ref.model_copy(update={
-                                           "url": f"https://musicbrainz.org/release-group/{release.mbid}"})]))
-    elif release_genres and release_wd.qid and release and not set(release.secondary_types) & NON_TRACK_RELEASES:
-        traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
-                                       scope="release", values=release_genres,
-                                       detail=f"Género de «{release.title}» en Wikidata: describe el lanzamiento, no solo esta pista.",
-                                       sources=[_wd_ref(release_wd.qid)]))
+                                       scope=chosen[1], values=chosen[0], detail=chosen[2], sources=[chosen[3]]))
     else:
         traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="unavailable",
                                        detail="Ninguna fuente con licencia compatible clasifica esta canción."))
+    rg_styles = release_styles(release_genres_mb or [], release.secondary_types) if release else []
+    if (not chosen or is_broad(chosen[0])) and rg_styles and release and rg_ref:
+        traits.append(styles_trait(rg_styles, release.title, rg_ref))
     if artist_styles and artist_name:
         traits.append(schemas.DnaTrait(
             key="artist_style", group="classification", label="Estilo del artista", status="community", scope="artist",

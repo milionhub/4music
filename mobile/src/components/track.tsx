@@ -19,9 +19,9 @@ import type { TrackSearchResult } from '@/types/music';
 const SEARCH_DEBOUNCE_MS = 500;
 /** Búsquedas reales de canciones concretas (ejecutan la búsqueda; no abren fichas). */
 const SUGGESTIONS = [
-  { title: 'Dirty Cash', artist: 'PAWSA', query: 'PAWSA Dirty Cash' },
-  { title: 'Desire', artist: 'Chris Stussy', query: 'Chris Stussy Desire' },
-  { title: 'Crazy', artist: 'ANOTR', query: 'ANOTR Crazy' },
+  { title: 'Dirty Cash', artist: 'PAWSA', query: 'PAWSA Dirty Cash', slot: '23:30' },
+  { title: 'Desire', artist: 'Chris Stassy', query: 'Chris Stassy Desire', slot: '01:00' },
+  { title: 'Crazy', artist: 'ANOTR', query: 'ANOTR Crazy', slot: '02:30' },
 ];
 
 export function openTrack(mbid: string) {
@@ -84,10 +84,11 @@ export function TrackSearch({ id }: { id: ArtistIdentity }) {
 
       {state.kind === 'idle' ? (
         <View style={{ gap: Space.sm }}>
-          <Kicker>Prueba con</Kicker>
+          <Kicker>Line-up para probar</Kicker>
           {SUGGESTIONS.map((s) => (
             <Pressable key={s.query} onPress={() => setQuery(s.query)} accessibilityRole="button" accessibilityLabel={`Buscar ${s.title}, de ${s.artist}`}
               style={({ pressed }) => [styles.suggestion, { borderBottomColor: S.line }, pressed && { opacity: 0.7 }]}>
+              <Text style={[styles.slot, { color: P.glow }]} {...decorative}>{s.slot}</Text>
               <Text style={styles.suggestionTitle} numberOfLines={1}>{s.title}</Text>
               <Text style={[styles.suggestionArtist, { color: P.glow }]} numberOfLines={1}>{s.artist}</Text>
               <Text style={[styles.chevron, { color: P.glow }]}>↗</Text>
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
   searching: { fontFamily: Fonts.monoBold, fontSize: 16 },
   clear: { color: C.faint, fontSize: 16, fontWeight: '800', padding: Space.xs },
   suggestion: { flexDirection: 'row', alignItems: 'baseline', gap: Space.md, paddingVertical: Space.sm, borderBottomWidth: StyleSheet.hairlineWidth },
+  slot: { fontFamily: Fonts.monoBold, fontSize: 12, letterSpacing: 1, width: 44 },
   suggestionTitle: { color: C.text, fontFamily: Fonts.serifItalic, fontSize: 26, lineHeight: 32, flexShrink: 1 },
   suggestionArtist: { flex: 1, fontFamily: Fonts.monoBold, fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase' },
   result: { flexDirection: 'row', alignItems: 'center', gap: Space.md, paddingVertical: Space.md, borderBottomWidth: StyleSheet.hairlineWidth },

@@ -122,17 +122,14 @@ export default function Home() {
   const radarMeta = radarData ? [radarData.first_release_date?.slice(0, 4), duration(radarData.length_ms)].filter(Boolean).join(' · ') : radarPick?.year ?? null;
   const [radarS, freqS, behindS] = ed.rhythm.map((k) => P[k]);
 
+  // Una línea: lo que manda es la música.
   let intro: string;
   if (!lib.savedTracks.length) {
-    intro = freq.personal
-      ? 'Aún no tienes canciones en Guardados: partimos de los artistas y estilos que elegiste. Guarda canciones en TrackDNA y esta frecuencia aprenderá de ti.'
-      : 'Aún no tienes canciones en Guardados: aquí va una selección variada de la redacción. Guarda lo que te guste en TrackDNA y esta frecuencia se afinará contigo.';
+    intro = freq.personal ? 'Según los artistas y estilos que elegiste.' : 'Selección de la redacción. Guarda canciones y se afinará contigo.';
   } else if (seedsLoading && !freq.personal) {
     intro = 'Sintonizando con tus Guardados…';
   } else {
-    intro = freq.personal
-      ? `A partir de ${lib.savedTracks.length === 1 ? 'tu canción guardada' : `tus ${lib.savedTracks.length} canciones guardadas`} y tus gustos. Cada propuesta dice por qué aparece.`
-      : 'Tus Guardados aún no tienen conexiones documentadas con otras canciones. Mientras tanto, la selección de la redacción.';
+    intro = freq.personal ? 'A partir de tus Guardados.' : 'Selección de la redacción, mientras aprende de tus Guardados.';
   }
 
   return (
@@ -144,8 +141,7 @@ export default function Home() {
             onOpen={() => coverTrack && openTrack(coverTrack.mbid)} onSearch={() => router.navigate('/trackdna')} />
 
           <Animated.View entering={FadeIn.duration(250).reduceMotion(ReduceMotion.System)} style={{ paddingBottom: 48 }}>
-            <HomeSection ed={ed} s={radarS} index={1} title="En el radar" width={island}
-              intro="Una canción de la selección de la redacción para descubrir hoy, con un dato documentado.">
+            <HomeSection ed={ed} s={radarS} index={1} title="En el radar" width={island}>
               <RadarBody ed={ed} s={radarS} width={island} track={radarTrack} state={radarTrack ? loadOf(radarState) : 'error'}
                 meta={radarMeta || null} fact={radarData ? radarFact(radarData) : null}
                 onOpen={() => radarTrack && openTrack(radarTrack.mbid)} onRetry={tracks.retry} />

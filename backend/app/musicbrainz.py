@@ -20,6 +20,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Callable
 
+from app import renames
+
 MB_BASE_URL = "https://musicbrainz.org/ws/2"
 LISTENBRAINZ_API = "https://api.listenbrainz.org/1"
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"
@@ -149,14 +151,14 @@ class CachedJsonClient:
             data = {"items": data}
         if not isinstance(data, dict):
             raise BadResponse(f"Respuesta de {self.provider} con forma inesperada")
-        return Fetched(data, url, _now_iso(), stale=False)
+        return Fetched(renames.apply(data), url, _now_iso(), stale=False)  # nombres artísticos actuales (app/renames.py)
 
 
 class MusicBrainzClient(CachedJsonClient):
     provider = "MusicBrainz"
 
     def search_artists(self, query: str, limit: int) -> Fetched:
-        return self.get(f"{MB_BASE_URL}/artist", {"query": query, "limit": str(limit), "fmt": "json"})
+        return self.get(f"{MB_BASE_URL}/artist", {"query": renames.query(query), "limit": str(limit), "fmt": "json"})
 
     def artist(self, mbid: str) -> Fetched:
         """Artista con alias, URL y relaciones (CC0): con otros artistas, con sellos («label founder»…) y con eventos
@@ -187,7 +189,7 @@ class MusicBrainzClient(CachedJsonClient):
 
     # --- Canciones (TrackDNA, T2.0) ---
     def search_recordings(self, query: str, limit: int) -> Fetched:
-        return self.get(f"{MB_BASE_URL}/recording", {"query": query, "limit": str(limit), "fmt": "json"})
+        return self.get(f"{MB_BASE_URL}/recording", {"query": renames.query(query), "limit": str(limit), "fmt": "json"})
 
     def recording(self, mbid: str) -> Fetched:
         """Grabación con ISRC, créditos (producción, remezcla…), relaciones con otras grabaciones, obra, URL y

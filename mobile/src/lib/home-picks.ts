@@ -10,11 +10,13 @@
  * mashups) al final y dicho así; nada guardado, repetido ni ya mostrado en otra sección.
  */
 import { splitTitle } from './artist-identity.ts';
-import { creditParts, joinEs } from './format.ts';
+import { creditParts, formatsEs, joinEs } from './format.ts';
 import { EDITORIAL_PICKS, type EditorialPick } from './home-catalog.ts';
 import { mixed } from './track-art.ts';
 import type { SavedTrack } from './preferences.ts';
 import type { AffinityResponse, TrackLink, TrackRelease, TrackResponse } from '@/types/music';
+
+export { formatsEs };
 
 /** Guardados más recientes cuya ficha se consulta para Tu frecuencia (una petición cada uno, en caché). */
 export const FREQUENCY_SEEDS = 4;
@@ -119,19 +121,6 @@ export type SoundFact = {
   rank: number;
 };
 
-const FORMATS: [RegExp, string][] = [[/^12" vinyl$/i, 'vinilo de 12"'], [/^7" vinyl$/i, 'vinilo de 7"'], [/^10" vinyl$/i, 'vinilo de 10"'],
-  [/vinyl/i, 'vinilo'], [/^(enhanced )?cd$/i, 'CD'], [/^cd-r$/i, 'CD-R'], [/cassette/i, 'casete'], [/^digital media$/i, 'digital']];
-
-/** Formatos documentados, traducidos y sin repetir, en el orden de la fuente (ninguno se considera mejor). */
-export function formatsEs(formats: string[]): string[] {
-  const out: string[] = [];
-  for (const f of formats) {
-    const hit = FORMATS.find(([re]) => re.test(f.trim()))?.[1];
-    if (hit && !out.includes(hit)) out.push(hit);
-  }
-  return out;
-}
-
 /** Cuánta información verificable aporta un grupo de lanzamientos (sin año, ninguna). Ningún formato puntúa más. */
 const releaseInfo = (r: TrackRelease) =>
   r.date ? 1 + (r.labels.length || r.self_released ? 2 : 0) + (r.labels.length === 1 && r.catalog_number ? 1 : 0) + (r.formats.length ? 1 : 0) : 0;
@@ -151,12 +140,12 @@ export function releaseFact(t: Pick<TrackResponse, 'original_release' | 'release
   const formats = formatsEs(best.formats).slice(0, 3);
   if (best.labels.length > 1) {
     const labels = best.labels.length > 3 ? `${best.labels.slice(0, 3).join(', ')} y otros sellos` : joinEs(best.labels);
-    return { year, text: `Se publicó en ${year}; sus ediciones salieron en ${labels}${formats.length ? `, en ${joinEs(formats)}` : ''}.` };
+    return { year, text: `Se publicó en ${year}; sus ediciones salieron en ${labels}.` };
   }
   const where = best.labels.length === 1 ? ` en ${best.labels[0]}${best.catalog_number ? ` (${best.catalog_number})` : ''}`
     : best.self_released ? ' como autoedición' : '';
-  const fmt = formats.length === 1 ? `, en ${formats[0]}` : formats.length > 1 ? `; sus ediciones, en ${joinEs(formats)}` : '';
-  if (!where && !fmt) return { year, text: `Se publicó por primera vez en ${year}, según MusicBrainz.` };
+  const fmt = formats.length === 1 ? `, en ${formats[0]}` : '';
+  if (!where && !fmt) return { year, text: `Se publicó por primera vez en ${year}.` };
   return { year, text: `Se publicó en ${year}${where}${fmt}.` };
 }
 
@@ -172,25 +161,25 @@ export function soundFacts(t: TrackResponse): SoundFact[] {
     out.push({ ...f, track, otherClass, rank: KIND_ORDER.indexOf(f.kind) + (otherClass ? CLASS_PENALTY[otherClass] : 0) });
   };
   const sample = byClass(r.samples ?? [])[0];
-  if (sample) add({ kind: 'sample', word: 'Sample', kicker: 'Un sample confirmado', text: `«${t.title}» incluye un sample de ${by(sample)}.`, other: sample });
+  if (sample) add({ kind: 'sample', word: 'Sample', kicker: 'Un sample confirmado', text: `Incluye un sample de ${by(sample)}.`, other: sample });
   const original = byClass(r.remix_of)[0];
-  if (original) add({ kind: 'original', word: 'Origen', kicker: 'La original', text: `«${t.title}» es una versión de ${by(original)}.`, other: original });
+  if (original) add({ kind: 'original', word: 'Origen', kicker: 'La original', text: `Es una versión de ${by(original)}.`, other: original });
   if (r.cover_of) {
     const writers = r.cover_writers ?? [];
-    add({ kind: 'cover', word: 'Versión', kicker: 'Una versión', text: `«${t.title}» es una versión de «${r.cover_of}»${writers.length ? `, escrita por ${joinEs(writers)}` : ''}.` });
+    add({ kind: 'cover', word: 'Versión', kicker: 'Una versión', text: `Versión de «${r.cover_of}»${writers.length ? `, escrita por ${joinEs(writers)}` : ''}.` });
   }
   const credited = norm(t.artist_name);
   const producers = (t.credits.find((c) => c.role === 'Producción')?.artists ?? []).map((a) => a.name)
     .filter((n) => !credited.includes(norm(n)));
   if (producers.length) {
     add({ kind: 'producer', word: 'Cabina', kicker: 'Quién está detrás',
-      text: `En los créditos de «${t.title}», de ${t.artist_name}, la producción es de ${joinEs(producers.slice(0, 3))}.` });
+      text: `Producida por ${joinEs(producers.slice(0, 3))}, aunque sale a nombre de ${t.artist_name}.` });
   }
   const sampled = byClass(r.sampled_by ?? [])[0];
   if (sampled) {
     const cls = versionClass(sampled);
     add({ kind: 'sampled', word: 'Eco', kicker: cls === 'unofficial' ? 'Sampleada en un bootleg' : cls === 'remix' ? 'Sampleada en un edit o remezcla' : 'Sampleada después',
-      text: `«${sampled.title}»${sampled.artist_name ? `, de ${sampled.artist_name},` : ''} samplea «${t.title}».`, other: sampled });
+      text: `La samplea ${by(sampled)}.`, other: sampled });
   }
   // Remezclas: se destaca una con firma (más interesante que un radio edit), nunca una no oficial si hay otra.
   const remixes = byClass(r.remixes);
@@ -199,25 +188,27 @@ export function soundFacts(t: TrackResponse): SoundFact[] {
     const count = Math.max(r.remix_count, r.remixes.length);
     add({ kind: 'remixes', word: 'Remix', kicker: 'Remezclas y versiones', other: remix,
       text: count > 1
-        ? `MusicBrainz documenta al menos ${count} remezclas, edits o versiones de «${t.title}»; entre ellas, ${by(remix)}.`
-        : `«${t.title}» tiene una versión documentada: ${by(remix)}.` });
+        ? `Al menos ${count} versiones documentadas; entre ellas, ${by(remix)}.`
+        : `Tiene una versión documentada: ${by(remix)}.` });
   }
   const mashup = byClass(r.mashups ?? [])[0];
   if (mashup) {
     const bootleg = /bootleg/i.test(mashup.title);
     add({ kind: 'mashup', word: bootleg ? 'Bootleg' : 'Mashup', kicker: bootleg ? 'Un bootleg (no oficial)' : 'Un mashup',
-      text: `«${t.title}» aparece en el mashup ${by(mashup)}${bootleg ? ', que su propio título identifica como bootleg' : ''}.`, other: mashup });
+      text: `Aparece en el mashup ${by(mashup)}${bootleg ? ' (bootleg, según su título)' : ''}.`, other: mashup });
   }
   const release = releaseFact(t);
   if (release) add({ kind: 'release', word: release.year, kicker: 'La edición original', text: release.text });
   if (r.dj_mix_count > 0) {
     add({ kind: 'mixes', word: 'Mix', kicker: 'En cabina',
-      text: `Aparece en al menos ${r.dj_mix_count} ${r.dj_mix_count === 1 ? 'DJ mix publicado' : 'DJ mixes publicados'}, según MusicBrainz.` });
+      text: `Suena en al menos ${r.dj_mix_count} ${r.dj_mix_count === 1 ? 'DJ mix publicado' : 'DJ mixes publicados'}.` });
   }
-  const genre = t.dna.traits.find((x) => x.key === 'genre' && x.status !== 'unavailable' && x.values.length > 0);
+  // Un género deducido del artista o del sello (V6.5) no es una etiqueta de la pista: no es un dato de Inicio.
+  const genre = t.dna.traits.find((x) => x.key === 'genre' && x.status !== 'unavailable' && x.values.length > 0
+    && x.scope !== 'artist' && x.scope !== 'label');
   if (genre) {
     add({ kind: 'genre', word: genre.values[0], kicker: 'Etiqueta de la comunidad',
-      text: `La comunidad de MusicBrainz ${genre.scope === 'release' ? 'etiqueta su lanzamiento' : 'la etiqueta'} como ${joinEs(genre.values.slice(0, 2))}.` });
+      text: `${genre.scope === 'release' ? 'Su lanzamiento se etiqueta' : 'Se etiqueta'} como ${joinEs(genre.values.slice(0, 2))}.` });
   }
   return out.sort((a, b) => a.rank - b.rank);
 }
@@ -329,7 +320,7 @@ export function songFamily(title: string, artist: string): string {
 
 /**
  * Título base de una canción, sin su marca de versión ni el artista: un remix de un Guardado firmado por el
- * remezclador («Hoodlum (Chris Stussy Remix)», de Chris Stussy) comparte título base con él. Vacío si es muy corto.
+ * remezclador («Hoodlum (Chris Stassy Remix)», de Chris Stassy) comparte título base con él. Vacío si es muy corto.
  */
 export function songTitle(title: string): string {
   const { main, aside } = splitTitle(title);
@@ -429,14 +420,18 @@ export function frequency(input: FrequencyInput): Frequency {
     }
   }
 
-  // Afines de cada Guardado (alternando Guardados): el primero «cerca» de la canción, el segundo afín a su artista.
+  // Afines de cada Guardado (alternando Guardados): el primero «cerca» de la canción, el segundo afín a su artista; los
+  // de su mismo sello (artistas pequeños sin relacionados en Deezer) lo dicen así.
   const byAffinity: Candidate[] = [];
   for (let round = 0; round < AFFINITY_PER_SEED; round++) {
     for (const s of seeds) {
       const a = input.affinities?.[s.mbid];
       const t = a?.tracks[round];
       if (!a || !t) continue;
-      const reason = round === 0 ? `Cerca de «${s.title}»` : `Afín a ${a.seed_artist || mainArtist(s.artist_name)}`;
+      const artist = a.seed_artist || mainArtist(s.artist_name);
+      const reason = round >= a.related_count && a.label
+        ? (round === 0 ? `Mismo sello que «${s.title}»: ${a.label}` : `En ${a.label}, como ${artist}`)
+        : round === 0 ? `Cerca de «${s.title}»` : `Afín a ${artist}`;
       byAffinity.push({ mbid: t.id, title: t.title, artist: t.artist_name, cover: t.cover_url, reason, kind: 'affinity', seed: s.mbid });
     }
   }

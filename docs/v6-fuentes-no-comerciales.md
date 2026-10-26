@@ -44,7 +44,7 @@ El límite ya no es el uso comercial, sino las condiciones de cada servicio y lo
 
 1. Enlace de MusicBrainz a `deezer.com/artist/<id>` (si hay un único ID).
 2. **ISRC**: grabaciones acreditadas solo a ese artista → `track/isrc:<ISRC>` → artista principal. Dos ISRC que coinciden,
-   o uno si además coincide el nombre. Así sobrevive a los cambios de nombre: Chris Stussy figura en Deezer como
+   o uno si además coincide el nombre. Así sobrevive a los cambios de nombre: Chris Stassy figura en Deezer como
    «CHRIS STASSY», y por nombre no se encontraría.
 3. **Nombre exacto** (o alias de MusicBrainz) **y discografía en común**: al menos dos títulos de MusicBrainz en Deezer
    (uno si MusicBrainz solo tiene uno). Si pasan dos candidatos, ninguno.
@@ -104,14 +104,14 @@ Todos los MBID de la caché de fotos real (168), resueltos de nuevo con las fuen
 
 | Canción | Extracto | Sello | Cambio |
 |---|---|---|---|
-| Desire — Chris Stussy | Sí | — → **CSS** (Deezer) | Sello nuevo |
+| Desire — Chris Stassy | Sí | — → **CSS** (Deezer) | Sello nuevo |
 | Double C — PAWSA | Sí | — (álbum de banda sonora: no se atribuye) | Extracto |
 | Hoodlum — Traumer | Sí | Desolat (MB) | Extracto |
 | Lovelee Dae — Blaze | No: Deezer la tiene sin extracto | MB | — |
 | Music Sounds Better With You — Stardust | Sí | MB | Extracto |
 | Dirty Cash — PAWSA | Sí | MB | Extracto |
 | Crazy — ANOTR | Sí | MB | Extracto |
-| Breather — Chris Stussy | No: sin ISRC en MusicBrainz | MB | — |
+| Breather — Chris Stassy | No: sin ISRC en MusicBrainz | MB | — |
 | **Playground — Arapu** (búsqueda «arapu playground») | Sí | **Solid Grooves Records** | **Antes no se encontraba en ningún catálogo** |
 | Vinotinto — Luciano | — | — | Sigue saliendo de Discogs (Deezer no se consulta) |
 
@@ -130,7 +130,7 @@ Extracto en 6 de 8 grabaciones de MusicBrainz, +1 sello y +1 canción encontrada
 
 ## 7. Perfil de artista (2026-10-25)
 
-Piloto con fuentes reales: `backend/eval/pilot_profiles.py` (Traumer, PAWSA, Chris Stussy, Priku y Arapu).
+Piloto con fuentes reales: `backend/eval/pilot_profiles.py` (Traumer, PAWSA, Chris Stassy, Priku y Arapu).
 
 - **Tracks esenciales** (`GET /v1/artists/{mbid}/essentials`, `app/essentials.py`), al final de «Más allá de la
   cabina»: 3–4 canciones del ranking del artista en Deezer, solo propias (sin remixes de otros ni versiones repetidas:
@@ -173,3 +173,112 @@ Piloto con fuentes reales: `backend/eval/pilot_profiles.py` (Traumer, PAWSA, Chr
 - **Sin versiones de lo guardado**: además de grabación, relaciones de MusicBrainz y familia (título + artista), Tu
   frecuencia bloquea cualquier propuesta con el mismo título base que un Guardado (`songTitle`), aunque la firme el
   remezclador.
+
+## 9. V6.2 — TrackDNA, Inicio breve y fotos como láminas (2026-10-25)
+
+- **ADN musical con más cobertura**:
+  - **Género**: si MusicBrainz y Wikidata no lo dan, el del lanzamiento propio en Discogs que contiene la misma pista
+    (título igual sin «(Original Mix)», mismo artista, duración ±3 % si consta; nunca un remix, un DJ mix ni un
+    recopilatorio). `discogs_tracks.genre_for`; se guarda 30 días solo el número del lanzamiento (las condiciones de
+    la API limitan su contenido a 6 h). También para las canciones de Deezer.
+  - **BPM**: el de Deezer (`bpm` de la pista identificada por ISRC y duración) cuando AcousticBrainz y ReccoBeats no
+    lo tienen; 0 = sin calcular y fuera de 70–180 se descarta.
+  - Piloto con 16 esenciales underground (Traumer, PAWSA, Chris Stassy, Arapu, Kerri Chandler, Dam Swindle): género
+    2 → 7 (4 con estilo concreto, 3 solo «Electrónica» porque el EP mezcla familias); BPM 13/16 (ReccoBeats; Deezer
+    da 0 en todas). Tonalidad: ninguna fuente fiable; seguiría requiriendo analizar el audio (pendiente de confirmar
+    las condiciones de Deezer).
+- **Guardar canciones de Discogs y Deezer**: la ficha ya muestra «Guardar»; se guardan con su id externo y Tu
+  frecuencia pide sus afines (`GET /v1/tracks/ext/{id}/affinity`, solo Deezer).
+- **Extracto**: reproducir/pausar dibujados con formas (los caracteres se veían como emoji en iOS).
+- **Inicio**: datos sin repetir el título, intros de una línea, En el radar sin intro y con el dato como nota bajo la
+  canción, portadas más grandes; Detrás del sonido nombra la canción antes del dato.
+- **Perfil de artista**: la foto como lámina cuadrada con bloque de color desfasado (como la portada en TrackDNA).
+- **Afines de artistas pequeños**: si Deezer no relaciona a nadie (p. ej. Arapu), otros artistas del mismo sello que la
+  canción de partida (búsqueda de Deezer por sello, confirmada con el sello de cada álbum; nunca recopilatorios ni
+  autoediciones). Motivos: «Mismo sello que «X»: {sello}» y «En {sello}, como {artista}».
+
+## 10. V6.3 — TrackDNA como análisis del track (2026-10-25)
+
+Piloto `backend/eval/pilot_v63_analysis.py`: los clasificadores de alto nivel de AcousticBrainz no son publicables
+(«trance» para Strings of Life, «no bailable» para el mismo tema); el perfil de ReccoBeats sí es coherente (separa
+bien voz e instrumental: Good Life, Dirty Cash ≈ 0 de instrumentalidad; Hoodlum, Desire ≈ 0,9). Etiquetas libres de
+MusicBrainz: casi nunca hay (2/16), no se usan.
+
+- **Géneros y subgéneros**: una fuente que solo dice «Electrónica» cede ante la siguiente que concreta (grabación →
+  Wikidata → lanzamiento → Discogs). «Minimal» es comodín (convive con house y techno) y ya no convierte un EP
+  «Minimal, Tech House» en «Electrónica». Vocabulario ampliado con estilos habituales de Discogs. Wikidata
+  normalizado (familia y estilo, mayúscula inicial). EP que mezclan familias: «Estilos del lanzamiento», nunca
+  como género de la pista. `TRACK_CONTRACT_VERSION = 8`.
+- **Perfil sonoro** (ReccoBeats, por ISRC y duración; cada rasgo solo si sus ediciones concuerdan ±0,15): energía,
+  bailabilidad, ánimo (0–100) y voz/instrumental. Tonalidad: sigue sin publicarse.
+- **En la ficha**: el BPM situado en el rango habitual de su género (orientativo) y una «Lectura» que solo junta esos
+  datos (voz, estilo, tempo, energía, ánimo y duración); con menos de dos datos, no hay lectura.
+- Resultado en 18 temas (5 clásicos y 13 esenciales underground): género 11 (10 concretos; antes 2 de los 13
+  underground y los clásicos en «Electrónica»), BPM 15, perfil sonoro 11.
+
+## 11. V6.4 — Fichas sin datos y nombre actual de Chris Stassy (2026-10-25)
+
+Diagnóstico de las fichas «secas» (Shinjuku de Franky Rizardo, Ride On Me de PAWSA, Playground de Arapu): son
+lanzamientos de 2025–2026 que ReccoBeats, AcousticBrainz (cerrado en 2022) y Discogs aún no tienen; Ride On Me además no
+tiene ISRC en MusicBrainz.
+
+- **Sin ISRC → búsqueda verificada en Deezer** (`deezer.track_match`, `matched_by: "search"`): mismo artista, título
+  igual sin «(Original Mix)» y misma duración; búsqueda avanzada y, si no da nada, simple. Aporta extracto, ISRC (para
+  ReccoBeats cuando lo tenga), BPM de Deezer y sello.
+- **Contexto del sonido** (`discogs_tracks.context_traits`, solo si nadie clasifica la pista): estilos presentes en al
+  menos el 20 % de los lanzamientos de su sello y de su artista en Discogs (mínimo 5). Cada resultado confirma el
+  sello o el artista, y el sello solo cuenta si el artista ha publicado en él (el «CSS» de Desire coincidía con un
+  sello homónimo de calipso). En la ficha: «Contexto del sonido · no clasifican esta pista» y en la lectura
+  («Aún sin clasificación propia: su sello, Solid Grooves Records, publica sobre todo tech house y minimal techno, y
+  PAWSA se mueve en el tech house»).
+- **Límite**: para lo recién salido no hay BPM, tonalidad ni perfil sonoro en ninguna fuente abierta. La única vía
+  sería analizar el extracto de 30 s; las condiciones de Deezer no lo contemplan («reproduction… in total or
+  partially» y otros usos «beforehand reviewed and approved by DEEZER»): pendiente de decisión.
+- **Chris Stassy** (antes Chris Stussy; MusicBrainz aún tiene el nombre antiguo): `app/renames.py` corrige por MBID
+  las respuestas de MusicBrainz, traduce la búsqueda («Chris Stassy» encuentra al artista) y un middleware cambia el
+  nombre en todo JSON de la API (historias, títulos de remixes, cachés). Repo, pruebas y documentos, actualizados.
+
+## 12. V6.5 — Género en todas las fichas (2026-10-26)
+
+Decisión: no se analiza el extracto de Deezer (BPM, tonalidad y perfil sonoro de lo recién salido siguen sin publicarse).
+
+- **Género deducido** (`discogs_tracks.with_inferred_genre`, último paso del ADN en MusicBrainz y Deezer): si ninguna
+  fuente clasifica la pista (o solo dice «Electrónica»), el género sale de los estilos habituales que comparten su
+  artista y su sello en Discogs; si no, los del artista (Discogs, luego Wikidata); si no, los del sello. Una sola
+  familia (estilo principal y los de su familia o comodín). Va con `scope` «artist» o «label» y nunca pisa un género
+  propio.
+- **En la app**: «Género · por su artista» / «Género · por su sello»; el contexto que lo explica sigue visible y la
+  lectura no lo toma como clasificación propia. No se usa como dato de Inicio («Se etiqueta como…»); sí en Tu
+  frecuencia.
+- Comprobado con el backend en marcha: Shinjuku y Ride On Me → House, Tech House (por su sello); Playground (Deezer) →
+  House, Minimal, Tech House (por su artista). Sin artista ni sello con estilos en Discogs o Wikidata, sigue sin género.
+
+## 13. V6.6 — Fichas de Discogs completas y cartel de TrackDNA (2026-10-26)
+
+Caso: «Coco Feel And Love Shonk» (Shonky, Contexterrior, 2008) salía del catálogo de Discogs sin duración, sin
+extracto y solo con «Electrónica».
+
+- **Discogs × Deezer** (`api._discogs_with_deezer`, `deezer.track_match(..., release_title=)`): la misma pista en
+  Deezer por artista, título (sin «(Original Mix)») y lanzamiento con el mismo título (sin «EP»/«Single»); si las
+  candidatas no tienen todas la misma duración, ninguna. Aporta duración, ISRC (→ perfil sonoro y tempo de
+  ReccoBeats), tempo de Deezer y extracto (`/tracks/ext/discogs:…/preview`, por la coincidencia guardada). Después,
+  contexto de sello y artista (nunca el sello de un recopilatorio) y género deducido (V6.5).
+- Vocabulario: «Tribal» de Discogs → familia House.
+- **Formato**: tipo de lanzamiento y soporte («Single · Vinilo de 12"»); en Discogs a menudo solo consta el soporte.
+- Resultado con el backend en marcha: 7:40, 125 BPM, energía 71, bailabilidad 80, instrumental, House · Tribal ·
+  Minimal y extracto.
+- **Cartel de TrackDNA** (`components/trackdna-poster.tsx`, `lib/trackdna-home.ts`): edición del día como un flyer
+  (paleta del día, «Nº 299 · 26.10.26»), código de barras de ADN que late, disco girando en la banda «DNA» y una cinta
+  con lo que lee una ficha; sugerencias como line-up con horas. Con «reducir movimiento», quieto.
+
+## 14. V6.7 — Guardados y Perfil con personalidad (2026-10-26)
+
+Sin cuenta: todo sale de lo guardado en el dispositivo (`lib/library-stats.ts`; solo cuenta lo que consta y, en «tu
+sonido», lo que se repite en dos o más canciones).
+
+- **Guardados («tu cajón»)**: cartel con tiempo total de música, época y sello que más se repite; la última guardada
+  destacada (portada grande con bloque de color desfasado) y el resto como tracklist numerado; orden Recientes, A–Z o
+  Año.
+- **Perfil («Tu pase»)**: cifras (canciones, artistas, tiempo), «Tu sonido» (artista, sello y época que más se
+  repiten), artistas de partida con su marca, estilos como pegatinas (Tu frecuencia ya los usa; el aviso de que no
+  influían estaba desfasado) y una «Sala de máquinas» plegada con conexión, descartados y fuentes actualizadas.

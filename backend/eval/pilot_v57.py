@@ -22,7 +22,7 @@ from app.main import app  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 CASES = [
-    ("Desire — Chris Stussy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f"),
+    ("Desire — Chris Stassy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f"),
     ("Double C — PAWSA", "df73a61d-f713-4611-8715-5e4ac6c820d6"),
     ("Dirty Cash (Money Talks) — PAWSA", "f2399817-454b-4c24-8af4-b7c1b17dc00a"),
     ("Crazy — ANOTR", "4358ddcc-119a-48ae-9401-5413b8514441"),

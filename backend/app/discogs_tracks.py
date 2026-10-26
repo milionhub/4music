@@ -259,6 +259,221 @@ def search(query: str, limit: int, transport: Transport | None = None) -> list[s
     return results
 
 
+# --- Género de una pista (V6.2) -------------------------------------------------------------------------------------
+GENRE_KIND = "discogs_genre"
+GENRE_VERSION = 2  # v2: estilos del lanzamiento cuando mezcla familias
+GENRE_TTL_S = 30 * 24 * 3600   # solo se guarda el número del lanzamiento: su contenido, 6 h como mucho (_get)
+GENRE_EMPTY_TTL_S = 7 * 24 * 3600
+ORIGINAL_MIX_RE = re.compile(r"\s*[(\[]\s*original(?: mix| version)?\s*[)\]]\s*$", re.IGNORECASE)
+
+
+def release_genre(release: dict[str, Any]) -> list[schemas.DnaTrait]:
+    """Género y estilos de un lanzamiento propio aplicados a una de sus pistas. Misma regla que en MusicBrainz
+    (tracks.release_genre_values): estilos antes que el género amplio, nunca los de un recopilatorio y, en un
+    lanzamiento de varias canciones, nada concreto si sus estilos son de familias distintas."""
+    summary = release_summary(release)
+    names = [n.strip().lower() for n in (release.get("styles") or []) + (release.get("genres") or [])
+             if isinstance(n, str) and n.strip()]
+    songs = {tracks._fold(tracks._core_title(t["title"])) for t in release_tracks(release)}
+    if not summary.own:
+        return []
+    values = tracks.release_genre_values(names, summary.secondary_types, len(songs) > 1)
+    if not values:
+        return []
+    ref = schemas.SourceRef(label=ATTRIBUTION, url=summary.url, license=LICENSE)
+    out = [schemas.DnaTrait(key="genre", group="classification", label="Género", status="community", scope="release",
+                            values=values,
+                            detail=f"Género y estilos de «{summary.title}» en Discogs: describen el lanzamiento.",
+                            sources=[ref])]
+    styles = tracks.release_styles(names, summary.secondary_types) if len(songs) > 1 else []
+    if tracks.is_broad(values) and styles:
+        out.append(tracks.styles_trait(styles, summary.title, ref))
+    return out
+
+
+def _plain(title: str) -> str:
+    return tracks._fold(ORIGINAL_MIX_RE.sub("", title or ""))
+
+
+def _same_track(t: dict[str, Any], title: str, artist_name: str, length_ms: int | None) -> bool:
+    """La misma pista: título igual (sin «(Original Mix)»), el artista entre sus créditos y, si las dos fuentes dan
+    duración, la misma (±3 %). Un remix o un edit tiene otro título: nunca coincide con la original."""
+    if _plain(t["title"]) != _plain(title):
+        return False
+    if tracks._fold(artist_name) not in {tracks._fold(discogs.clean_name(a.name)) for a in t["artists"]}:
+        return False
+    la = t["length_ms"]
+    return not (la and length_ms) or abs(la - length_ms) <= max(la, length_ms) * LENGTH_TOLERANCE
+
+
+def genre_for(key: str, artist_name: str, title: str, length_ms: int | None,
+              transport: Transport | None = None) -> list[schemas.DnaTrait]:
+    """Género de una pista de MusicBrainz o Deezer sin clasificar: el de su lanzamiento propio en Discogs, si la misma
+    pista está en él. `key`: identificador de la grabación (caché del número de lanzamiento). Lanza Unavailable ante un
+    fallo temporal (no se guarda nada)."""
+    hit = store.get(GENRE_KIND, key)
+    if hit is not None and hit.get("version") == GENRE_VERSION:
+        rid = hit.get("release_id")
+        release = _get(f"/releases/{rid}", transport) if rid else None
+        return release_genre(release) if release else []
+    query = f"{artist_name} {ORIGINAL_MIX_RE.sub('', title)}".strip()
+    found: tuple[int, list[schemas.DnaTrait]] | None = None
+    if artist_name and eligible(query):
+        data = _get("/database/search?" + urllib.parse.urlencode(
+            {"q": query, "type": "release", "per_page": SEARCH_PER_PAGE}), transport) or {}
+        seen: set[Any] = set()
+        opened = 0
+        for r in data.get("results") or []:
+            if not isinstance(r, dict) or not isinstance(r.get("id"), int):
+                continue
+            master = r.get("master_id") or r["id"]
+            if master in seen:
+                continue
+            seen.add(master)
+            opened += 1
+            if opened > MAX_RELEASES:
+                break
+            release = _get(f"/releases/{r['id']}", transport) or {}
+            if any(_same_track(t, title, artist_name, length_ms) for t in release_tracks(release)):
+                traits = release_genre(release)
+                if traits:
+                    found = (r["id"], traits)
+                    break
+    store.put(GENRE_KIND, key, {"version": GENRE_VERSION, "release_id": found[0] if found else None},
+              GENRE_TTL_S if found else GENRE_EMPTY_TTL_S)
+    return found[1] if found else []
+
+
+CONTEXT_PER_PAGE = 50
+CONTEXT_MIN_RELEASES = 5      # con menos, no hay «estilos habituales» que valgan
+CONTEXT_MIN_SHARE = 0.2       # un estilo cuenta si está en al menos el 20 % de sus lanzamientos
+CONTEXT_MAX_STYLES = 3
+
+
+def _usual_styles(results: list[dict[str, Any]]) -> tuple[list[str], int]:
+    counts: dict[str, int] = {}
+    for r in results:
+        for style in dict.fromkeys(x for x in r.get("style") or [] if isinstance(x, str) and x.strip()):
+            counts[style] = counts.get(style, 0) + 1
+    n = len(results)
+    if n < CONTEXT_MIN_RELEASES:
+        return [], n
+    ranked = sorted((c, s) for s, c in counts.items() if c / n >= CONTEXT_MIN_SHARE)
+    return [s for _c, s in sorted(ranked, key=lambda x: -x[0])][:CONTEXT_MAX_STYLES], n
+
+
+def context_traits(label: str | None, artist_name: str | None, transport: Transport | None = None) -> list[schemas.DnaTrait]:
+    """Estilos habituales del sello y del artista en Discogs (V6.4): contexto para las canciones que ninguna fuente
+    clasifica. Nunca se presentan como el género de la pista. Cada búsqueda confirma el sello (o el artista) en cada
+    resultado, y el sello solo cuenta si el artista ha publicado en él (sellos homónimos). Lanza Unavailable ante un
+    fallo temporal."""
+    out: list[schemas.DnaTrait] = []
+    if label and not NOT_ON_LABEL_RE.search(label):
+        data = _get("/database/search?" + urllib.parse.urlencode(
+            {"label": label, "type": "release", "per_page": CONTEXT_PER_PAGE}), transport) or {}
+        key = tracks._fold(discogs.clean_name(label))
+        same = [r for r in data.get("results") or [] if isinstance(r, dict)
+                and key in {tracks._fold(discogs.clean_name(x)) for x in r.get("label") or [] if isinstance(x, str)}]
+        # Sellos homónimos («CSS»): solo si entre sus lanzamientos hay alguno del propio artista.
+        own = not artist_name or any(tracks._fold(discogs.clean_name(str(r.get("title") or "").split(" - ")[0]))
+                                     == tracks._fold(artist_name) for r in same)
+        styles, n = _usual_styles(same) if own else ([], 0)
+        if styles:
+            out.append(schemas.DnaTrait(
+                key="label_styles", group="context", label="Estilos del sello", status="community", scope="label",
+                values=styles, detail=f"Estilos más frecuentes en {n} lanzamientos de {label} en Discogs: contexto del "
+                                      "sello, no una clasificación de esta pista.",
+                sources=[schemas.SourceRef(label=ATTRIBUTION, url=f"{SITE}/search/?type=label&q={urllib.parse.quote(label)}",
+                                           license=LICENSE)]))
+    if artist_name:
+        data = _get("/database/search?" + urllib.parse.urlencode(
+            {"artist": artist_name, "type": "release", "per_page": CONTEXT_PER_PAGE}), transport) or {}
+        key = tracks._fold(artist_name)
+        same = [r for r in data.get("results") or [] if isinstance(r, dict)
+                and tracks._fold(discogs.clean_name(str(r.get("title") or "").split(" - ")[0])) == key]
+        styles, n = _usual_styles(same)
+        if styles:
+            out.append(schemas.DnaTrait(
+                key="artist_sound", group="context", label="Estilos del artista", status="community", scope="artist",
+                values=styles, detail=f"Estilos más frecuentes en {n} lanzamientos de {artist_name} en Discogs: "
+                                      "contexto del artista, no una clasificación de esta pista.",
+                sources=[schemas.SourceRef(label=ATTRIBUTION, url=f"{SITE}/search/?type=artist&q={urllib.parse.quote(artist_name)}",
+                                           license=LICENSE)]))
+    return out
+
+
+def with_context(dna: schemas.TrackDna, found: list[schemas.DnaTrait]) -> schemas.TrackDna:
+    present = {t.key for t in dna.traits}
+    extra = [t for t in found if t.key not in present]
+    return dna.model_copy(update={"traits": [*dna.traits, *extra]}) if extra else dna
+
+
+def with_inferred_genre(dna: schemas.TrackDna) -> schemas.TrackDna:
+    """Último recurso (V6.5): si nadie clasifica la pista, su género se deduce de los estilos habituales de su artista y
+    de su sello, con scope «artist» o «label» para que nunca se lea como una clasificación propia. Primero los estilos
+    que comparten artista y sello; si no, los del artista (Discogs, luego Wikidata); si no, los del sello. Solo una
+    familia: el estilo principal y los de su familia (o comodín). Nunca pisa un género concreto."""
+    if not needs_genre(dna):
+        return dna
+    by_key = {t.key: t for t in dna.traits if t.status != "unavailable" and t.values}
+    artist = by_key.get("artist_sound") or by_key.get("artist_style")
+    label = by_key.get("label_styles")
+    candidates: list[tuple[list[str], str, list[schemas.SourceRef], str]] = []
+    if artist and label:
+        shared = [v for v in artist.values if tracks._fold(v) in {tracks._fold(x) for x in label.values}]
+        if shared:
+            candidates.append((shared, "label", [*artist.sources, *label.sources],
+                               "Deducido de los estilos que comparten su artista y su sello: no clasifica esta pista."))
+    if artist:
+        candidates.append((artist.values, "artist", artist.sources,
+                           "Deducido de los estilos habituales de su artista: no clasifica esta pista."))
+    if label:
+        candidates.append((label.values, "label", label.sources,
+                           "Deducido de los estilos habituales de su sello: no clasifica esta pista."))
+    for names, scope, sources, detail in candidates:
+        lowered = [n.strip().lower() for n in names if n.strip()]
+        specific = [n for n in lowered if n not in tracks.BROAD]
+        if not specific:
+            continue
+        fams = [tracks.GENRE_FAMILY.get(n, tracks._title(n)) for n in specific]
+        main = next((f for f in fams if f not in tracks.WILDCARD_FAMILIES), fams[0])
+        same = [n for n, f in zip(specific, fams) if f in {main, *tracks.WILDCARD_FAMILIES}]
+        values = tracks.genre_values(same)
+        if tracks.is_broad(values):
+            continue
+        genre = schemas.DnaTrait(key="genre", group="classification", label="Género", status="community", scope=scope,
+                                 values=values, detail=detail, sources=sources)
+        has = any(t.key == "genre" for t in dna.traits)
+        traits = [genre if t.key == "genre" else t for t in dna.traits] if has else [genre, *dna.traits]
+        return dna.model_copy(update={"traits": traits})
+    return dna
+
+
+def needs_genre(dna: schemas.TrackDna) -> bool:
+    """Sin género o solo con el amplio («Electrónica»): Discogs puede concretarlo."""
+    g = next((t for t in dna.traits if t.key == "genre"), None)
+    return g is None or g.status == "unavailable" or tracks.is_broad(g.values)
+
+
+def with_genre(dna: schemas.TrackDna, found: list[schemas.DnaTrait]) -> schemas.TrackDna:
+    """Género de Discogs donde no había o solo era «Electrónica» (nunca pisa uno concreto); sus estilos del lanzamiento
+    solo si la ficha no los tiene ya."""
+    genre = next((t for t in found if t.key == "genre"), None)
+    traits = list(dna.traits)
+    current = next((t for t in traits if t.key == "genre"), None)
+    if genre and (current is None or current.status == "unavailable"
+                  or (tracks.is_broad(current.values) and not tracks.is_broad(genre.values))):
+        traits = [genre if t.key == "genre" else t for t in traits] if current else [genre, *traits]
+        if not tracks.is_broad(genre.values):  # con un género concreto, los estilos de un EP mezclado sobran
+            traits = [t for t in traits if t.key != "release_styles"]
+    if not any(t.key == "release_styles" for t in traits):
+        current = next((t for t in traits if t.key == "genre"), None)
+        styles = next((t for t in found if t.key == "release_styles"), None)
+        if styles and (current is None or tracks.is_broad(current.values) or current.status == "unavailable"):
+            traits.append(styles)
+    return dna.model_copy(update={"traits": traits})
+
+
 # --- Ficha --------------------------------------------------------------------------------------------------------
 def linked_artist(client: MusicBrainzClient, discogs_artist_id: str) -> str | None:
     """MBID del único artista de MusicBrainz que enlaza ese artista de Discogs. Ante la duda (ninguno, varios o un
@@ -297,17 +512,9 @@ def profile(tid: str, client: MusicBrainzClient, transport: Transport | None = N
     main = schemas.TrackArtist(mbid=first.mbid, name=first.name) if not first.mbid.startswith("discogs:") else None
 
     traits: list[schemas.DnaTrait] = []
-    # Misma regla que en MusicBrainz (tracks.release_genre_values): estilos antes que el género amplio, nunca los de
-    # un recopilatorio y, en un lanzamiento de varias canciones, nada concreto si sus estilos son de familias distintas.
-    names = [n.strip().lower() for n in (release.get("styles") or []) + (release.get("genres") or [])
-             if isinstance(n, str) and n.strip()]
-    songs = {tracks._fold(tracks._core_title(t["title"])) for t in release_tracks(release)}
-    values = tracks.release_genre_values(names, summary.secondary_types, len(songs) > 1) if summary.own else []
-    if values:
-        traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="community",
-                                       scope="release", values=values,
-                                       detail=f"Género y estilos de «{summary.title}» en Discogs: describen el lanzamiento.",
-                                       sources=[ref]))
+    genre = release_genre(release)
+    if genre:
+        traits += genre
     else:
         traits.append(schemas.DnaTrait(key="genre", group="classification", label="Género", status="unavailable",
                                        detail="Discogs no clasifica de forma atribuible a esta pista su lanzamiento."))

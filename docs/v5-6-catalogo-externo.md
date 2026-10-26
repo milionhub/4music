@@ -22,7 +22,7 @@ Fecha: 2026-10-21. Piloto reproducible: `backend/eval/pilot_v56.py` (resultados 
 | Arapu Tribal Nation | Encontrada: `discogs:31292360:A1`, vinilo de Satya sin duración. |
 | Arapu Unexpected | Encontrada: `discogs:31044784:4`, Cadenza CADENZA124, 2024. |
 | Arapu Deep Down | Encontrada: «Take It Deep Down» (`discogs:31759997:A1`), del EP *Deep Down* de Rawax. |
-| Fired Up Arapu Remix · Chris Stussy Desire | Controles: MusicBrainz los tiene, así que Discogs no se consulta. |
+| Fired Up Arapu Remix · Chris Stassy Desire | Controles: MusicBrainz los tiene, así que Discogs no se consulta. |
 
 Latencia de la primera búsqueda: 4–7 s (MusicBrainz más Discogs). La ficha tarda menos de 4 s en frío y sale de la caché después.
 

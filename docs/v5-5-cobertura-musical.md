@@ -30,14 +30,14 @@ C = confirmado en la grabación · L = del lanzamiento · E = estimado por anál
 
 | # | Canción | Catálogo e identidad | Género | Estilo | BPM antes → después | Tonalidad (Camelot) | Sello | Año |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Desire — Chris Stussy | MB `9d619150`, single de 2:52 | — | — | — → **134 E** (ReccoBeats, ISRC QM4TW2437510, 171 953 ms exactos) | — | — (Discogs: CSS (4), pero en la edición de 6:14) | 2024 |
+| 1 | Desire — Chris Stassy | MB `9d619150`, single de 2:52 | — | — | — → **134 E** (ReccoBeats, ISRC QM4TW2437510, 171 953 ms exactos) | — | — (Discogs: CSS (4), pero en la edición de 6:14) | 2024 |
 | 2 | Double C — PAWSA | MB `df73a61d` | — (el *Pop* de la banda sonora se excluye) | — | — → **129 E** (ISRC USAT22503038) | — | — | 2025 |
 | 3 | Hoodlum — Traumer | MB `98e34bc2`, original mix | House C | — | 123 E (AB) | Sol# menor (1A) E (AB) | Desolat | 2014 |
 | 4 | Lovelee Dae — Blaze | MB `8edae321` | House L | Deep House L | 124 E (AB) | — | Urban Tracks · Classic | 1997 |
 | 5 | Music Sounds Better With You — Stardust | MB `6e8b1a97`, 12" club mix | House C | Electro, French House C | 124 E (AB) | Sib menor (3A) E (AB) | Virgin · Roulé | 1998 |
 | 6 | Dirty Cash (Money Talks) — PAWSA | MB `f2399817`, original | House C | — | — → **132 E** (ISRC NLML62400170, ±0,4 %) | — | Altra Moda Music | 2024 |
 | 7 | Crazy — ANOTR | MB `4358ddcc`, original | — (Discogs: House/Deep House/Breaks del álbum, confianza media: no integrado) | — | — (ReccoBeats no la tiene) | — | NO ART | 2026 |
-| 8 | Breather — Chris Stussy | MB `e0ee17b8` | House L | Deep House L (Discogs lo confirma) | — (sin ISRC en MB) | — | Up the Stuss | 2021 |
+| 8 | Breather — Chris Stassy | MB `e0ee17b8` | House L | Deep House L (Discogs lo confirma) | — (sin ISRC en MB) | — | Up the Stuss | 2021 |
 | 9 | Playground — Arapu | **Ausente en MB**; existe en Deezer (ISRC GBKQU2654262) | — | — | — | — | — | — |
 | 10 | Vinotinto — Luciano | **Ausente en MB**; Discogs release 29565955, 9:19, *From The South* FTSR001 | (Tech House L en Discogs, fuera de MB) | — | — (el ISRC de Deezer corresponde a una pista de **2:23**, otra versión: descartado) | — | — | 2022 |
 

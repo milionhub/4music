@@ -6,7 +6,7 @@ from urllib.parse import parse_qs, urlsplit
 import pytest
 from fastapi.testclient import TestClient
 
-from app import discogs_tracks as dt
+from app import discogs_tracks as dt, schemas
 from app.api import get_client
 from app.main import app
 from app.musicbrainz import MusicBrainzClient
@@ -196,7 +196,9 @@ def test_recopilatorio_no_presta_su_genero_y_cache_de_seis_horas(monkeypatch):
     assert traits["genre"]["status"] == "unavailable" and d["original_release"]["secondary_types"] == ["Compilation"]
     assert traits["label"]["values"] == ["Satya"], "sin el número de desambiguación de Discogs"
     client.get("/v1/tracks/ext/discogs:500:A1")
-    assert len(discogs.urls) == 1 and dt.TTL_S == 6 * 3600
+    # Una sola petición del lanzamiento (la búsqueda de contexto, V6.6, va aparte y sin el sello del recopilatorio).
+    assert sum("/releases/" in u for u in discogs.urls) == 1 and dt.TTL_S == 6 * 3600
+    assert not any("label=" in u for u in discogs.urls)
 
 
 def test_ep_de_varias_canciones_no_reparte_estilos_de_familias_distintas(monkeypatch):
@@ -217,3 +219,95 @@ def test_funciones_puras():
     assert dt.parse_duration("") is None and dt.parse_duration(None) is None
     assert dt.release_date({"released": "2024-00-00"}) == "2024" and dt.release_date({"year": 2019}) == "2019"
     assert dt.track_id(1, "A1") == "discogs:1:A1" and dt.track_id(1, "A 1") is None
+
+
+# --- V6.2: género de una pista de MusicBrainz o Deezer desde Discogs ------------------------------------------------
+def test_genero_de_la_misma_pista_en_discogs_nunca_de_un_remix_ni_de_un_dj_mix(monkeypatch):
+    from app import deezer, schemas
+    fake = Discogs(search=[hit(300), hit(200, master=9)], releases={200: EP, 300: DJ_MIX})
+    monkeypatch.setattr(dt, "_default_transport", fake)
+    found = dt.genre_for("rec-1", "Arapu", "Night Groove (Original Mix)", 431000)
+    trait = found[0]
+    assert trait.scope == "release" and trait.values and "Discogs" in trait.detail
+    # «Minimal, Tech House»: Minimal convive con el house (no mezcla familias) y queda como estilo.
+    assert trait.values == ["House", "Minimal", "Tech House"]
+    assert trait.sources[0].url.startswith("https://www.discogs.com/release/200")
+    # Otro remix (no está en el EP), otra duración u otro artista: nada.
+    assert dt.genre_for("rec-2", "Arapu", "Night Groove (Otro Remix)", None) == []
+    assert dt.genre_for("rec-3", "Arapu", "Night Groove", 300000) == []
+    assert dt.genre_for("rec-4", "Priku", "Night Groove", 431000) == []
+    # Segunda vez: solo el lanzamiento guardado (sin volver a buscar).
+    before = len(fake.urls)
+    assert dt.genre_for("rec-1", "Arapu", "Night Groove", 431000) == found
+    assert not any("/database/search" in u for u in fake.urls[before:])
+    # Nunca pisa un género que ya existe; el BPM de Deezer, tampoco un tempo medido.
+    dna = schemas.TrackDna(recording_mbid="rec-1", traits=[
+        schemas.DnaTrait(key="genre", group="classification", label="Género", status="unavailable"),
+        schemas.DnaTrait(key="bpm", group="acoustic", label="BPM", status="unavailable")])
+    assert dt.with_genre(dna, found).traits[0] == trait
+    # Un género concreto nunca se pisa; «Electrónica» sí cede ante uno concreto.
+    concrete = dna.model_copy(update={"traits": [dna.traits[0].model_copy(update={"status": "community", "values": ["Techno"]})]})
+    assert dt.with_genre(concrete, found) == concrete
+    broad = dna.model_copy(update={"traits": [dna.traits[0].model_copy(update={"status": "community", "values": ["Electrónica"]})]})
+    assert dt.with_genre(broad, found).traits[0] == trait and dt.needs_genre(broad) and not dt.needs_genre(concrete)
+    assert [t.values for t in deezer.with_tempo(dna, 124.6).traits] == [[], ["125"]]
+    assert deezer.with_tempo(dna, 0) == dna and deezer.with_tempo(dna, 240) == dna, "0 = sin calcular; 240, octava"
+    measured = deezer.with_tempo(dna, 124)
+    assert deezer.with_tempo(measured, 130) == measured
+
+
+
+def test_ep_que_mezcla_familias_da_estilos_del_lanzamiento_no_de_la_pista():
+    from app import tracks
+    mixed_ep = {**EP, "styles": ["Techno", "House", "Tech House"],
+                "tracklist": [{"position": "A1", "type_": "track", "title": "Night Groove", "duration": "7:10"},
+                              {"position": "A2", "type_": "track", "title": "Otra", "duration": "6:00"}]}
+    traits = dt.release_genre(mixed_ep)
+    assert [t.key for t in traits] == ["genre", "release_styles"]
+    assert traits[0].values == ["Electrónica"] and traits[1].values == ["Techno", "House", "Tech House"]
+    assert tracks.genre_values(["minimal"]) == ["Minimal"]
+    assert tracks.genre_values(["minimal", "deep house"]) == ["House", "Minimal", "Deep House"]
+
+
+def test_v64_contexto_de_sello_y_artista_confirmado_en_cada_resultado(monkeypatch):
+    results = ([{"id": i, "label": ["Solid Grooves Records"], "style": ["Tech House", "Minimal"], "title": "PAWSA - X"} for i in range(6)]
+               + [{"id": 9, "label": ["Otro Sello"], "style": ["Trance"], "title": "Otro - Y"}] * 10)
+
+    class Fake:
+        def __call__(self, url):
+            return {"results": results}
+    monkeypatch.setattr(dt, "_default_transport", Fake())
+    ctx = {t.key: t for t in dt.context_traits("Solid Grooves Records", "PAWSA")}
+    assert ctx["label_styles"].values == ["Minimal", "Tech House"] or ctx["label_styles"].values == ["Tech House", "Minimal"]
+    assert ctx["label_styles"].scope == "label" and "no una clasificación" in ctx["label_styles"].detail
+    assert "Trance" not in ctx["artist_sound"].values, "solo los resultados del propio artista"
+    assert dt.context_traits("Not On Label", None) == []
+    # Sello homónimo: ningún lanzamiento del artista en él, sin contexto de sello.
+    assert all(t.key != "label_styles" for t in dt.context_traits("Solid Grooves Records", "Chris Stassy"))
+
+
+def _ctx(key, values, scope):
+    ref = schemas.SourceRef(label="Discogs", url=f"https://www.discogs.com/{key}", license="CC0")
+    return schemas.DnaTrait(key=key, group="context", label=key, status="community", scope=scope, values=values,
+                            sources=[ref])
+
+
+def test_v65_genero_deducido_de_artista_y_sello():
+    none = schemas.DnaTrait(key="genre", group="classification", label="Género", status="unavailable")
+    artist = _ctx("artist_sound", ["Tech House", "Techno", "Minimal"], "artist")
+    label = _ctx("label_styles", ["Minimal", "Tech House"], "label")
+    # Comparten estilos: esos, con una sola familia y el comodín como estilo.
+    g = dt.with_inferred_genre(schemas.TrackDna(recording_mbid="x", traits=[none, artist, label])).traits[0]
+    assert g.key == "genre" and g.values == ["House", "Tech House", "Minimal"] and g.scope == "label"
+    assert "no clasifica esta pista" in g.detail and len(g.sources) == 2
+    # Solo el artista: su estilo principal y los de su familia, nunca mezcla House y Techno.
+    g = dt.with_inferred_genre(schemas.TrackDna(recording_mbid="x", traits=[none, artist])).traits[0]
+    assert g.values == ["House", "Tech House", "Minimal"] and g.scope == "artist"
+    # Wikidata del artista si Discogs no da nada; «Electrónica» sola no basta.
+    wd = _ctx("artist_style", ["Deep House"], "artist")
+    assert dt.with_inferred_genre(schemas.TrackDna(recording_mbid="x", traits=[wd])).traits[0].values == ["House", "Deep House"]
+    broad = _ctx("artist_style", ["Electronic"], "artist")
+    assert dt.with_inferred_genre(schemas.TrackDna(recording_mbid="x", traits=[none, broad])).traits[0] == none
+    # Nunca pisa un género concreto.
+    own = none.model_copy(update={"status": "community", "values": ["Techno"]})
+    assert dt.with_inferred_genre(schemas.TrackDna(recording_mbid="x", traits=[own, artist])).traits[0] == own

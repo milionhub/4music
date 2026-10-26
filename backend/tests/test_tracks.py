@@ -388,7 +388,7 @@ def test_track_profile_identity_dna_and_cache():
     assert [c["role"] for c in body["credits"]] == ["Producción", "Composición", "Ingeniería"]
     assert body["links"][0]["label"] == "Spotify"
     traits = {t["key"]: t for t in body["dna"]["traits"]}
-    assert traits["genre"] == {**traits["genre"], "status": "community", "scope": "release", "values": ["deep house"]}
+    assert traits["genre"] == {**traits["genre"], "status": "community", "scope": "release", "values": ["House", "Deep House"]}
     assert traits["label"]["values"] == ["Deep Label"] and traits["label"]["status"] == "verified"
     assert traits["dj_mixes"]["values"] == ["2 DJ mixes"] and traits["remixes"]["values"] == ["1 documentada"]
     assert all(traits[k]["status"] == "unavailable" for k in ("bpm", "key", "energy"))

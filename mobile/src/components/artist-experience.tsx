@@ -115,20 +115,24 @@ export function ArtistHero({ name, id, width: W, height: H, tags, credits, photo
   let body: ReactNode;
 
   if (photo) {
-    // Foto arriba y, debajo, una banda con la paleta del artista: el nombre nunca se superpone a la cara.
+    // Como la portada en TrackDNA (V6.2): la foto es una lámina cuadrada con un bloque de color desfasado, dentro del
+    // cartel del artista; el nombre va debajo y nunca se superpone a la cara.
+    const plate = Math.round(Math.min(inner * 0.8, 320));
     return (
-      <View style={{ width: W, height: H, overflow: 'hidden', backgroundColor: P.bg }}>
-        <View style={{ flex: 1 }}>
-          <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top"
-            transition={200} onError={onPhotoError} accessibilityIgnoresInvertColors {...decorative} />
-          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: top + 24, backgroundColor: alpha(P.bg, 0.35) }} {...decorative} />
-          <Pressable disabled={!photo.sourceUrl} onPress={() => photo.sourceUrl && openBrowserAsync(photo.sourceUrl, BROWSER_OPTIONS)}
-            accessibilityRole="link" accessibilityLabel={`${photo.credit}. Ver la foto en su fuente original`} hitSlop={8}
-            style={{ position: 'absolute', right: GUTTER, bottom: Space.sm, backgroundColor: alpha(P.bg, 0.75), paddingHorizontal: 6, paddingVertical: 2 }}>
-            <Mono color={P.ink} size={9}>{photo.sourceUrl ? `${photo.credit} ↗` : photo.credit}</Mono>
-          </Pressable>
+      <View style={{ width: W, overflow: 'hidden', backgroundColor: P.bg, paddingTop: top }}>
+        <Shape id={id} size={W * 0.7} style={{ right: -W * 0.28, top: top * 0.4 }} />
+        <View style={{ alignItems: 'center', paddingBottom: Space.lg }}>
+          <View style={{ width: plate, height: plate }}>
+            <View {...decorative} style={{ position: 'absolute', left: 12, top: 12, width: plate, height: plate, backgroundColor: P.pop }} />
+            <Image source={{ uri: photo.url }} style={{ width: plate, height: plate, backgroundColor: alpha(P.ink, 0.12) }} contentFit="cover"
+              contentPosition="top" transition={200} onError={onPhotoError} accessibilityIgnoresInvertColors {...decorative} />
+            <Pressable disabled={!photo.sourceUrl} onPress={() => photo.sourceUrl && openBrowserAsync(photo.sourceUrl, BROWSER_OPTIONS)}
+              accessibilityRole="link" accessibilityLabel={`${photo.credit}. Ver la foto en su fuente original`} hitSlop={8}
+              style={{ position: 'absolute', right: 0, bottom: 0, backgroundColor: alpha(P.bg, 0.8), paddingHorizontal: 6, paddingVertical: 2 }}>
+              <Mono color={P.ink} size={9}>{photo.sourceUrl ? `${photo.credit} ↗` : photo.credit}</Mono>
+            </Pressable>
+          </View>
         </View>
-        <View style={{ height: 6, backgroundColor: P.pop }} />
         <View style={{ paddingHorizontal: GUTTER, paddingTop: Space.lg, paddingBottom: Space.xl, gap: Space.md }}>
           {credits.length ? <Mono color={P.ink}>{credits.join(' · ')}</Mono> : null}
           <NameStack name={name} id={id} width={inner} maxSize={56} color={P.ink} maxLines={2} />

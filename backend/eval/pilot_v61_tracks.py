@@ -24,14 +24,14 @@ from app.main import app  # noqa: E402
 
 OUT = Path(__file__).resolve().parent / "pilot_v61_tracks_results.json"
 CASES = [  # identidades de V5.5 (docs/v5-5-cobertura-musical.md)
-    ("Desire — Chris Stussy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f"),
+    ("Desire — Chris Stassy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f"),
     ("Double C — PAWSA", "df73a61d-f713-4611-8715-5e4ac6c820d6"),
     ("Hoodlum — Traumer", "98e34bc2-0e71-4205-8986-af891195ed4e"),
     ("Lovelee Dae — Blaze", "8edae321-48fc-4ae6-add1-bc976cb1a823"),
     ("Music Sounds Better With You — Stardust", "6e8b1a97-9b49-4898-9aa3-68db185b3653"),
     ("Dirty Cash (Money Talks) — PAWSA", "f2399817-454b-4c24-8af4-b7c1b17dc00a"),
     ("Crazy — ANOTR", "4358ddcc-119a-48ae-9401-5413b8514441"),
-    ("Breather — Chris Stussy", "e0ee17b8-17d3-4514-8579-9a1fd127b57f"),
+    ("Breather — Chris Stassy", "e0ee17b8-17d3-4514-8579-9a1fd127b57f"),
 ]
 SEARCHES = ["arapu playground", "luciano vinotinto"]
 

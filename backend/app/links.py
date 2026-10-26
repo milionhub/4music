@@ -59,7 +59,7 @@ EXTERNAL_ID_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 # Destinos documentados en MusicBrainz que el proveedor ya no sirve, comprobados a mano (no hay validación en red).
 # (proveedor, id) → evidencia. Se ocultan en la app; la relación sigue en MusicBrainz y conviene corregirla allí.
 DEAD_LINKS: dict[tuple[str, str], str] = {
-    ("apple_music", "1726980894"): "2026-10-18: 404 en /gb, /es y /us; iTunes Lookup sin resultados (Chris Stussy — Desire)",
+    ("apple_music", "1726980894"): "2026-10-18: 404 en /gb, /es y /us; iTunes Lookup sin resultados (Chris Stassy — Desire)",
 }
 TRACK_KINDS = {"track", "song"}
 BANDCAMP_RE = re.compile(r"^[a-z0-9-]+\.bandcamp\.com/(?P<kind>album|track)/[^/]+$")

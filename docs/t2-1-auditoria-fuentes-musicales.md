@@ -20,7 +20,7 @@ No se usaron credenciales nuevas ni ajenas, ni se hizo scraping. MusicBrainz dev
 
 ## A. Diagnóstico actual
 
-### A.1 DESIRE (Chris Stussy): por qué sale 0 de 5
+### A.1 DESIRE (Chris Stassy): por qué sale 0 de 5
 
 | Rasgo | Qué ocurre realmente | Tipo de causa |
 |---|---|---|
@@ -29,7 +29,7 @@ No se usaron credenciales nuevas ni ajenas, ni se hizo scraping. MusicBrainz dev
 | **BPM, tonalidad, energía** | `tracks.dna()` los marca **siempre** como `unavailable` (`backend/app/tracks.py:454`). AcousticBrainz no tiene la grabación (publicada en 2024, después de su congelación en 2022). Deezer devuelve `bpm: 0`. | **Decisión de diseño** (no hay fuente) + falta de datos. |
 | **Interpretación IA** | `track_ai.sufficient()` exige texto de Wikipedia sobre **la canción o su lanzamiento** (`DESCRIPTIVE_SCOPES`, `track_ai.py:80`). Solo existe la Wikipedia del artista. En la caché consta `insufficient_sources` (14 días). | **Comportamiento esperado del diseño**: para el underground casi nunca habrá Wikipedia de la pista (1 de 7 en el banco de pruebas). |
 
-**Hallazgo adicional: cambio de nombre.** Deezer e iTunes acreditan Desire a **«CHRIS STASSY»**, con la discografía real del artista (ENDZ032, Midtown Playground…). La Wikipedia inglesa se titula «Chris_Stassy», y la Fase 1.3A ya vio en Discogs «Changed his name to Chris Stassy in August 2026». MusicBrainz sigue con «Chris Stussy». **Cualquier cruce por nombre entre proveedores fallaría.** Por ISRC (`QM4TW2437510`) y por los enlaces `url-rels` del lanzamiento (Deezer, Spotify y Apple) el cruce funciona.
+**Hallazgo adicional: cambio de nombre.** Deezer e iTunes acreditan Desire a **«CHRIS STASSY»**, con la discografía real del artista (ENDZ032, Midtown Playground…). La Wikipedia inglesa se titula «Chris_Stassy», y la Fase 1.3A ya vio en Discogs «Changed his name to Chris Stassy in August 2026». MusicBrainz sigue con «Chris Stassy». **Cualquier cruce por nombre entre proveedores fallaría.** Por ISRC (`QM4TW2437510`) y por los enlaces `url-rels` del lanzamiento (Deezer, Spotify y Apple) el cruce funciona.
 
 > Conclusión: DESIRE **no** demuestra un error de código. Demuestra que **una sola fuente (MusicBrainz) no basta para un single autoeditado de 2024**, y que el ADN muestra «no disponible» incluso en datos que en realidad no son aplicables o que existen en otra fuente.
 
@@ -129,7 +129,7 @@ Consulta legal y técnica: **2026-10-17**. Las URL de cada conclusión están en
 
 | # | Canción | Grabación (MBID) | Duración | ISRC | Lanzamiento original |
 |---|---|---|---|---|---|
-| 1 | Chris Stussy — Desire | `9d619150` | 2:52 | QM4TW2437510 | Single digital, 2024-02-09 |
+| 1 | Chris Stassy — Desire | `9d619150` | 2:52 | QM4TW2437510 | Single digital, 2024-02-09 |
 | 2 | PAWSA — Breathe | **No verificada** | — | — | No existe en MusicBrainz ni en Deezer: **excluida** |
 | 3 | Michael Bibi — Hanging Tree | `763d8c0c` | 6:11 | — | Repopulate Mars RPM044, 2018-11-16 |
 | 4 | Cloonee — Sun Goes Down | `a9712244` | 2:35 (versión corta; el *extended* es otra grabación) | USAT21903020 | Big Beat, 2021-01-22 |
@@ -273,7 +273,7 @@ Empezar con **librosa (ISC)** para evitar la cuestión AGPL, y comparar con Esse
 | E2 | `backend/app/musicbrainz.py` · `recording_releases` (l. 192–195) y `tracks.links` (l. 375) | No se piden `url-rels` de los lanzamientos | Los enlaces de Bandcamp, Deezer, Beatport, Discogs y Spotify están en el lanzamiento. Sin ellos no hay ni puente entre proveedores ni enlace de compra o escucha | Una petición extra a `release/{original}?inc=url-rels` (o `url-rels` en el *browse*, comprobando el coste) |
 | E3 | `backend/app/tracks.py` · `dna()` (l. 454–456) | 3 filas fijas «no disponible» (BPM, tonalidad, energía) | Penaliza visualmente («0 de 5») datos que hoy **no tenemos ninguna vía de obtener**. No es un fallo, pero transmite poco valor | Agrupar como «Análisis acústico: pendiente» con una sola explicación. Cambiar el recuento para no contar como fallo lo estructuralmente imposible |
 | E4 | `backend/app/track_ai.py` · `sufficient` (l. 208) y `DESCRIPTIVE_SCOPES` (l. 80) | La interpretación sale casi siempre «insuficiente» en el underground | Correcto por honestidad (1/7 tiene Wikipedia del lanzamiento), pero la UI ofrece una función que casi nunca funciona | **No relajar la regla.** Ocultar la sección, o cambiar el texto, cuando no hay fuente descriptiva. Reconsiderar la función cuando existan los perfiles de Discogs (CC0) |
-| E5 | `backend/app/tracks.py` · `dna()`, rasgo `genre` (l. 401–415) | Género solo desde Wikidata (P4404/P436) | Casi nunca existe para el underground. El fallback «Estilo del artista» depende de P136, ausente para Chris Stussy | Mostrar los sellos como contexto de escena es legítimo. El género real exige otra fuente (Discogs CC0), ver F |
+| E5 | `backend/app/tracks.py` · `dna()`, rasgo `genre` (l. 401–415) | Género solo desde Wikidata (P4404/P436) | Casi nunca existe para el underground. El fallback «Estilo del artista» depende de P136, ausente para Chris Stassy | Mostrar los sellos como contexto de escena es legítimo. El género real exige otra fuente (Discogs CC0), ver F |
 | E6 | `backend/app/recommend.py` · `_signals`, afinidad (l. 103) | **La afinidad mínima (0,50) supera el umbral (0,45)** | El docstring dice que «una señal débil sola no alcanza el umbral», pero cualquier fila de Labs, aunque su puntuación relativa sea casi 0, se publica sola. Explica Mory Kanté o Conrad Schnitzler para Capriati | Fuerza proporcional a la puntuación relativa (p. ej. `0.3 + 0.6·rel`), o exigir una puntuación relativa mínima, o una segunda señal para las filas débiles. Validar con `eval/` |
 | E7 | `backend/app/recommend.py` · `_signals`, colaboración (l. 122) | 2 títulos conjuntos = 0,50, publicable sola | Cuenta vocalistas, *samples* acreditados y remezclas (Cloonee → Young M.A, Lindy Layton), aunque el propio docstring lo advierte para 1 título | Distinguir créditos de remix o feat. de los lanzamientos conjuntos con el artista principal; bajar la fuerza a menos de 0,45 si no hay otra señal |
 | E8 | `backend/app/musicbrainz.py` · `label_releases` (l. 178) + `recommend.py` (sello compartido) | Solo la **primera página de 100** lanzamientos del sello, sin garantía de orden cronológico | En sellos grandes la época de la semilla puede quedar fuera de la muestra, y los compañeros de sello son los de esa página, no los de la época | Paginar con un tope (2–3 páginas) o filtrar por fecha. Medir con `eval/` |

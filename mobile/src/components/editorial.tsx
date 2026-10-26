@@ -8,7 +8,7 @@ import { type ReactNode, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { C, Fonts, Radius, Space } from '@/constants/theme';
-import { alpha, type ArtistIdentity, display, DM_SERIF_ITALIC, fitSize, identityFor, surfaces } from '@/lib/artist-identity';
+import { alpha, type ArtistIdentity, display, fitSize, identityFor, surfaces } from '@/lib/artist-identity';
 
 export const decorative = { accessibilityElementsHidden: true, importantForAccessibility: 'no-hide-descendants' as const };
 
@@ -51,40 +51,6 @@ export function ScreenPoster({ id, word, kicker, subtitle, width, figure, childr
       </Text>
       {subtitle ? <Text style={[styles.posterSub, { color: P.ink }]}>{subtitle}</Text> : null}
       {children}
-    </View>
-  );
-}
-
-/**
- * Cabecera de TrackDNA: «TRACK» en display condensada a todo ancho y «DNA» en serif cursiva sobre una banda de tinta,
- * como en un cartel de club. Las formas quedan arriba y a la derecha de la banda: nunca tapan una letra.
- */
-export function TrackDnaPoster({ id, width, subtitle }: { id: ArtistIdentity; width: number; subtitle: string }) {
-  const P = id.palette;
-  const inner = width - Space.lg * 2;
-  const anton = id.type;
-  const track = fitSize('TRACK', inner, anton, 170, 40);
-  const dna = fitSize('DNA', inner * 0.62, DM_SERIF_ITALIC, 150, 40);
-  const ring = width * 0.46;
-  return (
-    <View accessible accessibilityRole="header" accessibilityLabel="TrackDNA" style={{ width, backgroundColor: P.bg, overflow: 'hidden', paddingBottom: Space.lg }}>
-      <View {...decorative} style={{ position: 'absolute', right: -ring * 0.28, top: -ring * 0.58, width: ring, height: ring, borderRadius: ring / 2,
-        borderWidth: 3, borderColor: P.ink }} />
-      <View {...decorative} style={[styles.posterRule, { top: Space.lg + 4, backgroundColor: P.ink }]} />
-      <Text {...decorative} numberOfLines={1}
-        style={{ marginTop: Space.xl + Space.md, paddingHorizontal: Space.lg, fontFamily: anton.family, fontSize: track, lineHeight: Math.round(track * 0.98),
-          color: P.ink, includeFontPadding: false }}>
-        TRACK
-      </Text>
-      <View {...decorative} style={{ backgroundColor: P.ink, paddingHorizontal: Space.lg, flexDirection: 'row', alignItems: 'center', overflow: 'hidden' }}>
-        <Text numberOfLines={1} style={{ fontFamily: Fonts.serifItalic, fontSize: dna, lineHeight: Math.round(dna * 1.12), color: P.bg, includeFontPadding: false }}>
-          DNA
-        </Text>
-        <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
-          <View style={{ width: dna * 0.62, height: dna * 0.62, borderRadius: dna * 0.31, backgroundColor: P.pop }} />
-        </View>
-      </View>
-      <Text style={[styles.posterSub, { color: P.ink, marginTop: Space.md, paddingHorizontal: Space.lg }]}>{subtitle}</Text>
     </View>
   );
 }

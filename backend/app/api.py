@@ -625,7 +625,7 @@ TRACK_TTL_S = 7 * 24 * 3600      # ficha ensamblada: se reutiliza una semana (so
 # fichas de otra versión se reconstruyen al pedirlas (y se sobrescriben). El resto de la caché no se toca.
 # v1 (sin campo): T2.0 · v2: autoedición, enlaces de lanzamientos, identificadores (T2.2A) ·
 # v3: enlaces agrupados por destino, con `target`/`release_type` y sin los caducados conocidos.
-TRACK_CONTRACT_VERSION = 6  # 6: sin géneros de bandas sonoras ni recopilatorios; familias mezcladas de un EP (V5.7)
+TRACK_CONTRACT_VERSION = 8  # 6: sin géneros de bandas sonoras ni recopilatorios; familias mezcladas de un EP (V5.7) · 7: «Electrónica» cede ante el subgénero; estilos del lanzamiento; Wikidata normalizado (V6.3)
 # 5  # 5: géneros de MusicBrainz (grabación y lanzamiento), samples, mashups y covers
 # 4  # 4: formatos físicos del lanzamiento en sus enlaces (Discogs solo si es una edición física)
 TRACK_SEARCH_DEFAULT = 15
@@ -759,18 +759,54 @@ def external_track(track_id: str, client: MusicBrainzClient = Depends(get_client
             return deezer.track_profile(track_id, client)
         except deezer.Unavailable:
             raise ApiError(503, "provider_unavailable", "Deezer no responde") from None
-    return discogs_tracks.profile(track_id, client)
+    return _discogs_with_deezer(discogs_tracks.profile(track_id, client))
+
+
+def _discogs_with_deezer(track: schemas.TrackResponse) -> schemas.TrackResponse:
+    """V6.6: una pista de Discogs (a menudo sin duración) cruzada con la misma en Deezer (artista, título y lanzamiento;
+    con duración, también ella): duración, ISRC, extracto, perfil sonoro y tempo. Si nadie la clasifica, el contexto de
+    su sello y su artista y el género deducido. Un fallo de una fuente no bloquea la ficha."""
+    first = next(iter(track.artist_credit), None)
+    if not first:
+        return track
+    match = None
+    if config.noncommercial_sources():
+        try:
+            match = deezer.track_match(track.mbid, [], track.length_ms, artist_name=first.name, title=track.title,
+                                       release_title=track.original_release.title if track.original_release else None)
+        except deezer.Unavailable:
+            pass
+    seconds = (match or {}).get("duration")
+    length_ms = track.length_ms or (round(seconds * 1000) if isinstance(seconds, (int, float)) and seconds > 0 else None)
+    isrcs = [match["isrc"]] if match and match.get("isrc") else []
+    dna = track.dna
+    if isrcs:
+        rb = reccobeats.lookup(track.mbid, isrcs, length_ms)
+        dna = reccobeats.with_profile(reccobeats.with_tempo(dna, rb), rb)
+    dna = deezer.with_tempo(dna, (match or {}).get("bpm"))
+    if discogs_tracks.needs_genre(dna):
+        label = next((t.values[0] for t in dna.traits if t.key == "label" and t.status != "unavailable" and t.values), None)
+        collection = bool(track.original_release and set(track.original_release.secondary_types) & tracks.NON_TRACK_RELEASES)
+        try:  # el sello de un recopilatorio no dice nada del sonido de la pista
+            dna = discogs_tracks.with_context(dna, discogs_tracks.context_traits(None if collection else label, first.name))
+        except ProviderError:
+            pass
+    sources = track.sources + ([schemas.SourceRef(label="Deezer (duración y extracto)", url=deezer.track_url(match),
+                                                  license=deezer.LICENSE)] if match else [])
+    return track.model_copy(update={"length_ms": length_ms, "isrcs": isrcs or track.isrcs, "deezer_url": deezer.track_url(match),
+                                    "dna": discogs_tracks.with_inferred_genre(dna), "sources": sources})
 
 
 @router.get("/tracks/ext/{track_id}/preview", response_model=schemas.TrackPreviewResponse)
 def external_track_preview(track_id: str):
-    """Extracto de 30 s de una canción del catálogo de Deezer (`deezer:<id>`), pedido en el momento."""
+    """Extracto de 30 s de una canción del catálogo de Deezer (`deezer:<id>`) o de una de Discogs ya cruzada con Deezer."""
     m = deezer.EXT_ID_RE.match(track_id)
-    if not m:
-        raise ApiError(404, "not_found", "Solo las canciones de Deezer tienen extracto")
     if not config.noncommercial_sources():
         return schemas.TrackPreviewResponse(recording_mbid=track_id, reason="disabled")
-    record = {"id": m.group(1)}
+    # V6.6: una pista de Discogs, por la misma de Deezer ya cruzada en su ficha (caché de deezer.track_match).
+    record = {"id": m.group(1)} if m else deezer.cached_match(track_id)
+    if not record:
+        raise ApiError(404, "not_found", "Esta canción no tiene extracto")
     try:
         url = deezer.preview(record)
     except deezer.Unavailable:
@@ -794,6 +830,18 @@ def track_profile(mbid: str, client: MusicBrainzClient = Depends(get_client),
                                     "sources": sources_list})
 
 
+@router.get("/tracks/ext/{track_id}/affinity", response_model=schemas.AffinityResponse)
+def track_ext_affinity(track_id: str, client: MusicBrainzClient = Depends(get_client)):
+    """Afines de una canción de Deezer guardada (Tu frecuencia). Las de Discogs no tienen: `unavailable`."""
+    m = deezer.EXT_ID_RE.match(track_id)
+    if not m or not config.noncommercial_sources():
+        return schemas.AffinityResponse(recording_mbid=track_id, status="unavailable")
+    try:
+        return affinity.cached_or_build(track_id, lambda: affinity.seed_from_track({"id": m.group(1)}), client)
+    except deezer.Unavailable:
+        return schemas.AffinityResponse(recording_mbid=track_id, status="unavailable")
+
+
 @router.get("/tracks/{mbid}/affinity", response_model=schemas.AffinityResponse)
 def track_affinity(mbid: str, client: MusicBrainzClient = Depends(get_client),
                    wiki: WikimediaClient = Depends(get_wiki_client)):
@@ -810,7 +858,9 @@ def track_affinity(mbid: str, client: MusicBrainzClient = Depends(get_client),
             return found
         fetched = client.artist(main.mbid)
         canonical = _canonical(fetched, main.mbid)
-        return affinity.seed_from_artist(_deezer_record(client, fetched, canonical), main.name, track.title)
+        label = next((t.values[0] for t in track.dna.traits if t.key == "label" and t.status != "unavailable"
+                      and t.values), None)
+        return affinity.seed_from_artist(_deezer_record(client, fetched, canonical), main.name, track.title, label)
 
     try:
         return affinity.cached_or_build(track.mbid, seed, client)
@@ -822,8 +872,10 @@ def _deezer_track(track: schemas.TrackResponse) -> dict | None:
     """La grabación en Deezer (V6.1, caché propia). None sin fuentes no comerciales o si Deezer no responde."""
     if not config.noncommercial_sources():
         return None
+    main = next(iter(getattr(track, "artist_credit", None) or []), None)
     try:
-        return deezer.track_match(track.mbid, track.isrcs, track.length_ms)
+        return deezer.track_match(track.mbid, track.isrcs, track.length_ms, artist_name=main.name if main else None,
+                                  title=getattr(track, "title", None))
     except deezer.Unavailable:
         return None
 
@@ -836,7 +888,7 @@ def track_preview(mbid: str, client: MusicBrainzClient = Depends(get_client),
     if not config.noncommercial_sources():
         return schemas.TrackPreviewResponse(recording_mbid=track.mbid, reason="disabled")
     try:
-        match = deezer.track_match(track.mbid, track.isrcs, track.length_ms)
+        match = _deezer_track(track)
         url = deezer.preview(match)
     except deezer.Unavailable:
         return schemas.TrackPreviewResponse(recording_mbid=track.mbid, reason="unavailable")
@@ -846,14 +898,33 @@ def track_preview(mbid: str, client: MusicBrainzClient = Depends(get_client),
 
 
 def _measured_dna(track: schemas.TrackResponse, match: dict | None = None) -> schemas.TrackDna:
-    """ADN con BPM y tonalidad medidos en AcousticBrainz si los hay; si falta el tempo, el estimado por ReccoBeats
-    (por ISRC y duración); si falta el sello, el de Deezer (V6.1, misma grabación y año). Cada fuente con su caché
-    propia, aparte de la ficha; un fallo no bloquea nada."""
+    """ADN con BPM y tonalidad medidos en AcousticBrainz si los hay; perfil sonoro de ReccoBeats (V6.3); si falta el
+    tempo, el estimado por ReccoBeats
+    (por ISRC y duración) y, si tampoco, el de Deezer; si falta el sello, el de Deezer (V6.1, misma grabación y año);
+    si falta el género o solo es «Electrónica», el del lanzamiento propio en Discogs que contiene la misma pista y, si
+    tampoco, el deducido de su artista o su sello (V6.5). Cada fuente con su
+    caché propia, aparte de la ficha; un fallo no bloquea nada."""
     dna = deezer.with_label(track.dna, match, track.first_release_date)
     dna = acousticbrainz.with_measurements(dna, acousticbrainz.lookup(track.mbid, track.length_ms))
-    if any(t.key == "bpm" and t.status == "unavailable" for t in dna.traits):
-        dna = reccobeats.with_tempo(dna, reccobeats.lookup(track.mbid, track.isrcs, track.length_ms))
-    return dna
+    # Sin ISRC en MusicBrainz, el de la misma grabación en Deezer (búsqueda verificada, V6.4).
+    isrcs = track.isrcs or ([match["isrc"]] if match and match.get("isrc") else [])
+    rb = reccobeats.lookup(track.mbid, isrcs, track.length_ms)  # caché propia; tempo y perfil sonoro
+    dna = reccobeats.with_profile(reccobeats.with_tempo(dna, rb), rb)
+    dna = deezer.with_tempo(dna, (match or {}).get("bpm"))
+    main = getattr(track, "main_artist", None) or next(iter(getattr(track, "artist_credit", None) or []), None)
+    if main and discogs_tracks.needs_genre(dna):
+        try:
+            dna = discogs_tracks.with_genre(dna, discogs_tracks.genre_for(track.mbid, main.name, track.title,
+                                                                          track.length_ms))
+        except ProviderError:
+            pass  # Discogs no responde: sin género, como antes
+    if main and discogs_tracks.needs_genre(dna):  # nadie la clasifica: contexto de su sello y de su artista
+        label = next((t.values[0] for t in dna.traits if t.key == "label" and t.status != "unavailable" and t.values), None)
+        try:
+            dna = discogs_tracks.with_context(dna, discogs_tracks.context_traits(label, main.name))
+        except ProviderError:
+            pass
+    return discogs_tracks.with_inferred_genre(dna)  # V6.5: sin clasificación propia, el de su artista o su sello
 
 
 @router.get("/tracks/{mbid}/dna", response_model=schemas.TrackDna)

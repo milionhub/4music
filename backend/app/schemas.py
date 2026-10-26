@@ -223,6 +223,9 @@ class AffinityResponse(BaseModel):
     seed_artist: str | None = None
     tracks: list[EssentialTrack] = []
     basis: str | None = None
+    # Las primeras `related_count` son de artistas relacionados; el resto, de su mismo sello (`label`).
+    related_count: int = 0
+    label: str | None = None
 
 
 class StoriesResponse(BaseModel):
@@ -375,7 +378,7 @@ class DnaTrait(BaseModel):
     group: Literal["classification", "context", "acoustic"]
     label: str
     status: Literal["verified", "community", "measured", "unavailable"]
-    scope: Literal["track", "release", "artist"] = "track"
+    scope: Literal["track", "release", "artist", "label"] = "track"
     values: list[str] = []
     detail: str | None = None
     sources: list[SourceRef] = []

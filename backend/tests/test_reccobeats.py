@@ -76,12 +76,26 @@ def test_acousticbrainz_manda_y_reccobeats_solo_completa_el_tempo(monkeypatch):
     measured = acousticbrainz.with_measurements(_dna(), {"bpm": 123, "key": "Sol# menor", "camelot": "1A"})
     assert rb.with_tempo(measured, {"bpm": 999}) == measured, "nunca sustituye un tempo ya medido"
 
-    # En la API: con tempo de AcousticBrainz no se consulta ReccoBeats.
+    # En la API: con tempo de AcousticBrainz, ReccoBeats no lo pisa (V6.3: se consulta igual, por el perfil sonoro).
     track = schemas.TrackResponse.model_construct(mbid=DESIRE, isrcs=[ISRC], length_ms=LENGTH, dna=_dna())
     asked = []
     monkeypatch.setattr(rb, "lookup", lambda *a, **k: asked.append(a) or {"bpm": 134})
     monkeypatch.setattr(acousticbrainz, "lookup", lambda mbid, length: {"bpm": 123})
-    assert next(t for t in api._measured_dna(track).traits if t.key == "bpm").values == ["123"] and not asked
+    assert next(t for t in api._measured_dna(track).traits if t.key == "bpm").values == ["123"] and len(asked) == 1
     monkeypatch.setattr(acousticbrainz, "lookup", lambda mbid, length: {})
     out = next(t for t in api._measured_dna(track).traits if t.key == "bpm")
-    assert out.values == ["134"] and out.sources[0].label == "ReccoBeats" and len(asked) == 1
+    assert out.values == ["134"] and out.sources[0].label == "ReccoBeats" and len(asked) == 2
+
+
+def test_perfil_sonoro_solo_si_las_ediciones_concuerdan_y_sin_pisar_lo_medido():
+    tracks = [{"id": "a", "isrc": ISRC, "durationMs": LENGTH}, {"id": "b", "isrc": ISRC, "durationMs": LENGTH + 500}]
+    feats = [{"id": "a", "tempo": 124.2, "energy": 0.80, "danceability": 0.70, "instrumentalness": 0.91, "valence": 0.30},
+             {"id": "b", "tempo": 123.9, "energy": 0.84, "danceability": 0.95, "instrumentalness": 0.88, "valence": 0.32}]
+    v = rb.summarize(tracks, feats, [ISRC], LENGTH)
+    assert v["bpm"] == 124 and v["energy"] == 0.82 and "danceability" not in v, "0,70 frente a 0,95: no concuerdan"
+    dna = rb.with_profile(_dna(), v)
+    by = {t.key: t for t in dna.traits}
+    assert by["energy"].values == ["82"] and by["energy"].status == "measured"
+    assert by["vocals"].values[0] == "instrumental" and by["valence"].values == ["31"]
+    assert rb.vocals(0.05) == "vocal" and rb.vocals(0.4) == "partial"
+    assert rb.with_profile(dna, {"energy": 0.1}).traits == dna.traits, "nunca pisa un rasgo ya medido"

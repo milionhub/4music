@@ -83,3 +83,14 @@ def test_typo_tolerance_is_narrow():
     assert not tracks._near("arapu", "arupa") and not tracks._near("dae", "day")  # palabras cortas: exactas
     fuzzy = tracks.fuzzy_query("Playground - Arapu").lower()
     assert "playground~1" in fuzzy and "arapu~1" in fuzzy
+
+
+def test_v63_broad_recording_genre_yields_to_a_concrete_release_and_mixed_eps_give_release_styles():
+    g = next(t for t in _dna(["electronic"], ["detroit techno"]).traits if t.key == "genre")
+    assert (g.scope, g.values) == ("release", ["Techno", "Detroit Techno"]), "«Electrónica» cede ante el subgénero"
+    broad = _dna(["electronic"], ["electronic"])
+    assert next(t for t in broad.traits if t.key == "genre").values == ["Electrónica"]
+    mixed = _dna([], ["techno", "house", "tech house"])  # EP (primary_type distinto de Single) con varias familias
+    by = {t.key: t for t in mixed.traits}
+    assert by["genre"].values == ["Electrónica"] or by["genre"].status == "unavailable"
+    assert by["release_styles"].values == ["Techno", "House", "Tech House"]

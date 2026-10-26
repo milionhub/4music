@@ -26,7 +26,7 @@ from typing import Any
 from app import schemas, store
 
 KIND = "reccobeats"
-VERSION = 1
+VERSION = 2  # v2: perfil sonoro (energía, bailabilidad, voz, ánimo, sonoridad)
 TTL_S = 90 * 24 * 3600
 EMPTY_TTL_S = 30 * 24 * 3600
 BASE_URL = "https://api.reccobeats.com/v1"
@@ -38,6 +38,11 @@ BPM_TOLERANCE = 0.02
 BPM_RANGE = (70, 180)
 SOURCE = schemas.SourceRef(label="ReccoBeats", url="https://reccobeats.com/")
 DETAIL = "Tempo estimado por el análisis de audio de ReccoBeats; grabación identificada por ISRC y duración."
+# Perfil sonoro (V6.3, piloto eval/pilot_v63_analysis.py): distingue bien los temas con voz de los instrumentales y su
+# ánimo es coherente; se publica como estimación. La tonalidad sigue sin publicarse (coincidía en 2 de 6).
+FEATURES = ("energy", "danceability", "instrumentalness", "valence")
+FEATURE_TOLERANCE = 0.15  # varias ediciones del mismo ISRC deben concordar
+PROFILE_DETAIL = "Estimado por el análisis de audio de ReccoBeats; grabación identificada por ISRC y duración."
 
 Transport = Callable[[str], dict[str, Any]]
 
@@ -49,17 +54,26 @@ def _default_transport(url: str) -> dict[str, Any]:
 
 
 def summarize(tracks: list[dict[str, Any]], features: list[dict[str, Any]], isrcs: list[str], length_ms: int | None) -> dict[str, Any]:
-    """{"bpm": 134} si las pistas son esta grabación (ISRC y duración) y concuerdan; {} en cualquier otro caso."""
+    """{"bpm": 134, "energy": 0.79, …} si las pistas son esta grabación (ISRC y duración) y concuerdan; {} en cualquier
+    otro caso. El tempo solo entre 70 y 180; cada rasgo del perfil, solo si todas sus ediciones concuerdan (±0,15)."""
     if not length_ms:
         return {}
     wanted = set(isrcs)
     valid = {t["id"] for t in tracks if isinstance(t, dict) and t.get("isrc") in wanted and isinstance(t.get("durationMs"), (int, float))
              and abs(t["durationMs"] - length_ms) <= length_ms * LENGTH_TOLERANCE}
-    tempos = [f["tempo"] for f in features if isinstance(f, dict) and f.get("id") in valid and isinstance(f.get("tempo"), (int, float))]
+    rows = [f for f in features if isinstance(f, dict) and f.get("id") in valid]
+    tempos = [f["tempo"] for f in rows if isinstance(f.get("tempo"), (int, float))]
     if not tempos or max(tempos) - min(tempos) > min(tempos) * BPM_TOLERANCE:
-        return {}
+        return {}  # ediciones que no concuerdan: la identificación es dudosa, no se publica nada
+    out: dict[str, Any] = {}
     bpm = round(sum(tempos) / len(tempos))
-    return {"bpm": bpm} if BPM_RANGE[0] <= bpm <= BPM_RANGE[1] else {}
+    if BPM_RANGE[0] <= bpm <= BPM_RANGE[1]:
+        out["bpm"] = bpm
+    for key in FEATURES:
+        vals = [f[key] for f in rows if isinstance(f.get(key), (int, float)) and 0 <= f[key] <= 1]
+        if vals and len(vals) == len(rows) and max(vals) - min(vals) <= FEATURE_TOLERANCE:
+            out[key] = round(sum(vals) / len(vals), 3)
+    return out
 
 
 def lookup(mbid: str, isrcs: list[str], length_ms: int | None, transport: Transport | None = None) -> dict[str, Any]:
@@ -82,6 +96,32 @@ def lookup(mbid: str, isrcs: list[str], length_ms: int | None, transport: Transp
         return {}  # fallo temporal o respuesta inesperada: no se guarda
     store.put(KIND, mbid, {"version": VERSION, "values": values}, TTL_S if values else EMPTY_TTL_S)
     return values
+
+
+def vocals(instrumentalness: float) -> str:
+    """Voz o instrumental según la instrumentalidad estimada (umbrales prudentes; el medio, «voz puntual»)."""
+    return "instrumental" if instrumentalness >= 0.6 else "vocal" if instrumentalness <= 0.2 else "partial"
+
+
+def with_profile(dna: schemas.TrackDna, values: dict[str, Any]) -> schemas.TrackDna:
+    """Perfil sonoro estimado: energía, bailabilidad y ánimo (0–100) y voz/instrumental. Sustituye los rasgos no
+    disponibles con la misma clave y añade los que falten; nunca pisa uno medido por otra fuente."""
+    found: dict[str, schemas.DnaTrait] = {}
+    names = {"energy": "Energía", "danceability": "Bailabilidad", "valence": "Ánimo"}
+    for key, label in names.items():
+        if key in values:
+            found[key] = schemas.DnaTrait(key=key, group="acoustic", label=label, status="measured",
+                                          values=[str(round(values[key] * 100))], detail=PROFILE_DETAIL, sources=[SOURCE])
+    if "instrumentalness" in values:
+        found["vocals"] = schemas.DnaTrait(key="vocals", group="acoustic", label="Voz", status="measured",
+                                           values=[vocals(values["instrumentalness"]), str(round(values["instrumentalness"] * 100))],
+                                           detail=PROFILE_DETAIL, sources=[SOURCE])
+    if not found:
+        return dna
+    traits = [found.pop(t.key) if t.key in found and t.status == "unavailable" else t for t in dna.traits]
+    present = {t.key for t in traits}
+    traits += [t for k, t in found.items() if k not in present]
+    return dna.model_copy(update={"traits": traits})
 
 
 def with_tempo(dna: schemas.TrackDna, values: dict[str, Any]) -> schemas.TrackDna:

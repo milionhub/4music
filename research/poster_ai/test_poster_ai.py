@@ -175,11 +175,11 @@ class EvaluatorTest(unittest.TestCase):
     def test_metrics(self):
         ref = {"event_name": "Night A", "location": "Club X", "dates": [{"text": "12.07.2025", "iso": "2025-07-12"}],
                "artists": [{"name": "Sven Väth", "stage": "Main", "time": "23:00"},
-                           {"name": "Mochakk"}, {"name": "Chris Stussy", "accepted_variants": ["CHRIS STUSSY"]},
+                           {"name": "Mochakk"}, {"name": "Chris Stassy", "accepted_variants": ["CHRIS STASSY"]},
                            {"name": "Ilario Alicante"}]}
         pred = dict(GOOD, artists=[
             {"name": "SVEN VATH", "stage": "Main", "time": "22:00", "uncertain": False},  # acento normalizado
-            {"name": "chris stussy", "stage": None, "time": None, "uncertain": False},
+            {"name": "chris stassy", "stage": None, "time": None, "uncertain": False},
             {"name": "Ilario Alicant", "stage": None, "time": None, "uncertain": True},   # aproximado: revisión
             {"name": "Daft Punk", "stage": None, "time": None, "uncertain": False}])      # inventado
         r = EV.evaluate_one({"image": "x", "json_valid": True, "schema_errors": [], "extraction": pred,

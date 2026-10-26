@@ -9,6 +9,7 @@ import {
   behindFact, dailySlots, formatsEs, frequency, FREQUENCY_LOOKUPS, isRealCover, mainArtist, radarFact, releaseFact, songFamily, songTitle, soundFacts,
   versionClass,
 } from '../src/lib/home-picks.ts';
+import { dailyEdition } from '../src/lib/trackdna-home.ts';
 import type { SavedTrack } from '../src/lib/preferences.ts';
 import { ART_PALETTES, TRIOS } from '../src/lib/track-art.ts';
 import type { TrackLink, TrackRelease, TrackResponse } from '../src/types/music.ts';
@@ -145,7 +146,7 @@ test('el dato sale solo de la ficha: sample primero; sin datos no hay dato (fall
   });
   const f = radarFact(deep)!;
   assert.equal(f.kind, 'sample');
-  assert.equal(f.text, '«Deep Burnt» incluye un sample de «Little Sunflower», de Freddie Hubbard.');
+  assert.equal(f.text, 'Incluye un sample de «Little Sunflower», de Freddie Hubbard.');
   assert.equal(f.other?.mbid, uuid(2));
   assert.equal(radarFact(track({ mbid: uuid(3), title: 'Sin datos', first_release_date: null })), null);
   // La producción solo es un dato si no es el propio artista acreditado.
@@ -235,7 +236,7 @@ test('En el radar: un bootleg o un edit no desplazan los datos de originales, pe
   const onlyBootleg = track({ mbid: uuid(62), title: 'X', first_release_date: null, relations: rel({ mashups: [link(uuid(63), 'X (bootleg)', 'A vs. B')] }) });
   const f = radarFact(onlyBootleg)!;
   assert.equal(f.kicker, 'Un bootleg (no oficial)');
-  assert.match(f.text, /identifica como bootleg/);
+  assert.match(f.text, /bootleg, según su título/);
   // Entre quienes la samplean, primero una grabación original; un edit de terceros, después y dicho así.
   const good = track({ mbid: uuid(64), title: 'Good Life',
     relations: rel({ sampled_by: [link(uuid(65), 'Good Life (Mr. B Special edit)', 'Killa Productions'), link(uuid(66), 'Otra canción', 'Alguien')] }) });
@@ -251,20 +252,20 @@ test('ediciones: solo lo inequívoco del grupo de lanzamientos, sin preferir un 
   // Sellos y formatos reunidos de todas sus ediciones: no se atribuye uno solo a 1995 ni se da un catálogo suelto.
   const multi = releaseFact({ original_release: release({ labels: ['Smith Hyde Productions', 'Wax Trax! Records', 'Junior Boy’s Own', 'Sony Records'],
     catalog_number: 'X1', formats: ['Digital Media', 'CD'] }), releases: [] })!;
-  assert.equal(multi.text, 'Se publicó en 1995; sus ediciones salieron en Smith Hyde Productions, Wax Trax! Records, Junior Boy’s Own y otros sellos, en digital y CD.');
+  assert.equal(multi.text, 'Se publicó en 1995; sus ediciones salieron en Smith Hyde Productions, Wax Trax! Records, Junior Boy’s Own y otros sellos.');
   // Sello único y varios formatos: los formatos son de sus ediciones, en el orden de la fuente.
   assert.equal(releaseFact({ original_release: release({ labels: ['Desolat'], catalog_number: 'DESOLAT 038', formats: ['Digital Media', '12" Vinyl'] }), releases: [] })!.text,
-    'Se publicó en 1995 en Desolat (DESOLAT 038); sus ediciones, en digital y vinilo de 12".');
+    'Se publicó en 1995 en Desolat (DESOLAT 038).');
   assert.deepEqual(formatsEs(['Digital Media', '12" Vinyl', 'CD', 'Digital Media', 'Blu-spec CD']), ['digital', 'vinilo de 12"', 'CD']);
   // Sin sello ni formato: solo el año. Sin año: nada.
-  assert.equal(releaseFact({ original_release: release({}), releases: [] })!.text, 'Se publicó por primera vez en 1995, según MusicBrainz.');
+  assert.equal(releaseFact({ original_release: release({}), releases: [] })!.text, 'Se publicó por primera vez en 1995.');
   assert.equal(releaseFact({ original_release: release({ date: null }), releases: [] }), null);
   // Otro lanzamiento propio del mismo año con más información verificable (sello y catálogo) gana a la original pobre…
   const richer = release({ mbid: uuid(91), title: 'Born Slippy EP', labels: ['Junior Boy’s Own'], catalog_number: 'JBO 29' });
   assert.equal(releaseFact({ original_release: release({}), releases: [richer] })!.text, 'Se publicó en 1995 en Junior Boy’s Own (JBO 29).');
   // …pero nunca uno de otro año ni un recopilatorio.
   assert.equal(releaseFact({ original_release: release({}), releases: [{ ...richer, date: '1996' }, { ...richer, secondary_types: ['Compilation'] }] })!.text,
-    'Se publicó por primera vez en 1995, según MusicBrainz.');
+    'Se publicó por primera vez en 1995.');
 });
 
 // --- Tu frecuencia V6.1: identidad musical, portadas reales y diversidad ----------------------------------------------
@@ -379,9 +380,9 @@ const essential = (id: string, title: string, artist_name: string, cover_url: st
 
 test('V6.1: Tu frecuencia propone afines de cada Guardado y nunca otra versión suya, aunque la firme otro artista', () => {
   const s = saved(uuid(400), 'Hoodlum', 'Traumer');
-  const affinities = { [s.mbid]: { recording_mbid: s.mbid, status: 'ready' as const, seed_artist: 'Traumer', basis: null, tracks: [
-    essential('deezer:1', 'Hoodlum (Chris Stussy Remix)', 'Chris Stussy', DZ(2)),
-    essential('deezer:2', 'Desire', 'Chris Stussy', DZ(3)),
+  const affinities = { [s.mbid]: { recording_mbid: s.mbid, status: 'ready' as const, seed_artist: 'Traumer', basis: null, related_count: 3, label: null, tracks: [
+    essential('deezer:1', 'Hoodlum (Chris Stassy Remix)', 'Chris Stassy', DZ(2)),
+    essential('deezer:2', 'Desire', 'Chris Stassy', DZ(3)),
     essential('deezer:3', 'Nouvelle', 'Arapu', DZ(4)),
   ] } };
   const f = frequency({ saved: [s], details: {}, affinities, dayIndex: 4 });
@@ -391,6 +392,10 @@ test('V6.1: Tu frecuencia propone afines de cada Guardado y nunca otra versión 
   const two = { [s.mbid]: { ...affinities[s.mbid], tracks: affinities[s.mbid].tracks.slice(1) } };
   assert.deepEqual(frequency({ saved: [s], details: {}, affinities: two, dayIndex: 4 }).items.filter((i) => i.kind === 'affinity')
     .map((i) => [i.title, i.reason]), [['Desire', 'Cerca de «Hoodlum»'], ['Nouvelle', 'Afín a Traumer']]);
+  // Artista pequeño: sin relacionados, del mismo sello (y dicho así).
+  const label = { [s.mbid]: { ...two[s.mbid], related_count: 0, label: 'Cadenza' } };
+  assert.deepEqual(frequency({ saved: [s], details: {}, affinities: label, dayIndex: 4 }).items.filter((i) => i.kind === 'affinity')
+    .map((i) => i.reason), ['Mismo sello que «Hoodlum»: Cadenza', 'En Cadenza, como Traumer']);
   // Mismo título base, cualquier artista y cualquier marca de versión.
   assert.equal(songTitle('Hoodlum (DeWalta Dub)'), songTitle('Hoodlum'));
   assert.equal(songTitle('Hoodlum - Extended Mix'), 'hoodlum');
@@ -399,4 +404,16 @@ test('V6.1: Tu frecuencia propone afines de cada Guardado y nunca otra versión 
   assert.ok(isRealCover(DZ(5)));
   assert.ok(!isRealCover('https://cdn-images.dzcdn.net/images/cover/d41d8cd98f00b204e9800998ecf8427e/1000x1000.jpg'));
   assert.ok(!isRealCover('https://cdn-images.dzcdn.net/images/artist/abc/1000x1000.jpg'));
+});
+
+test('V6.6: edición del día de TrackDNA, estable en el día y distinta al siguiente', () => {
+  const a = dailyEdition(new Date(2026, 9, 26, 9));
+  const b = dailyEdition(new Date(2026, 9, 26, 23));
+  const c = dailyEdition(new Date(2026, 9, 27, 9));
+  assert.deepEqual(a, b);
+  assert.equal(a.issue, 'Nº 299');
+  assert.equal(a.date, '26.10.26');
+  assert.notEqual(a.id.palette.name, c.id.palette.name);
+  assert.notDeepEqual(a.bars, c.bars);
+  assert.ok(a.bars.length === 28 && a.bars.every((h) => h >= 0.2 && h <= 1));
 });

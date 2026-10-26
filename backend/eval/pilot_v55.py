@@ -39,7 +39,7 @@ UA = "music-discovery/0.1 (TrackDNA V5.5 coverage pilot; portfolio project)"
 
 # (nombre, MBID verificado o None si no existe en MusicBrainz, búsqueda de comprobación de catálogo)
 PILOT = [
-    ("Desire — Chris Stussy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f", "Chris Stussy Desire"),
+    ("Desire — Chris Stassy", "9d619150-6b0f-4f14-b038-8503ae4c6c8f", "Chris Stassy Desire"),
     ("Double C — PAWSA", "df73a61d-f713-4611-8715-5e4ac6c820d6", "PAWSA Double C"),
     ("Hoodlum — Traumer", "98e34bc2-0e71-4205-8986-af891195ed4e", "Traumer Hoodlum"),
     ("Lovelee Dae — Blaze", "8edae321-48fc-4ae6-add1-bc976cb1a823", "Blaze Lovelee Dae"),
@@ -49,7 +49,7 @@ PILOT = [
     ("Dirty Cash (Money Talks) — PAWSA", "f2399817-454b-4c24-8af4-b7c1b17dc00a", "PAWSA Dirty Cash Money Talks"),
     # Original (no la extended mix a0fe0116…).
     ("Crazy — ANOTR", "4358ddcc-119a-48ae-9401-5413b8514441", "ANOTR Crazy"),
-    ("Breather — Chris Stussy", "e0ee17b8-17d3-4514-8579-9a1fd127b57f", "Chris Stussy Breather"),
+    ("Breather — Chris Stassy", "e0ee17b8-17d3-4514-8579-9a1fd127b57f", "Chris Stassy Breather"),
     ("Playground — Arapu", None, "Arapu Playground"),
     ("Vinotinto — Luciano", None, "Luciano Vinotinto"),
 ]

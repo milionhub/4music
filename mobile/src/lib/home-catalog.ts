@@ -48,7 +48,7 @@ export const EDITORIAL_PICKS: EditorialPick[] = [
     year: '1997', label: 'Urban Tracks', genres: ['House', 'Deep House'], cover: caa('2848ed85-6144-437c-9d0f-3d84b08c4dd4'), connections: true },
   { mbid: '98e34bc2-0e71-4205-8986-af891195ed4e', title: 'Hoodlum (original mix)', artist: 'Traumer', artist_mbid: '319c89bc-c7a3-4139-8386-a2a5b48b4ed7',
     year: '2014', label: 'Desolat', genres: ['House'], cover: caa('0392e2c9-0c5a-4b68-bf9d-46aee45af161') },
-  { mbid: '9d619150-6b0f-4f14-b038-8503ae4c6c8f', title: 'Desire', artist: 'Chris Stussy', artist_mbid: '5b7f4511-1764-4d80-83b5-8c150f4636c5',
+  { mbid: '9d619150-6b0f-4f14-b038-8503ae4c6c8f', title: 'Desire', artist: 'Chris Stassy', artist_mbid: '5b7f4511-1764-4d80-83b5-8c150f4636c5',
     year: '2024', label: null, genres: [], cover: caa('4df304a8-3f71-4c7b-b520-b1efc158a177') },
   { mbid: 'cdf0bea5-0e97-4f13-bd92-ccdfbf40f638', title: 'Can You Feel It', artist: 'Mr. Fingers', artist_mbid: '1e47567e-5192-43b9-af98-75e4998f9e52',
     year: '1986', label: 'Trax Records', genres: ['House'], cover: caa('46799fb1-1610-4666-9112-b8a673bc42b0'), connections: true },

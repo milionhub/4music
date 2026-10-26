@@ -417,12 +417,15 @@ function Skeleton({ s, widths }: { s: Surface; widths: `${number}%`[] }) {
 }
 
 /** Dato de una canción: palabra decorativa (por debajo del encabezado de la portada), rótulo y la frase documentada. */
-function FactBlock({ fact, s, face, width, heading }: { fact: SoundFact; s: Surface; face: Typeface; width: number; heading?: string }) {
+function FactBlock({ fact, s, face, width, heading, subject }: {
+  fact: SoundFact; s: Surface; face: Typeface; width: number; heading?: string; subject?: string;
+}) {
   const word = display(fact.word, face);
   return (
     <View style={{ gap: Space.sm }}>
       <Text {...decorative} {...FIXED} numberOfLines={1} style={type(face, fitSize(word, width, face, 52, 28), s.ink, 1.05)}>{word}</Text>
       <Text style={[MONO_B, { color: s.soft }]}>{heading ?? fact.kicker}</Text>
+      {subject ? <Text style={[styles.artist, { color: s.ink }]} numberOfLines={2}>{subject}</Text> : null}
       <Text style={[styles.factText, { color: s.ink }]}>{fact.text}</Text>
     </View>
   );
@@ -442,7 +445,7 @@ export function RadarBody({ ed, s, width, track, state, meta, fact, onOpen, onRe
       </View>
     );
   }
-  const cover = Math.round(Math.min(inner * 0.5, 240));
+  const cover = Math.round(Math.min(inner * 0.56, 260));
   const column = inner - cover - Space.lg;
   return (
     <View style={{ paddingHorizontal: GUTTER, gap: HEAD_GAP }}>
@@ -456,14 +459,19 @@ export function RadarBody({ ed, s, width, track, state, meta, fact, onOpen, onRe
         </View>
       </Pressable>
       {state === 'loading' ? <Skeleton s={s} widths={['40%', '95%', '70%']} /> : null}
-      {fact ? <FactBlock fact={fact} s={s} face={ed.trio.title} width={inner} heading={`El dato · ${fact.kicker}`} /> : null}
+      {fact ? (
+        <View style={{ gap: 4 }}>
+          <Text style={[MONO_B, { color: s.soft }]}>{fact.kicker}</Text>
+          <Text style={[styles.factText, { color: s.ink }]}>{fact.text}</Text>
+        </View>
+      ) : null}
       <OpenButton s={s} label={ctaLabel(state)} disabled={state !== 'ok'} onPress={onOpen} />
     </View>
   );
 }
 
 // --- Tu frecuencia -------------------------------------------------------------------------------------------------
-const CARD = 156;
+const CARD = 168;
 
 export function FrequencyBody({ s, items, onOpen, onCoverError }: {
   s: Surface; items: FrequencyItem[]; onOpen: (mbid: string) => void; onCoverError?: (url: string) => void;
@@ -494,7 +502,8 @@ export function BehindBody({ ed, s, width, fact, personal, onOpen }: {
   const links = [{ mbid: fact.track.mbid, title: fact.track.title }, ...(fact.other ? [{ mbid: fact.other.mbid, title: fact.other.title }] : [])];
   return (
     <View style={{ paddingHorizontal: GUTTER, gap: HEAD_GAP }}>
-      <FactBlock fact={fact} s={s} face={ed.trio.title} width={inner} heading={personal ? `${fact.kicker} · de tus Guardados` : fact.kicker} />
+      <FactBlock fact={fact} s={s} face={ed.trio.title} width={inner} heading={personal ? `${fact.kicker} · de tus Guardados` : fact.kicker}
+        subject={`«${fact.track.title}» · ${fact.track.artist}`} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Space.sm }}>
         {links.map((l) => (
           <Pressable key={l.mbid} onPress={() => onOpen(l.mbid)} accessibilityRole="button" accessibilityLabel={`Abrir ${l.title} en TrackDNA`}

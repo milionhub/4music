@@ -23,7 +23,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from app.main import app  # noqa: E402
 
 OUT = Path(__file__).resolve().parent / "pilot_profiles_results.json"
-NAMES = ["Traumer", "PAWSA", "Chris Stussy", "Priku", "Arapu"]
+NAMES = ["Traumer", "PAWSA", "Chris Stassy", "Priku", "Arapu"]
 
 
 def main() -> None:
