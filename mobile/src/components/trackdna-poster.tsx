@@ -78,7 +78,7 @@ export function TrackDnaPoster({ edition, width, subtitle }: { edition: DailyEdi
         </View>
       </View>
       <Text style={[styles.sub, { color: P.ink }]}>{subtitle}</Text>
-      <Ticker color={P.pop} ink={P.ink} width={width} reduce={reduce} />
+      <Ticker items={TICKER} color={P.pop} ink={P.ink} width={width} reduce={reduce} />
     </View>
   );
 }
@@ -93,8 +93,8 @@ function Bar({ height, phase, beat, color }: { height: number; phase: number; be
   return <Animated.View style={[{ flex: 1, borderRadius: 1, backgroundColor: color }, style]} />;
 }
 
-/** Cinta que corre en bucle: el texto dos veces seguidas, desplazado lo que mide una copia. */
-function Ticker({ color, ink, width, reduce }: { color: string; ink: string; width: number; reduce: boolean }) {
+/** Cinta que corre en bucle: el texto dos veces seguidas, desplazado lo que mide una copia. También la usa Carteles. */
+export function Ticker({ items, color, ink, width, reduce }: { items: readonly string[]; color: string; ink: string; width: number; reduce: boolean }) {
   const [copy, setCopy] = useState(0);
   const x = useSharedValue(0);
   useEffect(() => {
@@ -104,7 +104,7 @@ function Ticker({ color, ink, width, reduce }: { color: string; ink: string; wid
     return () => cancelAnimation(x);
   }, [copy, reduce, x]);
   const move = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
-  const text = `${TICKER.join('  ✶  ')}  ✶  `;
+  const text = `${items.join('  ✶  ')}  ✶  `;
   return (
     <View {...decorative} style={{ width, backgroundColor: color, overflow: 'hidden', paddingVertical: 7, marginTop: Space.lg }}>
       <Animated.View style={[{ flexDirection: 'row', width: 4000 }, move]}>

@@ -47,7 +47,11 @@ export function usePosterResolution(eventId: string | undefined, onEvent: (e: Po
         ok = false;
         failed.current.add(artists[i].id);
       } else if (next) {
+        const before = next;
         next = applyResolution(next, artists[i].id, res);
+        // Un resultado que no se puede aplicar (p. ej. el nombre cambió mientras tanto) no se vuelve a pedir solo:
+        // si no, el bucle lo reclamaría sin fin.
+        if (next === before) failed.current.add(artists[i].id);
       }
     });
     if (!next) return false;

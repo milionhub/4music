@@ -1,5 +1,5 @@
 /** Primitivas visuales de Chromatic Underground (sin dependencias externas). */
-import type { ReactNode } from 'react';
+import { createContext, type ReactNode, useContext } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -79,39 +79,65 @@ export function GradientBox({ pair, angle = 135, style, children }: { pair: Acce
   return <View style={[{ experimental_backgroundImage: gradient(pair, angle), backgroundColor: pair[0] }, style]}>{children}</View>;
 }
 
+/**
+ * Tono de una sección (V6.8): los botones, chips y cargas de su mundo toman su paleta en vez del ácido común. Con
+ * `flyer`, los botones son de cartel: esquinas rectas, borde de tinta y una sombra sólida desplazada que se hunde al
+ * pulsar.
+ */
+export type Tone = { fill: string; onFill: string; shadow: string; line: string; surface: string; flyer?: boolean };
+const ToneContext = createContext<Tone | null>(null);
+export const ToneProvider = ToneContext.Provider;
+export const useTone = () => useContext(ToneContext);
+
+const SHADOW = 4;
+
 export function Button({
   label,
   variant = 'primary',
   style,
   ...rest
 }: { label: string; variant?: 'primary' | 'ghost' | 'danger'; style?: ViewStyle } & Omit<PressableProps, 'style'>) {
+  const t = useTone();
+  const fill = t?.fill ?? C.acid;
+  const ink = variant === 'primary' ? t?.onFill ?? C.onAccent : variant === 'ghost' && t?.flyer ? fill : C.text;
+  const look = (pressed: boolean) => [
+    styles.button,
+    variant === 'primary' && [styles.buttonPrimary, { backgroundColor: fill }],
+    variant === 'ghost' && [styles.buttonGhost, t && (t.flyer ? { borderColor: fill, borderWidth: 2, backgroundColor: t.surface } : { borderColor: t.line, backgroundColor: t.surface })],
+    variant === 'danger' && styles.buttonDanger,
+    t?.flyer && styles.buttonFlyer,
+    t?.flyer && variant === 'primary' && { borderColor: t.onFill },
+    t?.flyer && variant === 'primary' && pressed && { transform: [{ translateX: SHADOW - 1 }, { translateY: SHADOW - 1 }] },
+    !t?.flyer && pressed && { opacity: 0.75 },
+  ];
+  const text = <Text style={[styles.buttonLabel, { color: ink }]}>{label}</Text>;
+  if (t?.flyer && variant === 'primary') {
+    // Sombra sólida detrás: el botón se desplaza sobre ella al pulsar.
+    return (
+      <View style={[{ paddingRight: SHADOW, paddingBottom: SHADOW }, rest.disabled && { opacity: 0.4 }, style]}>
+        <View pointerEvents="none" style={[styles.buttonShadow, { backgroundColor: t.shadow }]} />
+        <Pressable accessibilityRole="button" style={({ pressed }) => look(pressed)} {...rest}>{text}</Pressable>
+      </View>
+    );
+  }
   return (
-    <Pressable
-      accessibilityRole="button"
-      style={({ pressed }) => [
-        styles.button,
-        variant === 'primary' && styles.buttonPrimary,
-        variant === 'ghost' && styles.buttonGhost,
-        variant === 'danger' && styles.buttonDanger,
-        pressed && { opacity: 0.75 },
-        rest.disabled && { opacity: 0.4 },
-        style,
-      ]}
-      {...rest}>
-      <Text style={[styles.buttonLabel, variant === 'primary' ? { color: C.onAccent } : { color: C.text }]}>{label}</Text>
+    <Pressable accessibilityRole="button" style={({ pressed }) => [...look(pressed), rest.disabled && { opacity: 0.4 }, style]} {...rest}>
+      {text}
     </Pressable>
   );
 }
 
 export function Chip({ label, selected, onPress, accessibilityLabel }: { label: string; selected?: boolean; onPress?: () => void; accessibilityLabel?: string }) {
+  const t = useTone();
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : 'text'}
       accessibilityState={{ selected: !!selected }}
       accessibilityLabel={accessibilityLabel ?? label}
-      style={({ pressed }) => [styles.chip, selected && styles.chipSelected, pressed && { opacity: 0.7 }]}>
-      <Text style={[styles.chipLabel, selected && { color: C.onAccent }]}>{label}</Text>
+      style={({ pressed }) => [styles.chip, t && { borderColor: t.line, backgroundColor: t.surface }, t?.flyer && { borderRadius: Radius.sm },
+        selected && [styles.chipSelected, t && { backgroundColor: t.fill, borderColor: t.fill }], pressed && { opacity: 0.7 }]}>
+      <Text style={[styles.chipLabel, selected && { color: t?.onFill ?? C.onAccent }]}>{label}</Text>
     </Pressable>
   );
 }
@@ -123,9 +149,10 @@ export function StateView({
   actionLabel,
   onAction,
 }: { kind: 'loading' | 'empty' | 'error'; title: string; message?: string; actionLabel?: string; onAction?: () => void }) {
+  const t = useTone();
   return (
     <View style={[styles.state, kind === 'error' && { borderColor: C.danger }]} accessibilityLiveRegion="polite">
-      {kind === 'loading' ? <ActivityIndicator color={C.acid} /> : <Text style={styles.stateGlyph}>{kind === 'error' ? '!' : '∅'}</Text>}
+      {kind === 'loading' ? <ActivityIndicator color={t?.fill ?? C.acid} /> : <Text style={[styles.stateGlyph, t && { color: t.fill }]}>{kind === 'error' ? '!' : '∅'}</Text>}
       <Title style={{ textAlign: 'center' }}>{title}</Title>
       {message ? <Body muted style={{ textAlign: 'center' }}>{message}</Body> : null}
       {actionLabel && onAction ? <Button label={actionLabel} variant={kind === 'error' ? 'primary' : 'ghost'} onPress={onAction} /> : null}
@@ -172,6 +199,8 @@ const styles = StyleSheet.create({
   buttonPrimary: { backgroundColor: C.acid },
   buttonGhost: { borderWidth: 1.5, borderColor: C.line, backgroundColor: C.surface },
   buttonDanger: { borderWidth: 1.5, borderColor: C.danger },
+  buttonFlyer: { borderRadius: Radius.sm, borderWidth: 2 },
+  buttonShadow: { position: 'absolute', left: SHADOW, top: SHADOW, right: 0, bottom: 0, borderRadius: Radius.sm },
   buttonLabel: { fontFamily: Fonts.display, fontWeight: Fonts.displayWeight ?? '800', fontSize: 16, letterSpacing: 1, textTransform: 'uppercase' },
   chip: { minHeight: 40, paddingHorizontal: Space.lg, borderRadius: Radius.pill, borderWidth: 1.5, borderColor: C.line, backgroundColor: C.surface, justifyContent: 'center' },
   chipSelected: { backgroundColor: C.acid, borderColor: C.acid },

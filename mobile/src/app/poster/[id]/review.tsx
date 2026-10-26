@@ -7,8 +7,9 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Field, PS, SetEditor, SetRow, STATUS_LABEL } from '@/components/poster';
-import { Body, Button, Chip, Meta, Notice, Screen, Section, StateView, Title } from '@/components/ui';
+import { Field, POSTER_ID, POSTER_TONE, PS, SetEditor, SetRow, STATUS_LABEL } from '@/components/poster';
+import { PosterBar } from '@/components/posters-poster';
+import { Body, Button, Chip, Meta, Notice, Screen, Section, StateView, ToneProvider } from '@/components/ui';
 import { C, Fonts, Radius, Space } from '@/constants/theme';
 import {
   addArtist, applySuggestion, confirmArtist, confirmEvent, confirmEventField, confirmSet, dismissSuggestion,
@@ -89,7 +90,8 @@ export default function ReviewPoster() {
   }
 
   return (
-    <Screen withTabBar={false} background={PS.screen}
+    <ToneProvider value={POSTER_TONE}>
+    <Screen withTabBar={false} background={PS.screen} topTint={POSTER_ID.palette.bg}
       footer={
         selecting ? (
           <View style={{ flexDirection: 'row', gap: Space.md }}>
@@ -102,10 +104,9 @@ export default function ReviewPoster() {
             onPress={() => { apply(confirmEvent(e, now())); router.replace(`/poster/${e.id}`); }} />
         )
       }>
+      <PosterBar id={POSTER_ID} title={e.status === 'confirmed' ? 'Editar evento' : 'Revisar cartel'} backLabel="Volver" onBack={() => router.back()}
+        kicker={[STATUS_LABEL[e.status], `${e.artists.length} artistas`, `${e.sets.length} actuaciones`, `análisis ${e.analysis.calls}/${MAX_CALLS}`].join(' · ')} />
       <View style={{ gap: Space.md }}>
-        <Button label="← Biblioteca" variant="ghost" onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
-        <Title>Revisar cartel</Title>
-        <Meta>{[STATUS_LABEL[e.status], `${e.artists.length} artistas`, `${e.sets.length} actuaciones`, `análisis ${e.analysis.calls}/${MAX_CALLS}`].join(' · ')}</Meta>
         <Body muted>Comprueba lo señalado; lo demás se ha leído sin dudas. Tus cambios se guardan al momento y un nuevo análisis no los sobrescribe.</Body>
       </View>
 
@@ -113,7 +114,7 @@ export default function ReviewPoster() {
       {e.analysis.lastError ? <Notice tone="warn">Último intento: {e.analysis.lastError}</Notice> : null}
 
       {busy ? (
-        <View style={styles.busy} accessibilityLiveRegion="polite"><ActivityIndicator color={C.acid} /><Text style={styles.busyText}>{busy}</Text></View>
+        <View style={styles.busy} accessibilityLiveRegion="polite"><ActivityIndicator color={POSTER_ID.palette.glow} /><Text style={styles.busyText}>{busy}</Text></View>
       ) : null}
 
       {e.analysis.incomplete ? (
@@ -214,6 +215,7 @@ export default function ReviewPoster() {
 
       {editing ? <SetEditor event={e} setId={editing} onChange={apply} onClose={() => setEditing(null)} /> : null}
     </Screen>
+    </ToneProvider>
   );
 }
 
@@ -222,7 +224,7 @@ const styles = StyleSheet.create({
   busyText: { color: C.text, fontFamily: Fonts.sansBold, fontSize: 15 },
   suggestion: { gap: Space.sm, padding: Space.md, borderRadius: Radius.md, borderWidth: 1, borderColor: C.cyan, backgroundColor: PS.raised },
   suggestionText: { color: C.text, fontFamily: Fonts.sans, fontSize: 15 },
-  link: { color: C.acid, fontFamily: Fonts.monoBold, fontSize: 11 },
+  link: { color: POSTER_ID.palette.glow, fontFamily: Fonts.monoBold, fontSize: 11 },
   day: { color: C.text, fontFamily: Fonts.display, fontSize: 20, textTransform: 'uppercase', marginTop: Space.sm },
   collapsed: { gap: 4, padding: Space.lg, borderRadius: Radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: PS.line },
   collapsedText: { color: C.text, fontFamily: Fonts.sansBold, fontSize: 15 },

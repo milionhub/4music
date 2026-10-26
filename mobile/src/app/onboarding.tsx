@@ -12,11 +12,11 @@ import { ArtistSearch } from '@/components/music';
 import { Body, Button, Chip, Display, GradientBox, Meta, Notice, Screen, Section } from '@/components/ui';
 import { C, Fonts, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { EDITORIAL_STYLES } from '@/constants/styles';
-import { fixedIdentity, surfaces } from '@/lib/artist-identity';
+import { fixedIdentity, SECTION_PALETTES, surfaces } from '@/lib/artist-identity';
 import { useLibrary } from '@/state/library';
 
 /** La misma identidad que «Tu pase» (Perfil): editar es parte de él. */
-const PASS = fixedIdentity('Ultravioleta', 'anton');
+const PASS = fixedIdentity(SECTION_PALETTES.profile, 'anton');
 const PP = PASS.palette;
 const PS = surfaces(PP);
 

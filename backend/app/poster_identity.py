@@ -18,7 +18,7 @@ import unicodedata
 from difflib import SequenceMatcher
 from typing import Any
 
-from app import normalize, profile, schemas, store
+from app import normalize, profile, renames, schemas, store
 from app.musicbrainz import MusicBrainzClient, NotConfigured, ProviderError, Unavailable
 
 MAX_NAMES = 20
@@ -28,7 +28,7 @@ AUTO_SCORE = 95
 SIMILAR_MIN = 0.85
 MAX_CANDIDATES = 5
 TRACKS_LIMIT = 5
-STORE_KIND = "poster_resolve_v1"
+STORE_KIND = "poster_resolve_v3"  # v3 (V6.8): los nombres antiguos de app/renames.py cuentan como alias
 TTL_FOUND_S = 7 * 24 * 3600
 TTL_NONE_S = 24 * 3600  # «sin identidad» se revisa a diario (MusicBrainz puede añadir al artista)
 # Desambiguaciones que sitúan al candidato en la escena electrónica: solo ordenan y se señalan, nunca enlazan.
@@ -86,7 +86,9 @@ def decide(name: str, artists: list[dict[str, Any]]) -> schemas.PosterResolution
     exact.sort(key=lambda c: (not c.scene, -(c.score or 0)))
     if len(exact) == 1 and (exact[0].score or 0) >= AUTO_SCORE:
         c = exact[0]
-        evidence = (f"Alias «{c.alias}» de {c.name} en MusicBrainz, sin homónimos" if c.match == "alias"
+        former = c.match == "alias" and renames.is_former(c.mbid, c.alias)
+        evidence = (f"Nombre anterior de {c.name}, sin homónimos" if former
+                    else f"Alias «{c.alias}» de {c.name} en MusicBrainz, sin homónimos" if c.match == "alias"
                     else f"Nombre exacto en MusicBrainz (coincidencia {c.score}), sin homónimos")
         return schemas.PosterResolution(name=name, status="linked", mbid=c.mbid, canonical=c.name, candidates=[c],
                                         evidence=evidence)

@@ -3,22 +3,43 @@
  * (Anton, Space Grotesk/Mono, superficies teñidas). La portada editorial definitiva y el explorador son de 3.5.
  */
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Chip, Meta } from '@/components/ui';
+import { Button, Chip, Meta, type Tone } from '@/components/ui';
 import { C, Fonts, Radius, Space } from '@/constants/theme';
-import { fixedIdentity, surfaces } from '@/lib/artist-identity';
-import { eventArt } from '@/lib/poster-art';
+import { fixedIdentity, SECTION_PALETTES, surfaces } from '@/lib/artist-identity';
+import { type EventArt, eventArt } from '@/lib/poster-art';
 import {
   addDay, addStage, FLAG_TEXT, removeSet, renameArtist, setContext, setLabel, splitSet, updateSet, userTime,
 } from '@/lib/poster-model';
 import { posterThumbUri } from '@/storage/poster-library';
 import type { Flag, PosterEvent, PosterIndexEntry, PosterSet } from '@/types/poster';
 
-export const POSTER_ID = fixedIdentity('Infrarrojo', 'anton');
+/** Carteles (V6.8): naranja «Señal» de cartel pegado en la calle, con tinta casi negra y crema. */
+export const POSTER_ID = fixedIdentity(SECTION_PALETTES.posters, 'anton');
 export const PS = surfaces(POSTER_ID.palette);
+/** Botones y chips de todo el mundo Carteles (biblioteca, análisis, revisión, evento y ruta): de cartel. */
+export const POSTER_TONE: Tone = {
+  fill: POSTER_ID.palette.bg, onFill: POSTER_ID.palette.ink, shadow: POSTER_ID.palette.pop, line: PS.line, surface: PS.raised, flyer: true,
+};
+
+/** Sección del evento (V6.8) como tarjeta: banda de color con el título y un cuerpo con aire, para que «Para ti»,
+ *  el sonido y la hoja de ruta no se lean seguidos. */
+export function EventCard({ title, right, art, children }: { title: string; right?: string | null; art: EventArt; children: ReactNode }) {
+  const P = art.palette;
+  const S = art.surfaces;
+  return (
+    <View style={[styles.eventCard, { backgroundColor: S.raised, borderColor: S.line }]}>
+      <View style={[styles.eventCardHead, { backgroundColor: P.glow }]}>
+        <Text accessibilityRole="header" style={[styles.eventCardTitle, { color: P.onGlow }]} numberOfLines={1}>{title}</Text>
+        {right ? <Text style={[styles.eventCardRight, { color: P.onGlow }]} numberOfLines={1}>{right}</Text> : null}
+      </View>
+      <View style={styles.eventCardBody}>{children}</View>
+    </View>
+  );
+}
 
 export const STATUS_LABEL: Record<PosterEvent['status'], string> = { draft: 'Por revisar', partial: 'Incompleto', confirmed: 'Confirmado' };
 
@@ -41,7 +62,7 @@ export function PosterCard({ entry, width, onPress, onActions }: {
         {failed ? <Text style={[styles.cardGlyph, { color: P.glow }]}>▦</Text>
           : <Image source={{ uri: posterThumbUri(entry.id) }} style={StyleSheet.absoluteFill} contentFit="cover" onError={() => setFailed(true)} />}
         {entry.status !== 'confirmed' ? (
-          <View style={[styles.badge, { backgroundColor: entry.status === 'partial' ? C.orange : C.acid }]}>
+          <View style={[styles.badge, { backgroundColor: entry.status === 'partial' ? C.orange : POSTER_ID.palette.pop }]}>
             <Text style={styles.badgeLabel}>{STATUS_LABEL[entry.status]}</Text>
           </View>
         ) : null}
@@ -98,7 +119,7 @@ export function SetRow({ event, set, flags, note, selected, onPress, onLongPress
     <Pressable onPress={onPress} onLongPress={onLongPress} disabled={!onPress} accessibilityRole={onPress ? 'button' : 'text'}
       accessibilityState={{ selected: !!selected }}
       accessibilityLabel={[setLabel(event, set), b2b ? 'actuación conjunta' : null, ctx].filter(Boolean).join(', ')}
-      style={({ pressed }) => [styles.row, selected && { borderColor: C.acid, backgroundColor: C.surfaceHigh }, pressed && { opacity: 0.8 }]}>
+      style={({ pressed }) => [styles.row, selected && { borderColor: POSTER_ID.palette.glow, backgroundColor: C.surfaceHigh }, pressed && { opacity: 0.8 }]}>
       <View style={[styles.edge, { backgroundColor: flags?.length ? C.orange : b2b ? C.cyan : PS.line }]} />
       <View style={{ flex: 1, gap: 2 }}>
         <Text style={styles.rowTitle}>{setLabel(event, set)}</Text>
@@ -195,6 +216,11 @@ export function SetEditor({ event, setId, onChange, onClose }: {
 }
 
 const styles = StyleSheet.create({
+  eventCard: { borderRadius: Radius.md, borderWidth: 1, overflow: 'hidden' },
+  eventCardHead: { flexDirection: 'row', alignItems: 'center', gap: Space.md, paddingHorizontal: Space.lg, paddingVertical: Space.sm },
+  eventCardTitle: { flex: 1, fontFamily: Fonts.display, fontSize: 22, lineHeight: 26, textTransform: 'uppercase', includeFontPadding: false },
+  eventCardRight: { fontFamily: Fonts.monoBold, fontSize: 11, letterSpacing: 1, textTransform: 'uppercase' },
+  eventCardBody: { padding: Space.lg, gap: Space.lg },
   card: { borderWidth: 2, borderRadius: Radius.md, overflow: 'hidden', backgroundColor: PS.raised },
   badge: { position: 'absolute', top: Space.sm, left: Space.sm, paddingHorizontal: Space.sm, paddingVertical: 3, borderRadius: Radius.pill },
   badgeLabel: { color: C.onAccent, fontFamily: Fonts.monoBold, fontSize: 10, textTransform: 'uppercase' },

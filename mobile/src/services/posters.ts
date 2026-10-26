@@ -7,6 +7,8 @@ const ANALYZE_TIMEOUT_MS = 75_000;
 // Resolución: hasta RESOLVE_BATCH nombres en serie a 1 petición/1,1 s en MusicBrainz (con un reintento posible).
 const RESOLVE_TIMEOUT_MS = 30_000;
 const TRACKS_TIMEOUT_MS = 20_000;
+// El sonido puede necesitar MusicBrainz (1 petición/1,1 s), Discogs y Deezer la primera vez.
+const SOUND_TIMEOUT_MS = 45_000;
 
 export type PosterTrack = { recording_mbid: string; title: string; artist_credit: string; first_release_date: string | null };
 
@@ -17,6 +19,16 @@ export function resolveArtists(names: string[]): Promise<ApiResult<{ results: Re
 /** Canciones propias documentadas en MusicBrainz por fecha (alternativa a `top_tracks` sin ListenBrainz). */
 export function getPosterArtistTracks(mbid: string): Promise<ApiResult<{ artist_mbid: string; tracks: PosterTrack[] }>> {
   return getJson(`/v1/posters/artists/${encodeURIComponent(mbid)}/tracks`, TRACKS_TIMEOUT_MS);
+}
+
+export type PosterArtistSound = {
+  artist_mbid: string; name: string; genre: string[]; styles: string[]; labels: string[];
+  related: { name: string; url: string | null }[]; releases: number; status: 'ok' | 'partial';
+};
+
+/** Carteles 4: estilos y sellos habituales (Discogs) y afines (Deezer) de un artista del cartel. */
+export function getPosterArtistSound(mbid: string): Promise<ApiResult<PosterArtistSound>> {
+  return getJson(`/v1/posters/artists/${encodeURIComponent(mbid)}/sound`, SOUND_TIMEOUT_MS);
 }
 
 export type AnalyzeBody = {

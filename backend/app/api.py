@@ -4,6 +4,7 @@ consultan aquí, a través de sus clientes."""
 from __future__ import annotations
 
 import re
+import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from functools import lru_cache
@@ -11,7 +12,7 @@ from functools import lru_cache
 from fastapi import APIRouter, Depends, Request
 
 from app import (acousticbrainz, affinity, biography, config, deezer, discogs, essentials, discogs_tracks, editorial, facts, images, normalize, poster_identity,
-                 posters, profile, reccobeats, recommend,
+                 posters, profile, reccobeats, recommend, renames,
                  schemas, sources, stories, store, track_ai, tracks, wikidata)
 from app.groq_client import GroqClient, GroqError
 from app.musicbrainz import (BadResponse, Fetched, LabsClient, ListenBrainzClient, MusicBrainzClient, ProviderError,
@@ -978,6 +979,63 @@ def resolve_poster_artists(req: schemas.PosterResolveRequest, client: MusicBrain
         return schemas.PosterResolveResponse(results=poster_identity.resolve(client, req.names))
     except poster_identity.ResolveError as exc:
         raise ApiError(422, "invalid_names", exc.message) from None
+
+
+SOUND_KIND = "poster_sound"
+SOUND_VERSION = 2  # v2: Discogs también con el nombre anterior (app/renames.py)
+SOUND_TTL_S = 6 * 3600          # el contenido de Discogs no se guarda más de 6 h (condiciones de su API)
+SOUND_RELATED = 20
+
+
+@router.get("/posters/artists/{mbid}/sound", response_model=schemas.PosterArtistSound)
+def poster_artist_sound(mbid: str, client: MusicBrainzClient = Depends(get_client)):
+    """Estilos y sellos habituales del artista en Discogs y artistas que Deezer relaciona con él (uso no comercial).
+    Se guarda 6 h solo si todo respondió; un fallo deja `partial` y la app puede reintentar."""
+    mbid = _valid_mbid(mbid)
+    hit = store.get(SOUND_KIND, mbid)
+    if hit is not None and hit.get("version") == SOUND_VERSION:
+        return schemas.PosterArtistSound.model_validate(hit["sound"])
+    fetched, error = _section(lambda: client.artist(mbid))
+    if fetched is None:
+        if error == "not_found":
+            raise ApiError(404, "not_found", "MusicBrainz no tiene ese artista")
+        raise ApiError(503, "provider_unavailable", "MusicBrainz no responde")
+    name = str(fetched.data.get("name") or "")
+    partial = False
+    styles: list[str] = []
+    labels: list[str] = []
+    releases = 0
+    sources: list[schemas.SourceRef] = []
+    try:
+        # Con el nombre actual y, si no da nada, con el anterior (app/renames.py): Discogs puede seguir con el antiguo.
+        for query in dict.fromkeys([name, *([renames.RENAMES[mbid][0]] if mbid in renames.RENAMES else [])]):
+            styles, labels, releases = discogs_tracks.artist_sound(query)
+            if releases:
+                break
+        if releases:
+            sources.append(schemas.SourceRef(label=discogs_tracks.ATTRIBUTION, license=discogs_tracks.LICENSE,
+                                             url=f"{discogs_tracks.SITE}/search/?type=artist&q={urllib.parse.quote(name)}"))
+    except ProviderError:
+        partial = True
+    related: list[schemas.PosterRelated] = []
+    if config.noncommercial_sources():
+        try:
+            record = _deezer_record(client, fetched, mbid)
+            if record:
+                data = (deezer._get(f"artist/{record['id']}/related", {"limit": str(SOUND_RELATED)}, deezer._default_transport) or {}).get("data") or []
+                related = [schemas.PosterRelated(name=a["name"], url=a.get("link")) for a in data
+                           if isinstance(a, dict) and isinstance(a.get("name"), str) and a["name"].strip()][:SOUND_RELATED]
+                if related:
+                    sources.append(schemas.SourceRef(label="Deezer (artistas relacionados)", url=record.get("link") or deezer.TERMS_URL,
+                                                     license=deezer.LICENSE))
+        except deezer.Unavailable:
+            partial = True
+    sound = schemas.PosterArtistSound(artist_mbid=mbid, name=name, genre=tracks.single_family(styles), styles=styles,
+                                      labels=labels, related=related, releases=releases,
+                                      status="partial" if partial else "ok", sources=sources)
+    if not partial:
+        store.put(SOUND_KIND, mbid, {"version": SOUND_VERSION, "sound": sound.model_dump()}, SOUND_TTL_S)
+    return sound
 
 
 @router.get("/posters/artists/{mbid}/tracks", response_model=schemas.PosterTracksResponse)

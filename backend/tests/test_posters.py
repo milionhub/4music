@@ -105,11 +105,22 @@ def test_repair_json_no_inventa_estructura():
 
 @pytest.mark.parametrize("status,code", [(401, "poster_ai_not_configured"), (429, "poster_ai_rate_limited"),
                                          (503, "poster_ai_unavailable"), (500, "poster_ai_bad_response")])
-def test_errores_de_groq_sin_reintentos(status, code):
+def test_errores_de_groq_sin_reintentos_que_gasten_cuota(status, code):
     t = Transport(status=status)
     r = call(t)
     assert r.json()["error"]["code"] == code
-    assert len(t.calls) == 1  # una sola llamada: ningún reintento gasta cuota
+    # Una sola llamada, salvo el 429 por minuto: no gasta cuota y se espera una vez lo que pide Groq (7 s).
+    assert len(t.calls) == (2 if status == 429 else 1)
+
+
+def test_limite_por_minuto_espera_una_vez_y_sigue():
+    class Once(Transport):
+        def __call__(self, url, headers, body, timeout):
+            self.status = 429 if not self.calls else 200
+            return super().__call__(url, headers, body, timeout)
+    t = Once(content=json.dumps(SW38_LIKE))
+    assert call(t).status_code == 200
+    assert len(t.calls) == 2
 
 
 def test_respuesta_ilegible_y_sin_clave():

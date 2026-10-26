@@ -8,8 +8,9 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Linking, StyleSheet, Text, View } from 'react-native';
 
-import { PS } from '@/components/poster';
-import { Body, Button, Meta, Notice, Screen, Title } from '@/components/ui';
+import { POSTER_ID, POSTER_TONE, PS } from '@/components/poster';
+import { PosterBar } from '@/components/posters-poster';
+import { Body, Button, Meta, Notice, Screen, ToneProvider } from '@/components/ui';
 import { C, Fonts, Radius, Space } from '@/constants/theme';
 import { fromExtraction, MAX_CALLS, mergeExtraction } from '@/lib/poster-model';
 import { findDuplicate, newPosterId } from '@/lib/poster-store';
@@ -91,11 +92,9 @@ export default function NewPoster() {
   const existingCalls = duplicate ? (loadEvent(duplicate.id)?.analysis.calls ?? MAX_CALLS) : 0;
 
   return (
-    <Screen withTabBar={false} background={PS.screen}>
-      <View style={styles.head}>
-        <Button label="← Volver" variant="ghost" onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
-        <Title>Analizar cartel</Title>
-      </View>
+    <ToneProvider value={POSTER_TONE}>
+    <Screen withTabBar={false} background={PS.screen} topTint={POSTER_ID.palette.bg}>
+      <PosterBar id={POSTER_ID} title="Analizar cartel" kicker="Carteles · la IA propone, tú revisas" backLabel="Volver" onBack={() => router.back()} />
 
       {phase.kind === 'pick' ? (
         <View style={{ gap: Space.md }}>
@@ -132,7 +131,7 @@ export default function NewPoster() {
 
       {phase.kind === 'working' ? (
         <View style={styles.working} accessibilityLiveRegion="polite">
-          <ActivityIndicator color={C.acid} />
+          <ActivityIndicator color={POSTER_ID.palette.glow} />
           <Text style={styles.step}>{phase.step}</Text>
           <Meta>Un cartel grande puede tardar unos segundos</Meta>
         </View>
@@ -153,11 +152,11 @@ export default function NewPoster() {
         </View>
       ) : null}
     </Screen>
+    </ToneProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  head: { gap: Space.md },
   preview: { width: '100%', maxHeight: 520, borderRadius: Radius.md, overflow: 'hidden', backgroundColor: PS.deep, borderWidth: 1, borderColor: PS.line },
   working: { alignItems: 'center', gap: Space.md, padding: Space.xl, borderRadius: Radius.lg, borderWidth: 1, borderColor: PS.line, backgroundColor: PS.raised },
   step: { color: C.text, fontFamily: Fonts.sansBold, fontSize: 16 },

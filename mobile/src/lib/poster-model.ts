@@ -119,7 +119,18 @@ type DraftSet = {
 
 function draftOf(ext: PosterExtraction): DraftSet[] {
   const groups = ext.b2b.map((b) => ({ names: b.artists, keys: b.artists.map(normName), text: b.text, used: false }));
-  const times = new Map(ext.individual_times.map((t) => [normName(t.name), parseTime(t.time)]));
+  // Horas propias por nombre, en el orden impreso. Quien actúa dos veces («PROSPA» en dos escenarios) tiene dos: la
+  // enésima aparición toma la enésima hora. Con una sola hora, vale para todas sus apariciones (como antes).
+  const timeLists = new Map<string, ReturnType<typeof parseTime>[]>();
+  for (const t of ext.individual_times) {
+    const k = normName(t.name);
+    timeLists.set(k, [...(timeLists.get(k) ?? []), parseTime(t.time)]);
+  }
+  const times = { get: (k: string) => {
+    const list = timeLists.get(k);
+    if (!list?.length) return undefined;
+    return list.length === 1 ? list[0] : list.shift();
+  } };
   const out: DraftSet[] = [];
   const emitted = new Set<string>();
 
@@ -128,7 +139,11 @@ function draftOf(ext: PosterExtraction): DraftSet[] {
     // Un nombre «A B2B B» que la IA no separó se trata como el B2B que es.
     const names: { name: string; i: number; joined?: string[]; text?: string }[] = [];
     rawNames.forEach((name, i) => {
-      const parts = name.split(B2B_SPLIT).filter((p, k) => k % 2 === 0).map((p) => p.trim()).filter(Boolean);
+      // Un conector dentro de un paréntesis es de un colectivo con sus miembros («GOLFOS (PAWSA VS DENNIS CRUZ)»):
+      // se queda entero (aviso `collective`), como decidió 3.6A.
+      const outside = name.replace(/[([][^)\]]*[)\]]/g, ' ');
+      const parts = B2B_SPLIT.test(outside)
+        ? name.split(B2B_SPLIT).filter((p, k) => k % 2 === 0).map((p) => p.trim()).filter(Boolean) : [name];
       names.push(parts.length > 1 ? { name, i, joined: parts, text: name } : { name, i });
     });
     const keys = new Set(names.map((n) => normName(n.name)));
@@ -150,7 +165,10 @@ function draftOf(ext: PosterExtraction): DraftSet[] {
         members.forEach((m) => emitted.add(normName(m)));
         // Hora impresa junto al B2B: la de sus miembros (o la del texto conjunto) si coincide en todos.
         const text = n.text ?? g?.text ?? null;
-        const own = [...members.map((m) => times.get(normName(m))), text ? times.get(normName(text)) : null].filter((t) => !!t);
+        // La del texto conjunto va primero y, si existe, no gasta las de los miembros: quien también actúa solo
+        // («PROSPA» aparte) conserva su hora.
+        const joint = text ? times.get(normName(text)) : undefined;
+        const own = joint ? [joint] : members.map((m) => times.get(normName(m))).filter((t) => !!t);
         const shared = own.length && own.every((t) => t.start === own[0].start && t.end === own[0].end) ? own[0] : null;
         const t = shared ?? block;
         out.push({ ...base, names: members, connector: connectorOf(text, members.length),

@@ -362,6 +362,37 @@ def _usual_styles(results: list[dict[str, Any]]) -> tuple[list[str], int]:
     return [s for _c, s in sorted(ranked, key=lambda x: -x[0])][:CONTEXT_MAX_STYLES], n
 
 
+def _artist_releases(artist_name: str, transport: Transport | None = None) -> list[dict[str, Any]]:
+    """Lanzamientos del propio artista en la búsqueda de Discogs (el título empieza por su nombre: no los de otros que
+    lo acreditan). Lanza Unavailable ante un fallo temporal."""
+    data = _get("/database/search?" + urllib.parse.urlencode(
+        {"artist": artist_name, "type": "release", "per_page": CONTEXT_PER_PAGE}), transport) or {}
+    key = tracks._fold(artist_name)
+    return [r for r in data.get("results") or [] if isinstance(r, dict)
+            and tracks._fold(discogs.clean_name(str(r.get("title") or "").split(" - ")[0])) == key]
+
+
+SOUND_MAX_LABELS = 5
+
+
+def artist_sound(artist_name: str, transport: Transport | None = None) -> tuple[list[str], list[str], int]:
+    """Carteles 4 (V6.8): (estilos habituales, sellos habituales, lanzamientos contados) del artista en Discogs, con la
+    misma búsqueda que el contexto del sonido. Un sello cuenta si tiene al menos dos lanzamientos suyos; sin el
+    «Not On Label» de las autoediciones."""
+    found = _artist_releases(artist_name, transport)
+    styles, n = _usual_styles(found)
+    counts: dict[str, list[Any]] = {}
+    for r in found:
+        for raw in dict.fromkeys(x for x in r.get("label") or [] if isinstance(x, str) and x.strip()):
+            if NOT_ON_LABEL_RE.search(raw):
+                continue
+            name = discogs.clean_name(raw)
+            hit = counts.setdefault(tracks._fold(name), [name, 0])
+            hit[1] += 1
+    labels = [name for name, c in sorted(counts.values(), key=lambda x: -x[1]) if c >= 2][:SOUND_MAX_LABELS]
+    return styles, labels, n
+
+
 def context_traits(label: str | None, artist_name: str | None, transport: Transport | None = None) -> list[schemas.DnaTrait]:
     """Estilos habituales del sello y del artista en Discogs (V6.4): contexto para las canciones que ninguna fuente
     clasifica. Nunca se presentan como el género de la pista. Cada búsqueda confirma el sello (o el artista) en cada
@@ -386,12 +417,7 @@ def context_traits(label: str | None, artist_name: str | None, transport: Transp
                 sources=[schemas.SourceRef(label=ATTRIBUTION, url=f"{SITE}/search/?type=label&q={urllib.parse.quote(label)}",
                                            license=LICENSE)]))
     if artist_name:
-        data = _get("/database/search?" + urllib.parse.urlencode(
-            {"artist": artist_name, "type": "release", "per_page": CONTEXT_PER_PAGE}), transport) or {}
-        key = tracks._fold(artist_name)
-        same = [r for r in data.get("results") or [] if isinstance(r, dict)
-                and tracks._fold(discogs.clean_name(str(r.get("title") or "").split(" - ")[0])) == key]
-        styles, n = _usual_styles(same)
+        styles, n = _usual_styles(_artist_releases(artist_name, transport))
         if styles:
             out.append(schemas.DnaTrait(
                 key="artist_sound", group="context", label="Estilos del artista", status="community", scope="artist",
@@ -431,15 +457,8 @@ def with_inferred_genre(dna: schemas.TrackDna) -> schemas.TrackDna:
         candidates.append((label.values, "label", label.sources,
                            "Deducido de los estilos habituales de su sello: no clasifica esta pista."))
     for names, scope, sources, detail in candidates:
-        lowered = [n.strip().lower() for n in names if n.strip()]
-        specific = [n for n in lowered if n not in tracks.BROAD]
-        if not specific:
-            continue
-        fams = [tracks.GENRE_FAMILY.get(n, tracks._title(n)) for n in specific]
-        main = next((f for f in fams if f not in tracks.WILDCARD_FAMILIES), fams[0])
-        same = [n for n, f in zip(specific, fams) if f in {main, *tracks.WILDCARD_FAMILIES}]
-        values = tracks.genre_values(same)
-        if tracks.is_broad(values):
+        values = tracks.single_family(names)
+        if not values:
             continue
         genre = schemas.DnaTrait(key="genre", group="classification", label="Género", status="community", scope=scope,
                                  values=values, detail=detail, sources=sources)

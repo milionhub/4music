@@ -417,3 +417,11 @@ test('V6.6: edición del día de TrackDNA, estable en el día y distinta al sigu
   assert.notDeepEqual(a.bars, c.bars);
   assert.ok(a.bars.length === 28 && a.bars.every((h) => h >= 0.2 && h <= 1));
 });
+
+test('V6.8: TrackDNA nunca se viste con la paleta de Guardados, Perfil o Carteles', async () => {
+  const { SECTION_PALETTES } = await import('../src/lib/artist-identity.ts');
+  const reserved = new Set<string>(Object.values(SECTION_PALETTES));
+  const names = Array.from({ length: 60 }, (_, i) => dailyEdition(new Date(2026, 9, 1 + i)).id.palette.name);
+  assert.ok(names.every((n) => !reserved.has(n)));
+  assert.equal(new Set(names).size, 13); // rota por todas las demás
+});

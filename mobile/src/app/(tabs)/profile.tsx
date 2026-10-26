@@ -13,12 +13,12 @@ import { Screen } from '@/components/ui';
 import { getApiConfig } from '@/config/api';
 import { EDITORIAL_STYLES } from '@/constants/styles';
 import { C, Fonts, MaxContentWidth, Radius, Space } from '@/constants/theme';
-import { fixedIdentity, surfaces } from '@/lib/artist-identity';
+import { fixedIdentity, SECTION_PALETTES, surfaces } from '@/lib/artist-identity';
 import { libraryStats, totalTime, yearSpan } from '@/lib/library-stats';
 import { checkHealth } from '@/services/health';
 import { useLibrary } from '@/state/library';
 
-const ID = fixedIdentity('Ultravioleta', 'anton');
+const ID = fixedIdentity(SECTION_PALETTES.profile, 'anton');
 const P = ID.palette;
 const S = surfaces(P);
 /** Inclinación fija de cada pegatina de estilo (la misma siempre: que no baile al pulsar). */

@@ -1,0 +1,51 @@
+{
+ "_dificultad": "horarios_escenarios",
+ "_review": [
+  "Añadido el 2026-10-26 como caso de prueba de la hoja de ruta: cada actuación tiene hora de inicio y fin impresas (a diferencia de 04, donde solo hay hora de bloque).",
+  "Evento: solo se imprime 'closing party' (en cursiva) y el logotipo 'XXV' con una sonrisa. 'Circoloco' y 'DC10' no aparecen impresos: no se deducen.",
+  "Escenarios impresos en vertical a la izquierda: GARDEN, TERRACE, MAIN ROOM.",
+  "Horas: son de cada actuación ('16:00 - 18:00'). Varias cruzan la medianoche ('22:30 - 00:00', '04:30 - 07:00'): pertenecen a la noche del 14, no al día 15.",
+  "'vs' = actuación conjunta (B2B). Cada miembro figura por separado en artists con la misma hora y la relación va en b2b.",
+  "'GOLFOS (PAWSA vs DENNIS CRUZ)': colectivo con sus miembros entre paréntesis; no se separa (criterio de 3.6A). Se acepta 'GOLFOS' sin el paréntesis.",
+  "PROSPA actúa dos veces: GARDEN 22:00 - 23:00 y TERRACE 02:00 - 03:00.",
+  "'CHRIS STUSSY' es el nombre impreso (hoy Chris Stassy); se transcribe tal cual."
+ ],
+ "event_name": "closing party",
+ "event_name_variants": ["XXV closing party", "Closing Party"],
+ "dates": [{"text": "14TH OCTOBER 2024", "iso": "2024-10-14"}],
+ "location": null,
+ "location_variants": [],
+ "stages": ["GARDEN", "TERRACE", "MAIN ROOM"],
+ "artists": [
+  {"name": "SOSSA", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "16:00 - 18:00", "accepted_variants": []},
+  {"name": "AGELESS", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "16:00 - 18:00", "accepted_variants": []},
+  {"name": "O.BEE", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "18:00 - 20:00", "accepted_variants": ["O. BEE", "OBEE"]},
+  {"name": "TOMAS STATION", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "18:00 - 20:00", "accepted_variants": []},
+  {"name": "ANOTR", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "20:00 - 22:00", "accepted_variants": []},
+  {"name": "PROSPA", "stage": "GARDEN", "day": "14TH OCTOBER 2024", "time": "22:00 - 23:00", "accepted_variants": []},
+  {"name": "TANIA VULCANO", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "19:00 - 20:30", "accepted_variants": []},
+  {"name": "CHRIS STUSSY", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "20:30 - 22:30", "accepted_variants": []},
+  {"name": "LUCIANO", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "22:30 - 00:00", "accepted_variants": []},
+  {"name": "GOLFOS (PAWSA VS DENNIS CRUZ)", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "00:00 - 02:00", "accepted_variants": ["GOLFOS"]},
+  {"name": "PROSPA", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "02:00 - 03:00", "accepted_variants": []},
+  {"name": "DIXON", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "03:00 - 04:30", "accepted_variants": []},
+  {"name": "SETH TROXLER", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "04:30 - 07:00", "accepted_variants": []},
+  {"name": "SKREAM", "stage": "TERRACE", "day": "14TH OCTOBER 2024", "time": "04:30 - 07:00", "accepted_variants": []},
+  {"name": "SPARROW & BARBOSSA", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "19:00 - 20:30", "accepted_variants": []},
+  {"name": "JIMI JULES", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "20:30 - 22:00", "accepted_variants": []},
+  {"name": "IVAN SMAGGHE", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "22:00 - 23:30", "accepted_variants": []},
+  {"name": "BEDOUIN", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "23:30 - 01:30", "accepted_variants": []},
+  {"name": "JOY ORBISON", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "01:30 - 03:00", "accepted_variants": []},
+  {"name": "DJ TENNIS", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "03:00 - 05:00", "accepted_variants": []},
+  {"name": "CARLITA", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "03:00 - 05:00", "accepted_variants": []},
+  {"name": "DAMIAN LAZARUS", "stage": "MAIN ROOM", "day": "14TH OCTOBER 2024", "time": "05:00 - 07:00", "accepted_variants": []}
+ ],
+ "unreadable_text": [],
+ "sessions": [],
+ "b2b": [
+  {"artists": ["SOSSA", "AGELESS"], "text": "SOSSA VS AGELESS"},
+  {"artists": ["O.BEE", "TOMAS STATION"], "text": "O.BEE VS TOMAS STATION"},
+  {"artists": ["SETH TROXLER", "SKREAM"], "text": "SETH TROXLER VS SKREAM"},
+  {"artists": ["DJ TENNIS", "CARLITA"], "text": "DJ TENNIS VS CARLITA"}
+ ]
+}

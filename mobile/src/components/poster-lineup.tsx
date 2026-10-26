@@ -82,7 +82,10 @@ export function DayHeader({ label, count, art }: { label: string; count: number;
   );
 }
 
-export function LineupRow({ event, set, art, onOpen }: { event: PosterEvent; set: PosterSet; art: EventArt; onOpen: (artistId: string) => void }) {
+/** `fits`: artistas que te encajan (Carteles 4): llevan un ♥ con el acento. */
+export function LineupRow({ event, set, art, fits, onOpen }: {
+  event: PosterEvent; set: PosterSet; art: EventArt; fits?: Set<string>; onOpen: (artistId: string) => void;
+}) {
   const P = art.palette;
   const S = art.surfaces;
   const members = set.artistIds.map((id) => event.artists.find((a) => a.id === id)).filter((a): a is PosterArtist => !!a);
@@ -105,8 +108,9 @@ export function LineupRow({ event, set, art, onOpen }: { event: PosterEvent; set
             <View key={a.id} style={styles.nameWrap}>
               {i > 0 ? <Text style={[styles.connector, { color: P.glow }]}>{set.connector ?? 'B2B'}</Text> : null}
               <Pressable onPress={() => onOpen(a.id)} hitSlop={6} accessibilityRole="button"
-                accessibilityLabel={[a.name, b2b ? `con ${partners(a)}` : null, MARK[a.link.status].label, 'abrir vista rápida'].filter(Boolean).join(', ')}
+                accessibilityLabel={[a.name, fits?.has(a.id) ? 'te encaja' : null, b2b ? `con ${partners(a)}` : null, MARK[a.link.status].label, 'abrir vista rápida'].filter(Boolean).join(', ')}
                 style={({ pressed }) => [styles.nameBtn, pressed && { opacity: 0.7 }]}>
+                {fits?.has(a.id) ? <Text style={[styles.fit, { color: P.glow }]}>♥</Text> : null}
                 <Text style={[styles.name, a.link.status === 'none' && { color: C.muted }]}>{a.name}</Text>
                 <Text style={[styles.mark, { color: a.link.status === 'linked' ? P.glow : a.link.status === 'ambiguous' ? C.orange : C.faint }]}>
                   {MARK[a.link.status].glyph}
@@ -142,6 +146,7 @@ const styles = StyleSheet.create({
   nameWrap: { flexDirection: 'row', alignItems: 'center', gap: Space.sm },
   nameBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40 },
   name: { color: C.text, fontFamily: Fonts.sansBold, fontSize: 17, lineHeight: 22 },
+  fit: { fontSize: 14, fontWeight: '900' },
   mark: { width: 14, fontFamily: Fonts.monoBold, fontSize: 13, textAlign: 'center' },
   connector: { fontFamily: Fonts.monoBold, fontSize: 12 },
   facts: { color: C.muted, fontFamily: Fonts.mono, fontSize: 12, lineHeight: 17 },

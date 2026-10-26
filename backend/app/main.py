@@ -9,12 +9,17 @@ app = FastAPI(title="music-discovery backend")
 app.include_router(router)
 
 
+VERBATIM_PATHS = {"/v1/posters/analyze", "/v1/posters/resolve"}
+
+
 @app.middleware("http")
 async def current_artist_names(request: Request, call_next):
     """Nombres artísticos actuales (app/renames.py) también en lo ya compuesto o guardado: historias, biografías,
     títulos de remixes y respuestas en caché. Solo JSON."""
     response = await call_next(request)
-    if "application/json" not in response.headers.get("content-type", ""):
+    # Carteles: lo impreso manda («CHRIS STUSSY» sigue siendo lo que dice el cartel) y la app empareja cada resultado
+    # por el nombre que envió; los datos de MusicBrainz ya llegan con el nombre actual (renames.apply).
+    if "application/json" not in response.headers.get("content-type", "") or request.url.path in VERBATIM_PATHS:
         return response
     body = b"".join([chunk async for chunk in response.body_iterator])
     fixed = renames.text(body.decode("utf-8")).encode("utf-8")

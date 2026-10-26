@@ -45,6 +45,18 @@ export type PosterArtist = {
   link: ArtistLink;
   /** 3.5: estilos documentados del perfil enlazado, copiados al abrir su vista rápida (para filtrar sin red). */
   styles?: string[];
+  /** Carteles 4: sonido del artista enlazado (Discogs y Deezer), guardado para verlo sin red. Vale solo para `mbid`. */
+  sound?: ArtistSound;
+};
+
+export type ArtistSound = {
+  mbid: string;
+  /** Una familia y sus estilos («House», «Tech House»…): nunca mezcla familias. */
+  genre: string[];
+  styles: string[];
+  labels: string[];
+  related: string[];
+  at: string;
 };
 
 /** Candidato de MusicBrainz para un nombre del cartel. `similar` = nombre parecido (posible errata): nunca se enlaza solo. */
@@ -121,6 +133,8 @@ export type PosterEvent = {
   /** Nombres normalizados que el usuario eliminó: un reanálisis no los vuelve a añadir. */
   discarded: string[];
   suggestions: PosterSuggestion[];
+  /** Carteles 4 · hoja de ruta: actuaciones que quieres ver (ids de `sets`). Ausente en eventos anteriores. */
+  plan?: string[];
   analysis: { model: string; calls: number; incomplete: boolean; lastError: string | null; review: string[]; at: string };
   createdAt: string;
   updatedAt: string;

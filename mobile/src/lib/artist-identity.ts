@@ -204,6 +204,12 @@ export function identityFor(id: string): ArtistIdentity {
 }
 
 /**
+ * Paleta propia de cada sección con identidad fija (V6.8). TrackDNA rota a diario por las demás: así ningún día se
+ * confunde con Guardados, Perfil o Carteles.
+ */
+export const SECTION_PALETTES = { saved: 'Cielo químico', profile: 'Ultravioleta', posters: 'Señal' } as const;
+
+/**
  * Identidad fija para pantallas de la app (TrackDNA, Guardados): las mismas paletas y tipografías que los artistas,
  * elegidas por nombre, para que todo pertenezca al mismo sistema visual.
  */

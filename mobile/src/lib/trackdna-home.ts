@@ -1,10 +1,13 @@
 /**
- * Cartel de inicio de TrackDNA (V6.6): edición del día como un flyer. La paleta cambia cada día (las mismas del
- * sistema visual), el número de edición es el día del año y el código de barras del ADN sale de la fecha: estable
+ * Cartel de inicio de TrackDNA (V6.6): edición del día como un flyer. La paleta cambia cada día (las del sistema visual
+ * salvo las de Guardados, Perfil y Carteles), el número de edición es el día del año y el código de barras del ADN sale de la fecha: estable
  * durante el día, distinto al siguiente. Nada de datos inventados: es decoración, no información de una canción.
  */
-import { type ArtistIdentity, fixedIdentity, PALETTES } from './artist-identity.ts';
+import { type ArtistIdentity, fixedIdentity, PALETTES, SECTION_PALETTES } from './artist-identity.ts';
 import { dayIndexOf, localDayKey } from './home-edition.ts';
+
+/** Las paletas de las secciones fijas quedan fuera de la rotación (V6.8). */
+const DAILY = PALETTES.filter((p) => !(Object.values(SECTION_PALETTES) as string[]).includes(p.name));
 
 function dayOfYear(d: Date): number {
   return dayIndexOf(localDayKey(d)) - dayIndexOf(`${d.getFullYear() - 1}-12-31`);
@@ -14,7 +17,7 @@ export type DailyEdition = { id: ArtistIdentity; issue: string; date: string; ba
 
 /** Edición del día: identidad (paleta del día, tipografía Anton), «Nº 299», «26.10.26» y alturas de barra (0,2–1). */
 export function dailyEdition(d: Date, barCount = 28): DailyEdition {
-  const palette = PALETTES[dayIndexOf(localDayKey(d)) % PALETTES.length];
+  const palette = DAILY[dayIndexOf(localDayKey(d)) % DAILY.length];
   const id = fixedIdentity(palette.name, 'anton');
   const pad = (n: number) => String(n).padStart(2, '0');
   // Generador congruencial con la fecha como semilla: el mismo patrón todo el día.

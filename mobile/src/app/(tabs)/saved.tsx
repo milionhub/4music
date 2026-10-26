@@ -12,13 +12,13 @@ import { Segmented, type Stat, StatStrip } from '@/components/library';
 import { openTrack } from '@/components/track';
 import { Screen } from '@/components/ui';
 import { C, Fonts, MaxContentWidth, Radius, Space } from '@/constants/theme';
-import { fixedIdentity, identityFor, surfaces } from '@/lib/artist-identity';
+import { fixedIdentity, identityFor, SECTION_PALETTES, surfaces } from '@/lib/artist-identity';
 import { duration, withUniqueKeys } from '@/lib/format';
 import { libraryStats, SORT_LABELS, type SortMode, sortSaved, totalTime, yearSpan } from '@/lib/library-stats';
 import { useLibrary } from '@/state/library';
 import type { SavedTrack } from '@/storage/local-store';
 
-const ID = fixedIdentity('Ácido', 'anton');
+const ID = fixedIdentity(SECTION_PALETTES.saved, 'anton');
 const P = ID.palette;
 const S = surfaces(P);
 

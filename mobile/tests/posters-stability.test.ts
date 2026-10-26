@@ -197,3 +197,40 @@ test('PETER GROCE: el parecido de MusicBrainz es una sugerencia con evidencia y 
   // El nombre numérico se señala, no se elimina.
   assert.deepEqual(reviewFlags(again).get(idOf(again, '9999999999')), ['suspicious_name']);
 });
+
+test('V6.8: un «vs» dentro del paréntesis es de un colectivo y no parte el nombre; fuera, sí es un B2B', () => {
+  const e = fromExtraction(sw38({
+    sessions: [block('14TH OCTOBER 2024', 'TERRACE', null, ['GOLFOS (PAWSA VS DENNIS CRUZ)', 'SETH TROXLER VS SKREAM'])], b2b: [],
+  }), INIT);
+  assert.deepEqual(e.artists.map((a) => a.name), ['GOLFOS (PAWSA VS DENNIS CRUZ)', 'SETH TROXLER', 'SKREAM']);
+  assert.deepEqual(e.sets.map((s) => s.artistIds.length), [1, 2]);
+  assert.ok(reviewFlags(e).get(e.artists[0].id)?.includes('collective'), 'el colectivo se señala para revisar');
+});
+
+test('V6.8: quien actúa dos veces conserva cada hora en su escenario (en el orden impreso)', () => {
+  const e = fromExtraction(sw38({
+    sessions: [block('14TH OCTOBER 2024', 'GARDEN', null, ['ANOTR', 'PROSPA']), block('14TH OCTOBER 2024', 'TERRACE', null, ['PROSPA', 'DIXON'])],
+    b2b: [],
+    individual_times: [{ name: 'ANOTR', time: '20:00 - 22:00' }, { name: 'PROSPA', time: '22:00 - 23:00' },
+      { name: 'PROSPA', time: '02:00 - 03:00' }, { name: 'DIXON', time: '03:00 - 04:30' }],
+  }), INIT);
+  assert.deepEqual(setsOf(e, 'PROSPA').map((s) => [s.start, s.end]), [['22:00', '23:00'], ['02:00', '03:00']]);
+});
+
+test('cartel con una hora en cada línea (salida real de Circoloco 2024): cada actuación conserva la suya', () => {
+  const times: [string, string][] = [
+    ['PROSPA VS AGELESS', '16:00 - 18:00'], ['O. BEE VS TOMAS STATION', '18:00 - 20:00'], ['ANOTR', '20:00 - 22:00'], ['PROSPA', '22:00 - 23:00'],
+    ['TANIA VULCANO', '19:00 - 20:30'], ['PROSPA', '02:00 - 03:00'], ['SETH TROXLER VS SKREAM', '04:30 - 07:00'],
+  ];
+  const e = fromExtraction(sw38({
+    sessions: [
+      block('14TH OCTOBER 2024', 'GARDEN', null, ['PROSPA VS AGELESS', 'O. BEE VS TOMAS STATION', 'ANOTR', 'PROSPA']),
+      block('14TH OCTOBER 2024', 'TERRACE', null, ['TANIA VULCANO', 'PROSPA', 'SETH TROXLER VS SKREAM']),
+    ],
+    b2b: [], individual_times: times.map(([name, time]) => ({ name, time })),
+  }), INIT);
+  const prospa = setsOf(e, 'PROSPA').map((s) => [s.artistIds.length, s.start, s.timeScope]);
+  // El B2B mal leído («PROSPA VS AGELESS») usa la hora de su línea y no gasta las de las actuaciones de Prospa.
+  assert.deepEqual(prospa, [[2, '16:00', 'set'], [1, '22:00', 'set'], [1, '02:00', 'set']]);
+  assert.ok(e.sets.every((s) => s.timeScope === 'set'));
+});

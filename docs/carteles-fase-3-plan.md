@@ -390,3 +390,103 @@ Las suites completas se ejecutan al cerrar 3.1, 3.3 y 3.6. En medio, solo lo afe
 - Paleta estable, contraste verificado por tests y diseño coherente con TrackDNA e Inicio.
 - `pytest`, `tsc`, tests móviles, `expo install --check` y `npm audit` en verde. `dependencias.md` actualizado.
 - Inicio, TrackDNA, Guardados y Perfiles sin cambios de comportamiento.
+
+## 12. Fase 4 — Carteles que aportan (acordada el 2026-10-26)
+
+Hasta 3.6 Carteles transcribe el cartel. La fase 4 lo convierte en algo útil, sin datos inventados y siempre con el
+motivo a la vista. Orden acordado (después, prueba en iPhone y prueba de toda la app en Android):
+
+1. **Para ti + diseño del evento**: qué artistas del line-up te encajan y por qué (canción guardada, artista de partida,
+   mismo sello que una guardada, afín en Deezer a un artista tuyo, estilo entre los que te gustan); resumen «N de M te
+   encajan». Evento con el lenguaje visual de V6 (cartel, cifras, line-up como flyer). Cálculo progresivo y en caché
+   (MusicBrainz: 1 petición/s).
+2. **El sonido del cartel** (mapa de géneros del line-up por día y escenario, a partir de los estilos de cada artista:
+   contexto, no lo que pinchará) y **Qué puede sonar** (temas esenciales con extracto de 30 s): sueltos y solo en unos pocos artistas donde aporten (p. ej. los que te
+   encajan); para el resto basta con su perfil o TrackDNA. Sin escucha encadenada del cartel.
+3. **Hoja de ruta** (solo con horarios impresos): línea de tiempo por escenario, marcar a quién ver, solapes y ruta
+   propuesta según tus encajes. Sin horarios, lista ordenada y nunca horas inventadas.
+
+Caso de prueba con horarios: `research/poster_ai/data/posters/05_circoloco_closing_2024.jpg` (no versionado) y su
+referencia `data/references/05_circoloco_closing_2024.json` (3 escenarios, horas por actuación que cruzan la
+medianoche, 4 B2B, Prospa dos veces y un colectivo con miembros entre paréntesis).
+
+### 4.1 Para ti + diseño del evento (implementada el 2026-10-26, pendiente de dispositivo)
+
+- **Backend** `GET /v1/posters/artists/{mbid}/sound` (`api.poster_artist_sound`): estilos habituales (una familia en
+  `genre`, `tracks.single_family`) y sellos con dos o más lanzamientos en Discogs (`discogs_tracks.artist_sound`) y
+  hasta 20 artistas que Deezer relaciona. Caché de 6 h solo si todo respondió (`partial` no se guarda). Datos del
+  artista, nunca del usuario.
+- **Móvil**: `hooks/use-poster-sound.ts` lo pide de uno en uno para los enlazados y lo guarda en el evento
+  (`PosterArtist.sound`, atado al MBID). `lib/poster-fit.ts` cruza en el dispositivo con tus Guardados, artistas de
+  partida y estilos: ♥ canción guardada (5), ★ de partida (5), ≈ afín en Deezer a uno de tus artistas (3), ◎ mismo sello
+  que una guardada (2), ✶ uno de tus estilos (1). «Te encaja» desde 2; solo un estilo, «En tus estilos».
+  `components/poster-foryou.tsx`: lista con escenario y hora; ♥ en el line-up; cifras del evento (artistas,
+  escenarios, para ti). El género del sonido alimenta el filtro de estilo sin abrir cada perfil.
+- **Arreglos** detectados con el cartel 05:
+  - «GOLFOS (PAWSA VS DENNIS CRUZ)» se partía por el «VS» del paréntesis; ahora queda entero (aviso `collective`).
+  - El middleware de nombres reescribía «CHRIS STUSSY» en la respuesta de `/posters/resolve` y la app, que empareja
+    por el nombre enviado, lo dejaba pendiente y lo volvía a pedir sin fin. Ahora `/posters/analyze` y `/resolve` no
+    se reescriben y la app no repite un resultado que no puede aplicar.
+  - El nombre anterior de un artista renombrado cuenta como alias («Nombre anterior de Chris Stassy»;
+    `poster_resolve_v3`) y Discogs se consulta también con él.
+- Prueba de punta a punta con el cartel 05 (referencia, sin Groq) y gustos de ejemplo: ANOTR (guardada, afín a PAWSA,
+  Solid Grooves, tech house), Chris Stussy (guardada «Desire»), Prospa (afín a ANOTR y PAWSA) y 4 «en tus estilos».
+
+### 4.2 El sonido del cartel + extractos (implementada el 2026-10-26, pendiente de dispositivo)
+
+- **El sonido del cartel** (`lib/poster-sound.ts`, `components/poster-sound.tsx`): reparto de familias por artista (no
+  por actuación), en barras horizontales ordenadas de un solo color con el porcentaje escrito (sin colores que
+  distinguir); como mucho 5 filas, las menores en «Otros». Por escenario y por día, «sobre todo X» solo si un estilo
+  (o, si no, una familia) lo comparten dos o más artistas. Se muestra con 3 o más artistas clasificados y con la nota
+  «contexto del line-up, no lo que pinchará».
+- **Extractos**: solo los 3 primeros que te encajan, un tema esencial con extracto de Deezer cada uno, con un único
+  reproductor para la pantalla (`SnippetDeck`). La URL se pide al pulsar y no se guarda. Sin extracto, no aparece.
+- Cartel 05 con gustos de ejemplo: House 70 % (tech house, deep house, minimal), Breakbeat, Electro y Techno 10 %;
+  Main Room «sobre todo deep house»; extractos de ANOTR, Chris Stussy y Prospa.
+- `SOUND_VERSION = 2`: Discogs también con el nombre anterior de un artista renombrado (Chris Stussy: 41
+  lanzamientos; con el nombre nuevo, ninguno).
+
+### 4.3 Hoja de ruta (implementada el 2026-10-26, pendiente de dispositivo)
+
+- **Solo con horas por actuación** (`timeScope: 'set'`): una hora de bloque nunca se reparte entre sus DJ. Desde el
+  evento, la tarjeta «Hoja de ruta» abre `poster/[id]/route`.
+- **Lógica** (`lib/poster-route.ts`): minutos de la noche (si alguna actuación empieza a partir de las 12:00, lo de
+  antes de las 08:00 es del día siguiente); sin hora de fin, hasta la siguiente de su escenario. Solapes entre lo que
+  marcas. Ruta propuesta: selección de intervalos con los pesos de «Para ti», sin solapes y con cada artista una sola
+  vez. Huecos libres de 30 min o más.
+- **Pantalla**: «Tu ruta» (o «Ruta propuesta» con «Usar esta ruta») con solapes (⚠) y huecos; parrilla con un
+  escenario por columna sobre el eje de horas (tocar marca, mantener abre el perfil). Lo marcado se guarda en el evento
+  (`plan`), sin red.
+- **Arreglo**: quien actúa dos veces (Prospa: Garden 22:00 y Terrace 02:00) se quedaba con la segunda hora en las dos;
+  ahora la enésima aparición toma la enésima hora impresa.
+- Cartel 05 con gustos de ejemplo: ANOTR 20:00 → Prospa 22:00 → libre 23:00–03:00 → DJ Tennis + Carlita 03:00 →
+  Damian Lazarus 05:00–07:00.
+- Nota de pruebas: con un backend escuchando en `0.0.0.0:8000` y otro en `127.0.0.1:8000`, Windows reparte las
+  conexiones entre los dos; las pruebas locales usan otro puerto.
+
+#### 4.4 Ajustes tras la prueba en iPhone (V6.8)
+
+- **Horas por actuación:** con el cartel de Circoloco la IA resumía cada escenario en un rango («19:00 - 07:00») y dejaba
+  `individual_times` vacío (el prompt decía «Usually this is []»). La regla ahora pide una entrada por cada línea con hora
+  y prohíbe fundirlas en el rango del bloque. Comprobado en vivo: Circoloco devuelve 18 horas por línea; el cartel 04
+  (solo hora de bloque) sigue sin horas por DJ. Los eventos ya guardados hay que volver a analizarlos.
+- **B2B y actuación propia:** la hora impresa junto al texto conjunto («A VS B») va primero y no gasta las horas de sus
+  miembros, así quien también actúa solo conserva la suya.
+- **Legibilidad del evento:** la hoja de ruta sube bajo los datos; «Para ti» muestra 3 artistas (con «Ver los N») y
+  2 motivos cada uno, sin leyenda de símbolos; el sonido del cartel usa títulos más pequeños y una fila por escenario;
+  más separación entre secciones.
+- **Límite por minuto de Groq:** el plan gratuito da 8000 tokens/min y cada análisis reserva unos 6100 (imagen y texto
+  ~2000 + 4096 de respuesta máxima; gasta de verdad ~3300), así que cabe uno por minuto. Ante un 429 con espera de hasta
+  25 s, el backend espera una vez y reintenta (un 429 no gasta cuota); con más espera sigue mostrando el aviso.
+
+#### 4.5 Identidad visual de Carteles (V6.8)
+
+- **Paletas por sección:** `SECTION_PALETTES` (Guardados «Cielo químico», Perfil «Ultravioleta», Carteles «Señal»).
+  TrackDNA rota a diario por las otras 13, así ningún día coincide con otra sección (antes, el 26-10 TrackDNA y
+  Guardados eran «Ácido»).
+- **Cabecera de Carteles** (`components/posters-poster.tsx`): papeles pegados, «CARTELES» a todo ancho, parrilla de
+  horarios en miniatura con un cabezal que la recorre, banda «line-up» con sello «Para ti» y cinta (la de TrackDNA,
+  ahora `Ticker` reutilizable). Quieta con «reducir movimiento». `PosterBar` es la cabecera de analizar y revisar/editar.
+- **Botones unificados:** `ToneProvider` (ui.tsx) da a `Button`, `Chip` y `StateView` el tono de la sección. Carteles usa
+  `POSTER_TONE` en modo `flyer`: esquinas rectas, borde de tinta y sombra crema que se hunde al pulsar. Aplicado en la
+  biblioteca, analizar, revisar/editar, el evento (con su vista rápida) y la hoja de ruta («Usar esta ruta»).

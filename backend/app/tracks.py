@@ -642,6 +642,18 @@ def genre_values(names: list[str]) -> list[str]:
     return [family, *dict.fromkeys(styles)][:3]
 
 
+def single_family(names: list[str]) -> list[str]:
+    """[familia, estilo…] de una lista de estilos (de un artista o un sello), quedándose con una sola familia: la del
+    primer estilo no comodín, más los de esa familia y los comodín. [] si solo hay géneros amplios."""
+    specific = [n for n in (x.strip().lower() for x in names if x.strip()) if n not in BROAD]
+    if not specific:
+        return []
+    fams = [GENRE_FAMILY.get(n, _title(n)) for n in specific]
+    main = next((f for f in fams if f not in WILDCARD_FAMILIES), fams[0])
+    values = genre_values([n for n, f in zip(specific, fams) if f in {main, *WILDCARD_FAMILIES}])
+    return [] if is_broad(values) else values
+
+
 def dna(recording_mbid: str, title: str, track_wd: WikidataInfo, release_wd: WikidataInfo,
         release: schemas.TrackRelease | None, artist_name: str | None, artist_qid: str | None,
         artist_styles: list[schemas.Style],

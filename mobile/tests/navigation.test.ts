@@ -47,7 +47,8 @@ test('Carteles 3.4–3.5B: la vista rápida abre el perfil en la pila y es estad
   // 3.5B: la vista rápida presenta al artista; canciones y TrackDNA se abren desde el perfil completo.
   assert.ok(!sheet.includes('/track/') && sheet.includes('Explorar perfil y música'));
   assert.ok(!/<Modal\b/.test(sheet), 'un Modal nativo quedaría por encima del perfil apilado');
-  assert.ok(/router\.setParams\(\{ set: setId, artist: artistId \}\)/.test(event));
+  // Carteles 4: «Para ti» puede abrir a un artista sin actuación (set vacío).
+  assert.ok(/router\.setParams\(\{ set: setId( \?\? undefined)?, artist: artistId \}\)/.test(event));
   assert.ok(/<FlatList\b/.test(event) && /stickyHeaderIndices/.test(event), 'line-up virtualizado con filtros fijos');
   assert.ok(/BackHandler/.test(sheet), 'Atrás en Android cierra la hoja');
   // 3.5C: la animación de entrada va en un marco de tamaño fijo; la tarjeta (sin animación de layout) se ajusta al

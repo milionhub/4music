@@ -24,7 +24,7 @@ export function parsePosterEvent(raw: string | null): PosterEvent | null {
   }
   if (!isObj(v) || v.schema !== 1 || !str(v.id) || !isObj(v.image) || !isObj(v.meta) || !isObj(v.analysis)) return null;
   const status = v.status === 'confirmed' || v.status === 'partial' ? v.status : 'draft';
-  return {
+  const out: PosterEvent = {
     ...(v as unknown as PosterEvent),
     status,
     days: arr(v.days), stages: arr(v.stages), sets: arr(v.sets),
@@ -33,13 +33,25 @@ export function parsePosterEvent(raw: string | null): PosterEvent | null {
     discarded: arr(v.discarded), suggestions: arr(v.suggestions),
     palette: isObj(v.palette) ? (v.palette as PosterEvent['palette']) : { source: 'fallback', seeds: [] },
   };
+  // Carteles 4: la hoja de ruta solo si es una lista de ids (ausente en eventos anteriores).
+  if (!strings(out.plan)) delete out.plan;
+  return out;
 }
 
 /** Artista guardado: enlace tolerante (3.4) y estilos solo si son una lista de textos (3.5; ausentes en eventos antiguos). */
 function parseArtist(a: PosterArtist): PosterArtist {
   const out: PosterArtist = { ...a, link: parseLink(a.link) };
   if (!Array.isArray(a.styles) || !a.styles.every((s) => typeof s === 'string')) delete out.styles;
+  if (!validSound(a.sound)) delete out.sound;
   return out;
+}
+
+const strings = (v: unknown) => Array.isArray(v) && v.every((s) => typeof s === 'string');
+
+/** Carteles 4: sonido guardado, solo si tiene la forma esperada (ausente en eventos anteriores). */
+function validSound(v: unknown): boolean {
+  if (!isObj(v)) return false;
+  return !!str(v.mbid) && !!str(v.at) && strings(v.genre) && strings(v.styles) && strings(v.labels) && strings(v.related);
 }
 
 export const serializePosterEvent = (e: PosterEvent) => JSON.stringify(e);

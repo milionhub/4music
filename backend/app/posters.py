@@ -45,7 +45,7 @@ Rules:
 - Do not complete or correct names using your music knowledge. Keep the original spelling, capitalisation and symbols as printed.
 - Write each performer name ONCE per block, in the order printed. If the poster groups artists into blocks (by day, stage or time slot), put the names only inside "sessions" and leave "artists" as []. Otherwise leave "sessions" as [] and use "artists".
 - Session "date.text" is the date exactly as printed for that block; session "time" is the time printed for the block (start time or range), or null.
-- "individual_times": only when a time is printed next to that specific artist's name. A block start time is NOT an individual time. Usually this is [].
+- "individual_times": when a time or time range is printed on the same line as a performer (a timetable or running order), add one entry for EVERY such line, with the name exactly as you wrote it in "sessions"/"artists" and the time exactly as printed (e.g. "20:00 - 22:00"). Never merge per-line times into a block range: then the block "time" is null. A single time printed once for a whole block (day, stage or slot) is NOT an individual time.
 - "iso" only when day, month and year are printed in that same date text; a year printed elsewhere on the poster does not count. Otherwise null.
 - "b2b": when names are joined by "B2B" (also across two lines), write each person as a separate name and add one "b2b" entry with their names in printed order and the printed text. A collective with members in brackets is ONE name, not a b2b.
 - "uncertain": names that are only partly visible or hard to read (write what you can read). Never turn a partial name into a confident identification.

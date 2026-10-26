@@ -576,6 +576,26 @@ class PosterTrack(BaseModel):
     first_release_date: str | None = None
 
 
+class PosterRelated(BaseModel):
+    name: str
+    url: str | None = None
+
+
+class PosterArtistSound(BaseModel):
+    """Carteles 4 (V6.8): el sonido de un artista del cartel, para «Para ti» y el mapa de géneros. Datos del artista, no
+    del usuario: el cruce con sus gustos se hace en el móvil. `genre` = una familia y sus estilos (nunca mezcla)."""
+    artist_mbid: str
+    name: str
+    genre: list[str] = []
+    styles: list[str] = []
+    labels: list[str] = []
+    related: list[PosterRelated] = []
+    releases: int = 0
+    # ok = todo respondió; partial = alguna fuente falló (se puede reintentar más tarde)
+    status: Literal["ok", "partial"] = "ok"
+    sources: list[SourceRef] = []
+
+
 class PosterTracksResponse(BaseModel):
     """Canciones propias documentadas en MusicBrainz, por fecha (no es un ranking): alternativa a `top_tracks`."""
     artist_mbid: str

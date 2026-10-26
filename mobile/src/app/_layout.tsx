@@ -62,6 +62,7 @@ export default function RootLayout() {
           <Stack.Screen name="poster/new" />
           <Stack.Screen name="poster/[id]" />
           <Stack.Screen name="poster/[id]/review" />
+          <Stack.Screen name="poster/[id]/route" />
         </Stack>
       </ThemeProvider>
     </LibraryProvider>

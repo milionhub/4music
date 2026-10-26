@@ -19,6 +19,9 @@ API_URL = "https://api.groq.com/openai/v1/chat/completions"
 TIMEOUT_S = 25.0
 VISION_TIMEOUT_S = 60.0  # un cartel grande tardó 8,7 s en Fase 1.4; margen para colas del plan gratuito
 MAX_WAIT_RETRY_S = 5.0
+# Un análisis reserva ~6k de los 8k tokens/min del plan gratuito: dos seguidos chocan. Un 429 no gasta cuota, así que
+# se espera una vez lo que pide Groq si es poco (el móvil espera 75 s).
+VISION_WAIT_RETRY_S = 25.0
 MAX_CONCURRENT = 2
 
 
@@ -134,7 +137,7 @@ class GroqClient:
                max_tokens: int = 4096) -> tuple[str, bool, dict[str, int] | None]:
         """Una imagen + instrucciones en modo json_object (Fase 1.4). Devuelve (texto, completo, uso).
 
-        Sin reintentos automáticos (cada análisis gasta cuota): 429/503 se devuelven al usuario. Una respuesta
+        Sin reintentos automáticos (cada análisis gasta cuota), salvo una espera corta ante un 429 por límite por minuto. Una respuesta
         cortada por longitud NO lanza: el texto parcial se devuelve con completo=False para recuperarlo."""
         if not (self._key and model):
             raise GroqError("not_configured", "Groq no está configurado (GROQ_API_KEY / GROQ_VISION_MODEL)")
@@ -155,6 +158,9 @@ class GroqClient:
             raise GroqError("rate_limited", "Demasiadas generaciones simultáneas")
         try:
             status, raw, retry_after = self._call(headers, body, VISION_TIMEOUT_S)
+            if status == 429 and retry_after is not None and retry_after <= VISION_WAIT_RETRY_S:
+                self._sleep(retry_after)
+                status, raw, retry_after = self._call(headers, body, VISION_TIMEOUT_S)
         finally:
             self._slots.release()
         if status == 429:

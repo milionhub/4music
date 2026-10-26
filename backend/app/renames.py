@@ -29,9 +29,15 @@ def apply(data: Any) -> Any:
     out = {k: apply(v) for k, v in data.items()}
     new = _BY_ID.get(out.get("id")) if isinstance(out.get("id"), str) else None
     if new and isinstance(out.get("name"), str):
+        old_name = out["name"]
         out["name"] = new
         if isinstance(out.get("sort-name"), str):
             out["sort-name"] = new
+        # El nombre antiguo sigue siendo suyo: como alias, un cartel o un crédito que lo imprime se reconoce (V6.8).
+        aliases = out.get("aliases") if isinstance(out.get("aliases"), list) else []
+        if old_name.casefold() != new.casefold() and not any(
+                isinstance(x, dict) and str(x.get("name", "")).casefold() == old_name.casefold() for x in aliases):
+            out["aliases"] = [*aliases, {"name": old_name, "sort-name": old_name, "type": "Artist name", "primary": None}]
     artist = out.get("artist")
     credited = _BY_ID.get(artist.get("id")) if isinstance(artist, dict) and isinstance(artist.get("id"), str) else None
     if credited and isinstance(out.get("name"), str):
@@ -42,6 +48,12 @@ def apply(data: Any) -> Any:
         for mbid, (old, new_name, _src) in RENAMES.items():
             out["artist-credit-phrase"] = re.sub(re.escape(old), new_name, out["artist-credit-phrase"], flags=re.IGNORECASE)
     return out
+
+
+def is_former(mbid: str | None, name: str | None) -> bool:
+    """`name` es el nombre anterior del artista `mbid` (para decirlo así y no como un alias cualquiera)."""
+    entry = RENAMES.get(mbid or "")
+    return bool(entry and name and entry[0].casefold() == name.casefold())
 
 
 def query(text: str) -> str:

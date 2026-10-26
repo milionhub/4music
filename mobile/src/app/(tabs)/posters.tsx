@@ -7,9 +7,10 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
-import { EmptyPoster, ScreenPoster } from '@/components/editorial';
-import { PS, POSTER_ID, PosterCard } from '@/components/poster';
-import { Button, Meta, Notice, Screen } from '@/components/ui';
+import { EmptyPoster } from '@/components/editorial';
+import { PS, POSTER_ID, POSTER_TONE, PosterCard } from '@/components/poster';
+import { PostersPoster } from '@/components/posters-poster';
+import { Button, Meta, Notice, Screen, ToneProvider } from '@/components/ui';
 import { C, Fonts, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { eventArt } from '@/lib/poster-art';
 import { cleanupOrphans, deleteEvent, loadIndex } from '@/storage/poster-library';
@@ -18,7 +19,7 @@ import type { PosterIndexEntry } from '@/types/poster';
 const STEPS = [
   ['01', 'Elige o fotografía un cartel', 'Fiesta o festival: galería o cámara.'],
   ['02', 'Revisa lo que propone la IA', 'Solo se marcan los datos dudosos.'],
-  ['03', 'Explora su música', 'Artistas, perfiles y TrackDNA.'],
+  ['03', 'Descubre quién te encaja', 'Para ti: los artistas que cruzan con tus guardados, artistas y estilos.'],
 ] as const;
 
 export default function Posters() {
@@ -65,17 +66,17 @@ export default function Posters() {
   );
 
   return (
+    <ToneProvider value={POSTER_TONE}>
     <Screen background={PS.screen} topTint={POSTER_ID.palette.bg}>
       <View style={{ marginHorizontal: -Space.lg, marginTop: -Space.lg }}>
-        <ScreenPoster id={POSTER_ID} width={full} word="Carteles" kicker="Del cartel a la música"
-          figure={index.length ? String(index.length).padStart(2, '0') : undefined}
-          subtitle={index.length ? `${index.length} ${index.length === 1 ? 'evento' : 'eventos'} · solo en este dispositivo` : 'Fotografía un cartel y explora su line-up'}>
+        <PostersPoster id={POSTER_ID} width={full} count={index.length}
+          subtitle={index.length ? `${index.length} ${index.length === 1 ? 'evento' : 'eventos'} · solo en este dispositivo` : 'Fotografía un cartel: te decimos quién te encaja y por qué'}>
           {index.length ? (
             <View style={styles.wall} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
               {index.slice(0, 12).map((x) => <View key={x.id} style={[styles.swatch, { backgroundColor: eventArt(x).palette.bg, borderColor: POSTER_ID.palette.ink }]} />)}
             </View>
           ) : null}
-        </ScreenPoster>
+        </PostersPoster>
       </View>
 
       <View style={{ gap: Space.sm }}>
@@ -118,6 +119,7 @@ export default function Posters() {
         </>
       )}
     </Screen>
+    </ToneProvider>
   );
 }
 
