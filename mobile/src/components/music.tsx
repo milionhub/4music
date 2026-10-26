@@ -55,7 +55,12 @@ export function ArtistSearch({
   isSelected,
   placeholder = 'Busca un artista o DJ',
   autoFocus,
-}: { onPick: (r: SearchResult) => void; isSelected?: (mbid: string) => boolean; placeholder?: string; autoFocus?: boolean }) {
+  theme,
+}: {
+  onPick: (r: SearchResult) => void; isSelected?: (mbid: string) => boolean; placeholder?: string; autoFocus?: boolean;
+  /** V6.7: colores de la pantalla (acento, tinta sobre él, superficie y filete); sin él, el estilo de siempre. */
+  theme?: { glow: string; onGlow: string; raised: string; line: string };
+}) {
   const [query, setQuery] = useState('');
   const [state, setState] = useState<
     { kind: 'idle' } | { kind: 'loading' } | { kind: 'done'; results: SearchResult[] } | { kind: 'error'; message: string }
@@ -93,7 +98,7 @@ export function ArtistSearch({
         autoCapitalize="none"
         returnKeyType="search"
         accessibilityLabel="Buscar artistas en MusicBrainz"
-        style={styles.input}
+        style={[styles.input, theme && { borderColor: theme.glow, borderWidth: 2, backgroundColor: theme.raised, fontFamily: Fonts.sansBold }]}
       />
       {state.kind === 'idle' ? <Meta>Escribe al menos 2 letras · Datos de MusicBrainz</Meta> : null}
       {state.kind === 'loading' ? <Meta>Buscando en MusicBrainz…</Meta> : null}
@@ -104,7 +109,7 @@ export function ArtistSearch({
         <StateView kind="empty" title="Sin resultados" message={`MusicBrainz no tiene artistas para «${query.trim()}». Prueba con otra grafía o con el nombre completo.`} />
       ) : null}
       {state.kind === 'done' && state.results.length > 0 ? (
-        <View style={styles.list}>
+        <View style={[styles.list, theme && { borderColor: theme.line, backgroundColor: 'transparent' }]}>
           {withUniqueKeys(state.results, (r) => r.mbid).map(({ key, item: r }) => {
             const selected = isSelected?.(r.mbid) ?? false;
             return (
@@ -112,7 +117,10 @@ export function ArtistSearch({
                 key={key}
                 artist={r}
                 onPress={() => onPick(r)}
-                trailing={isSelected ? <Text style={[styles.pick, selected && styles.pickOn]}>{selected ? '✓' : '+'}</Text> : <Text style={styles.chevron}>→</Text>}
+                trailing={isSelected
+                  ? <Text style={[styles.pick, theme && { borderColor: theme.glow, color: theme.glow },
+                    selected && (theme ? { backgroundColor: theme.glow, color: theme.onGlow } : styles.pickOn)]}>{selected ? '✓' : '+'}</Text>
+                  : <Text style={styles.chevron}>→</Text>}
               />
             );
           })}

@@ -1,14 +1,24 @@
-/** Bienvenida opcional: artistas favoritos (prioritario) y estilos declarados (opcionales). */
+/**
+ * Bienvenida opcional: artistas favoritos (prioritario) y estilos declarados (opcionales). Desde el Perfil
+ * (`mode=edit`), solo los artistas de partida, con el estilo de «Tu pase» (V6.7); los estilos se marcan en el Perfil.
+ */
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 
+import { ArtistMark, decorative, Kicker, ScreenPoster } from '@/components/editorial';
 import { ArtistSearch } from '@/components/music';
 import { Body, Button, Chip, Display, GradientBox, Meta, Notice, Screen, Section } from '@/components/ui';
-import { C, Fonts, Radius, Space } from '@/constants/theme';
+import { C, Fonts, MaxContentWidth, Radius, Space } from '@/constants/theme';
 import { EDITORIAL_STYLES } from '@/constants/styles';
+import { fixedIdentity, surfaces } from '@/lib/artist-identity';
 import { useLibrary } from '@/state/library';
+
+/** La misma identidad que «Tu pase» (Perfil): editar es parte de él. */
+const PASS = fixedIdentity('Ultravioleta', 'anton');
+const PP = PASS.palette;
+const PS = surfaces(PP);
 
 type Step = 'welcome' | 'artists' | 'styles';
 const STEPS: Step[] = ['welcome', 'artists', 'styles'];
@@ -44,6 +54,8 @@ export default function Onboarding() {
     ) : (
       <Button label={editing ? 'Guardar' : 'Terminar'} onPress={() => leave('completed')} />
     );
+
+  if (editing) return <EditArtists onDone={() => leave('completed')} />;
 
   return (
     <Screen withTabBar={false} footer={footer}>
@@ -98,8 +110,8 @@ export default function Onboarding() {
             ))}
           </View>
           <Notice>
-            Es una lista editorial de Chromatic Underground, no una clasificación de MusicBrainz ni de ningún artista. Por ahora
-            guardamos tu elección, pero todavía no cambia las recomendaciones.
+            Es una lista editorial de Chromatic Underground, no una clasificación de MusicBrainz ni de ningún artista. Tu
+            frecuencia, en Inicio, la usa para proponerte canciones.
           </Notice>
         </View>
       ) : null}
@@ -107,7 +119,73 @@ export default function Onboarding() {
   );
 }
 
+/** Editar artistas de partida (desde el Perfil): cartel de «Tu pase», elegidos como fichas y buscador con su color. */
+function EditArtists({ onDone }: { onDone: () => void }) {
+  const lib = useLibrary();
+  const { width } = useWindowDimensions();
+  const n = lib.favorites.length;
+  const footer = (
+    <Pressable onPress={onDone} accessibilityRole="button" style={({ pressed }) => [s.done, pressed && { opacity: 0.85 }]}>
+      <Text style={s.doneLabel}>{n ? `Listo · ${n} ${n === 1 ? 'artista' : 'artistas'}` : 'Listo'}</Text>
+    </Pressable>
+  );
+  return (
+    <Screen withTabBar={false} footer={footer} background={PS.screen} topTint={PP.bg}>
+      <View style={{ marginHorizontal: -Space.lg, marginTop: -Space.lg }}>
+        <ScreenPoster id={PASS} width={Math.min(width, MaxContentWidth)} word="Tus artistas" kicker="Artistas de partida"
+          figure={n ? String(n).padStart(2, '0') : undefined}
+          subtitle="Inicio parte de ellos para proponerte artistas y canciones conectados, siempre con el motivo." />
+      </View>
+
+      <View style={{ gap: Space.md }}>
+        <View style={[s.blockHead, { borderTopColor: PP.glow }]}>
+          <Text accessibilityRole="header" style={[s.mono, { color: PP.glow }]}>{n ? 'Elegidos · toca para quitar' : 'Elegidos'}</Text>
+        </View>
+        {n ? (
+          <View style={s.grid}>
+            {lib.favorites.map((f, i) => (
+              <Animated.View key={f.mbid} entering={FadeIn.delay(Math.min(i, 10) * 30).duration(200).reduceMotion(ReduceMotion.System)}>
+                <Pressable onPress={() => lib.toggleFavorite(f)} accessibilityRole="button" accessibilityLabel={`Quitar ${f.name}`}
+                  style={({ pressed }) => [s.tile, pressed && { opacity: 0.6 }]}>
+                  <View>
+                    <ArtistMark mbid={f.mbid} name={f.name} size={64} />
+                    <View {...decorative} style={[s.remove, { backgroundColor: PP.pop, borderColor: PS.screen }]}>
+                      <Text style={[s.removeLabel, { color: PP.onGlow }]}>✕</Text>
+                    </View>
+                  </View>
+                  <Text style={s.tileName} numberOfLines={2}>{f.name}</Text>
+                </Pressable>
+              </Animated.View>
+            ))}
+          </View>
+        ) : (
+          <Text style={s.note}>Aún ninguno. Sin artistas, Inicio sigue funcionando con su selección editorial.</Text>
+        )}
+      </View>
+
+      <View style={{ gap: Space.md }}>
+        <View style={[s.blockHead, { borderTopColor: PP.glow }]}>
+          <Text accessibilityRole="header" style={[s.mono, { color: PP.glow }]}>Añadir</Text>
+        </View>
+        <Kicker>La descripción distingue nombres repetidos · datos de MusicBrainz</Kicker>
+        <ArtistSearch isSelected={lib.isFavorite} onPick={(r) => lib.toggleFavorite(r)}
+          theme={{ glow: PP.glow, onGlow: PP.onGlow, raised: PS.raised, line: PS.line }} />
+      </View>
+    </Screen>
+  );
+}
+
 const s = StyleSheet.create({
+  mono: { fontFamily: Fonts.monoBold, fontSize: 11, letterSpacing: 1.3, textTransform: 'uppercase' },
+  note: { color: C.faint, fontFamily: Fonts.mono, fontSize: 12, lineHeight: 17 },
+  blockHead: { borderTopWidth: 2, paddingTop: Space.sm, marginTop: Space.md },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Space.md },
+  tile: { width: 76, gap: 6 },
+  tileName: { color: C.text, fontFamily: Fonts.sansBold, fontSize: 12, lineHeight: 15 },
+  remove: { position: 'absolute', right: -6, top: -6, width: 24, height: 24, borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  removeLabel: { fontSize: 11, fontWeight: '900' },
+  done: { minHeight: 56, borderRadius: Radius.md, backgroundColor: PP.glow, alignItems: 'center', justifyContent: 'center' },
+  doneLabel: { color: PP.onGlow, fontFamily: Fonts.monoBold, fontSize: 14, letterSpacing: 1.4, textTransform: 'uppercase' },
   topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   skip: { color: C.muted, fontWeight: '800', fontSize: 15, textTransform: 'uppercase', letterSpacing: 1 },
   poster: { borderRadius: Radius.lg, padding: Space.xl, minHeight: 300, justifyContent: 'space-between', gap: Space.lg },
