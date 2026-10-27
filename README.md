@@ -1,16 +1,111 @@
-# music-discovery
+# #4MUSIC
 
-Proyecto móvil de descubrimiento de música electrónica (nombre provisional).
-Estado actual: **Fase 2, hito T1 implementado y pendiente de validación en el móvil** — primer recorrido de TrackDNA: bienvenida opcional, artistas favoritos buscados en MusicBrainz, descubrimiento por conexiones verificables, ficha de artista y Guardados ([plan T1](docs/t1-plan-implementacion.md), [contrato de datos](docs/t0-contrato-datos.md)). **T2.0 TrackDNA (canciones) implementado y pendiente de validación en el iPhone**: pestaña TrackDNA, búsqueda de grabaciones de MusicBrainz y ficha con ADN de procedencia trazable (sin BPM, tonalidad ni energía: no hay fuente autorizada). Fases 0 y 1 cerradas ([conclusiones de la Fase 1](docs/fase-1-conclusiones.md)).
+**App móvil para descubrir música electrónica a partir de conexiones verificables**: de dónde viene una canción, quién la firma, qué samplea, con quién comparte sello o escenario… y qué artistas de un cartel de festival encajan contigo.
+
+Cada recomendación muestra su motivo y su fuente. Nada de «porque sí»: si la app dice que dos artistas están conectados, enseña la relación documentada en MusicBrainz, Discogs o ListenBrainz que lo respalda.
+
+> Proyecto personal de portfolio, sin ánimo de lucro. Probado en iPhone y en Android (emulador Pixel 6a, Android 15) con Expo Go.
+
+<p align="center">
+  <img src="docs/screenshots/02-inicio-hoy.png" width="200" alt="Inicio: la canción del día" />
+  <img src="docs/screenshots/13-ficha-dirty-cash.png" width="200" alt="Ficha de canción en TrackDNA" />
+  <img src="docs/screenshots/24-artista-anotr.png" width="200" alt="Perfil de artista: ANOTR" />
+  <img src="docs/screenshots/22-hoja-de-ruta.png" width="200" alt="Hoja de ruta de un cartel" />
+  <img src="docs/screenshots/10-guardados.png" width="200" alt="Guardados" />
+</p>
+
+## Qué hace
+
+| | |
+|---|---|
+| **Inicio** | Una «edición» diaria con diseño editorial que cambia de paleta y tipografía cada día: canción del día, *En el radar*, *Tu frecuencia* (afín a tus artistas y estilos, siempre con el motivo) y *Detrás del sonido* (samples confirmados). |
+| **TrackDNA** | Busca cualquier canción y obtén su ficha: género y estilos, BPM y perfil sonoro estimados, edición original, sellos, créditos, samples, remezclas, extracto de 30 s y enlaces para escucharla. Cada dato indica su procedencia. |
+| **Carteles** | Fotografía el cartel de un festival: un modelo de visión lee el line-up (días, escenarios, horarios y B2B), tú revisas lo dudoso y la app identifica a cada artista en MusicBrainz, te dice quién te encaja *para ti* y te ayuda a planificar la ruta. |
+| **Guardados** | Tu cajón de canciones, disponible sin conexión y guardado solo en el dispositivo. |
+| **Perfil** | Tu «pase»: artistas de partida, estilos y lo que se repite en lo que guardas. Sin cuenta ni registro. |
+
+## Capturas
+
+**Bienvenida** — la app presentada como el cartel de un festival (cada sección es un escenario del line-up) y, después, tus artistas de partida y tus estilos.
+
+<p align="center">
+  <img src="docs/screenshots/01-bienvenida-4music.png" width="180" alt="Bienvenida: la app como cartel de festival" />
+  <img src="docs/screenshots/01b-bienvenida-artistas.png" width="180" alt="Elegir artistas" />
+  <img src="docs/screenshots/01-bienvenida-estilos.png" width="180" alt="Elegir estilos" />
+</p>
+
+**Inicio** — la edición del día, *Tu frecuencia* (cada recomendación dice de qué canción guardada viene) y *Detrás del sonido* (un sample confirmado de tus Guardados).
+
+<p align="center">
+  <img src="docs/screenshots/02-inicio-hoy.png" width="180" alt="Inicio" />
+  <img src="docs/screenshots/12-tu-frecuencia.png" width="180" alt="Tu frecuencia" />
+  <img src="docs/screenshots/03-inicio-secciones.png" width="180" alt="Detrás del sonido" />
+</p>
+
+**TrackDNA** — búsqueda, ficha y análisis DNA de una canción: género, BPM, perfil sonoro, sello, artistas y dónde escucharla.
+
+<p align="center">
+  <img src="docs/screenshots/04-trackdna.png" width="180" alt="TrackDNA" />
+  <img src="docs/screenshots/13-ficha-dirty-cash.png" width="180" alt="Ficha de canción" />
+  <img src="docs/screenshots/14-adn-musical-detalle.png" width="180" alt="ADN musical" />
+  <img src="docs/screenshots/15-artistas-y-escuchar.png" width="180" alt="Artistas y escuchar" />
+</p>
+
+**Perfil de artista** — ANOTR: ficha verificada (dúo, Ámsterdam, sello NO ART), su historia contada a partir de fuentes, sus esenciales y dónde escucharlo.
+
+<p align="center">
+  <img src="docs/screenshots/24-artista-anotr.png" width="180" alt="Perfil de artista: ANOTR" />
+  <img src="docs/screenshots/25-artista-anotr-historia.png" width="180" alt="Historia y esenciales de ANOTR" />
+</p>
+
+**Carteles: análisis con IA** — eliges la foto, la IA lee el line-up (escenarios, horarios, B2B) y marca solo lo dudoso para que lo revises.
+
+<p align="center">
+  <img src="docs/screenshots/07-carteles.png" width="180" alt="Carteles" />
+  <img src="docs/screenshots/16-cartel-vista-previa.png" width="180" alt="Vista previa" />
+  <img src="docs/screenshots/17-cartel-ia-leyendo.png" width="180" alt="La IA lee el cartel" />
+  <img src="docs/screenshots/18-cartel-revision-ia.png" width="180" alt="Revisión" />
+</p>
+
+**Carteles: el evento** — artistas identificados en MusicBrainz, *Para ti* con el motivo y un extracto, el sonido del cartel y la hoja de ruta: una ruta sin solapes y la parrilla por escenario para hacerla tuya.
+
+<p align="center">
+  <img src="docs/screenshots/19-evento.png" width="180" alt="Evento" />
+  <img src="docs/screenshots/20-para-ti.png" width="180" alt="Para ti" />
+  <img src="docs/screenshots/21-sonido-y-lineup.png" width="180" alt="Sonido del cartel" />
+  <img src="docs/screenshots/22-hoja-de-ruta.png" width="180" alt="Hoja de ruta" />
+  <img src="docs/screenshots/23-parrilla.png" width="180" alt="Parrilla" />
+</p>
+
+**Guardados y Perfil**
+
+<p align="center">
+  <img src="docs/screenshots/10-guardados.png" width="180" alt="Guardados" />
+  <img src="docs/screenshots/10b-guardados-lista.png" width="180" alt="Lista de guardados" />
+  <img src="docs/screenshots/11-perfil.png" width="180" alt="Perfil" />
+</p>
+
+## Cómo está hecho
 
 ```
-mobile/    App Expo SDK 58 (TypeScript, Expo Router), probada con Expo Go
-backend/   API FastAPI (Python 3.11): GET /health y /v1 (artistas y descubrimiento vía MusicBrainz)
-docs/      Documentación compartida (dependencias, decisiones)
+mobile/    App Expo SDK 58 · React Native · TypeScript · Expo Router · expo-sqlite (datos locales)
+backend/   API FastAPI · Python 3.11 · SQLite (caché de IA)
+research/  Experimentos de la fase de investigación (fuentes musicales, IA para carteles)
+docs/      Decisiones, contratos de datos e informes de cada hito
 ```
 
-Requisitos: Node 24 + npm 11, Python 3.11 (`py -3.11`), Android SDK con emulador, Expo Go en el iPhone.
-Todos los comandos son para **PowerShell** y parten de la raíz del repositorio (`C:\dev\music-discovery`).
+- **Backend como única puerta a las fuentes externas**: limita el ritmo de MusicBrainz (1 petición/1,1 s), cachea, reintenta una sola vez y nunca expone claves a la app (nada sensible en `EXPO_PUBLIC_*`).
+- **IA con revisión humana**: Groq (LLM con visión) solo *propone* lo que lee en un cartel; el usuario confirma o corrige. Las biografías generadas parten solo de datos verificados.
+- **Privacidad por defecto**: sin cuentas; gustos, guardados y carteles viven en el dispositivo.
+- **Datos con licencia y procedencia**: datos centrales CC0 de MusicBrainz, volcados CC0 de Discogs, Wikidata/Commons para fotos con licencia libre, Cover Art Archive, ListenBrainz, ReccoBeats y Deezer (extractos y catálogo, solo uso no comercial; se pueden desactivar con `DATA_USE=commercial`).
+- **Pruebas**: 255 tests de backend (pytest, sin red) y 135 tests de lógica móvil (`node --test`), más TypeScript estricto.
+
+El proceso completo, por fases y con sus decisiones, está documentado en [`docs/`](docs/) (empieza por las [conclusiones de la Fase 1](docs/fase-1-conclusiones.md) y el [plan maestro de la Fase 2](docs/music-discovery-fase-2-plan-maestro.md)).
+
+## Puesta en marcha
+
+Requisitos: Node 24 + npm 11, Python 3.11 (`py -3.11`), y Expo Go en el móvil o un emulador Android.
+Todos los comandos son para **PowerShell** y parten de la raíz del repositorio.
 
 ## Backend
 
@@ -130,47 +225,20 @@ cd backend; .\.venv\Scripts\python -m pytest; cd ..
 cd mobile;  npx tsc --noEmit; npx tsc --noEmit -p tests; npm test; npx expo install --check; cd ..
 ```
 
-## Fase 0: preparación del entorno ✅ completada
-
-Comprobaciones automáticas:
-
-- [x] Test de contrato `GET /health` (pytest) superado.
-- [x] TypeScript sin errores (`npx tsc --noEmit`).
-- [x] `npx expo install --check`: dependencias compatibles con SDK 57.
-- [x] `npm audit` revisado y documentado (ver pendientes).
-
-Comprobaciones manuales (Expo Go):
-
-- [x] Emulador Android (Pixel_6a, API 35): conexión con `/health` correcta vía `10.0.2.2`.
-- [x] iPhone físico: conexión con `/health` correcta usando la IP LAN del PC y backend en `0.0.0.0`.
-- [x] Estados de error observados y recuperación correcta al pulsar **Reintentar**.
-
 ## Dependencias y vulnerabilidades
 
 Estado de `npm audit` y seguimiento: [docs/dependencias.md](docs/dependencias.md).
 
-## Fase 1: fuentes musicales (investigación) ✅ cerrada
+## Historia del proyecto
 
-**Documento maestro: [conclusiones de la Fase 1](docs/fase-1-conclusiones.md)** (matriz de fuentes, viabilidad demostrada frente a deseada, riesgos y decisiones pendientes para la Fase 2).
+- **Fase 0 — entorno**: monorepo, contrato `/health`, Expo Go en emulador Android e iPhone.
+- **Fase 1 — investigación de fuentes**: cobertura musical, géneros electrónicos, volcados de Discogs, IA para carteles y ListenBrainz ([conclusiones](docs/fase-1-conclusiones.md); experimentos en [`research/`](research/)). Decisiones clave: MusicBrainz como identidad (MBID, solo datos CC0), Discogs CC0 para géneros y estilos, AcousticBrainz descartado y personalización sin cuentas.
+- **Fase 2 — producto**: descubrimiento por conexiones, TrackDNA, Guardados, Perfil e Inicio editorial ([plan maestro](docs/music-discovery-fase-2-plan-maestro.md)).
+- **Fase 3 — Carteles**: lectura de carteles con IA, line-up revisable, «Para ti» y planificador de ruta ([plan](docs/carteles-fase-3-plan.md)).
 
-Experimentos en [`research/music_sources/`](research/music_sources/README.md) y [`research/poster_ai/`](research/poster_ai/README.md). Informes: [cobertura (1.2)](docs/fase-1-cobertura-musical.md), [géneros electrónicos (1.3A)](docs/fase-1-generos-electronicos.md), [volcados de Discogs (1.3B)](docs/fase-1-discogs-dumps.md), [IA para carteles (1.4)](docs/fase-1-ia-carteles.md) y [ListenBrainz (1.5)](docs/fase-1-listenbrainz.md). La Fase 1.1 no tiene informe en el repositorio.
+## Limitaciones conocidas
 
-Decisiones:
-
-- **MusicBrainz**: fuente principal de identidad (MBID). Solo datos centrales CC0; sus géneros y tags son CC BY-NC-SA.
-- **Volcados CC0 de Discogs**: fuente candidata de géneros y estilos (por lanzamiento y con procedencia). Antes de llevarlos a producción faltan un piloto de integración y una revisión legal.
-- **API de Discogs**: solo investigación; no es dependencia de producción.
-- **Wikidata**: enriquecimiento opcional de artistas, solo con el ID validado por MBID.
-- **AcousticBrainz**: descartado.
-- **Carteles (Groq `qwen/qwen3.8-27b`)**: seleccionado provisionalmente para extraer artistas, con revisión humana obligatoria; modelo en *preview*.
-- **ListenBrainz Labs**: fuente complementaria y opcional de artistas similares; LB Radio y la cuenta de ListenBrainz, aplazados.
-- **Personalización V1**: preferencias, favoritos e interacciones propias; sin aprendizaje automático propio ni Spotify.
-
-## Pendientes
-
-- **Fuentes musicales**: piloto con los volcados de Discogs (primero *masters*, luego *releases*); revisión legal de CC0, cadena de derechos y uso de la marca Discogs; proporción real de lanzamientos electrónicos y tamaño final; alojamiento. Sin pipeline ETL todavía.
-- **BPM y tonalidad para SetLab**: sin fuente válida (AcousticBrainz descartado).
-- **IA a coste cero**: Groq (plan gratuito) probado para carteles en la Fase 1.4; queda prever un modelo alternativo (el actual está en *preview*) y decidir el alcance del análisis de carteles.
-- **Decisiones de la Fase 2**: ver [docs/fase-1-conclusiones.md §11](docs/fase-1-conclusiones.md).
-- **Nombre y diseño de producto**: nombre definitivo, identidad visual y diseño de pantallas (la pantalla actual es técnica y provisional).
-- **Vulnerabilidades sin arreglo compatible en SDK 57**: ver [docs/dependencias.md](docs/dependencias.md).
+- Se ejecuta con Expo Go y un backend local; no hay builds publicadas en tiendas ni backend desplegado.
+- BPM y perfil sonoro son estimaciones de fuentes externas, no análisis propio del audio.
+- Algunas fuentes (Deezer y los géneros de MusicBrainz) solo permiten uso no comercial.
+- La lectura de carteles depende de un modelo en *preview* de Groq y siempre requiere revisión.
