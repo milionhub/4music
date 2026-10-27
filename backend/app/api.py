@@ -1,4 +1,4 @@
-"""Endpoints /v1 de Chromatic Underground (Explorar, Descubrir y TrackDNA). MusicBrainz y Wikimedia solo se
+"""Endpoints /v1 de #4MUSIC (Explorar, Descubrir y TrackDNA). MusicBrainz y Wikimedia solo se
 consultan aquí, a través de sus clientes."""
 
 from __future__ import annotations

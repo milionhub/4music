@@ -29,7 +29,7 @@ Aplicación móvil de descubrimiento de música electrónica, con especial atenc
 13. IA de SetLab como asesora, copiloto creativo y planificadora; cambios aprobados por el usuario.
 14. Personalización por gustos iniciales, interacción con la app y modos contextuales; reglas explicables antes que ML propio.
 15. Identidad underground / club culture.
-16. **Chromatic Underground**: base oscura y cromatismo multicolor adaptable, gradientes vivos y movimiento; reducción de movimiento/paleta fija, contraste y rendimiento. No asociación rígida color-género. Reacción al audio solo si hay audio autorizado.
+16. **#4MUSIC**: base oscura y cromatismo multicolor adaptable, gradientes vivos y movimiento; reducción de movimiento/paleta fija, contraste y rendimiento. No asociación rígida color-género. Reacción al audio solo si hay audio autorizado.
 17. Lenguaje visual: Rave Brutalism + Fluid Immersive UI; tipografía fuerte, composiciones atrevidas y gradientes fluidos.
 18. Experiencia móvil inmersiva, dinámica y audiovisual, con accesibilidad y control de movimiento.
 19. Implementación secuencial: TrackDNA → revisión y aprobación → Carteles → revisión y aprobación → SetLab.
@@ -62,7 +62,7 @@ Aplicación móvil de descubrimiento de música electrónica, con especial atenc
 - Favoritos, colecciones e historial.
 - Recomendaciones basadas en preferencias, relaciones verificadas y control de exploración; explicación de su origen.
 - Relaciones en fichas y mapa interactivo construido a partir de vínculos existentes.
-- Experiencia visual Chromatic Underground, con controles de accesibilidad.
+- Experiencia visual #4MUSIC, con controles de accesibilidad.
 - Funcionamiento correcto en dispositivos móviles reales.
 
 ### Capacidades aprobadas en visión pero dependientes de investigación
@@ -99,7 +99,7 @@ Los hitos son propuestas para revisar contra el estado real del repositorio ante
 - Entregable: descubrir, conectar y recuperar música.
 
 ### Hito T4 — Identidad visual y funciones avanzadas viables
-- Refinamiento Chromatic Underground, animaciones, rendimiento y reducción de movimiento.
+- Refinamiento #4MUSIC, animaciones, rendimiento y reducción de movimiento.
 - Explicaciones profundas y conversación con IA, solo tras validar disponibilidad y límites; fallback sin IA.
 - Previews/ADN sonoro avanzado solo si se confirma fuente legítima y fiable.
 - Entregable: experiencia diferenciada sin dependencias falsas.

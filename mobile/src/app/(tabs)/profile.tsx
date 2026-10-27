@@ -158,7 +158,7 @@ function EngineRoom({ discarded, onResetDiscarded }: { discarded: number; onRese
             <Text style={styles.note}>
               MusicBrainz, Wikidata y Discogs (datos abiertos); Deezer (fotos, extractos de 30 s, sellos y catálogo, uso no
               comercial); ReccoBeats y AcousticBrainz (tempo y perfil sonoro estimados). Todo pasa por el servidor de
-              Chromatic Underground. Tus guardados, artistas y estilos no salen de este dispositivo.
+              #4MUSIC. Tus guardados, artistas y estilos no salen de este dispositivo.
             </Text>
           </View>
         </View>

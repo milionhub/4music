@@ -1,5 +1,5 @@
 /**
- * Chromatic Underground: base oscura, tipografía condensada contundente y acentos cromáticos.
+ * #4MUSIC: base oscura, tipografía condensada contundente y acentos cromáticos.
  * El color de cada artista se deriva de su MBID (no de su género: sin asociación rígida color-género).
  */
 import '@/global.css';

@@ -1,5 +1,5 @@
 /**
- * Inicio V6 de Chromatic Underground: revista underground con edición diaria (lib/home-edition.ts) y descubrimiento
+ * Inicio V6 de #4MUSIC: revista underground con edición diaria (lib/home-edition.ts) y descubrimiento
  * de música real (lib/home-picks.ts). Portada con la canción del día, En el radar, Tu frecuencia (a partir de tus
  * Guardados y sus artistas afines, GET /v1/tracks/{mbid}/affinity) y Detrás del sonido. Todo sale de fichas TrackDNA (GET /v1/tracks/{mbid}, en caché en el backend):
  * como mucho tres fichas editoriales, las de tus cuatro Guardados más recientes y hasta cuatro de candidatos de Tu

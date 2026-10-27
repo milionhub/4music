@@ -477,7 +477,7 @@ export function SourceNote({ url, provider }: { url: string; provider: 'Discogs'
         <Text onPress={() => openBrowserAsync(url, BROWSER_OPTIONS)} accessibilityRole="link" style={[MONO_B, { color: S.ink, textDecorationLine: 'underline' }]}>
           Datos de Deezer ↗
         </Text>
-        <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz y Discogs. Uso no comercial. Chromatic Underground no está afiliado a Deezer.</Text>
+        <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz y Discogs. Uso no comercial. #4MUSIC no está afiliado a Deezer.</Text>
       </View>
     );
   }
@@ -486,7 +486,7 @@ export function SourceNote({ url, provider }: { url: string; provider: 'Discogs'
       <Text onPress={() => openBrowserAsync(url, BROWSER_OPTIONS)} accessibilityRole="link" style={[MONO_B, { color: S.ink, textDecorationLine: 'underline' }]}>
         Data provided by Discogs ↗
       </Text>
-      <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz. Chromatic Underground no está afiliado a Discogs.</Text>
+      <Text style={[MONO, { color: S.soft }]}>Canción fuera de MusicBrainz. #4MUSIC no está afiliado a Discogs.</Text>
     </View>
   );
 }

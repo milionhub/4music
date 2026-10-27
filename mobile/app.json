@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "#4MUSIC",
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -37,8 +37,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Chromatic Underground usa tus fotos para analizar carteles de fiestas y festivales que elijas.",
-          "cameraPermission": "Chromatic Underground usa la cámara para fotografiar carteles de fiestas y festivales.",
+          "photosPermission": "#4MUSIC usa tus fotos para analizar carteles de fiestas y festivales que elijas.",
+          "cameraPermission": "#4MUSIC usa la cámara para fotografiar carteles de fiestas y festivales.",
           "microphonePermission": false
         }
       ],

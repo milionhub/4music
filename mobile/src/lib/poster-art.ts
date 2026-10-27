@@ -2,7 +2,7 @@
  * Carteles 3.5: identidad visual de cada evento. Lógica pura, probada en tests/posters.test.ts.
  *
  * - Paleta: los colores que la IA leyó en el cartel (`palette.seeds`, ya guardados) se validan y se ajustan a la
- *   paleta más cercana del sistema Chromatic (`PALETTES`, con contraste WCAG ya comprobado). Sin colores útiles, una
+ *   paleta más cercana del sistema de #4MUSIC (`PALETTES`, con contraste WCAG ya comprobado). Sin colores útiles, una
  *   paleta determinista por la huella del cartel (o su id). Se calcula siempre igual a partir de lo guardado: estable
  *   entre aperturas y sin reescribir eventos antiguos.
  * - Composición: cuatro familias propias de Carteles (no las de Inicio ni TrackDNA), elegidas por la misma semilla.

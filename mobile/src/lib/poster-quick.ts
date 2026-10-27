@@ -38,7 +38,7 @@ export function verifiablePhoto(p: PhotoInfo | null | undefined): p is PhotoInfo
 /** Crédito completo (nunca truncado): autor, licencia y fuente. */
 export function photoCredit(p: PhotoInfo): string {
   if (p.source === 'deezer') return `Foto: Deezer · ${p.license}`;
-  const where = p.source === 'editorial' ? 'Catálogo editorial de Chromatic Underground' : 'Wikimedia Commons';
+  const where = p.source === 'editorial' ? 'Catálogo editorial de #4MUSIC' : 'Wikimedia Commons';
   return [p.author ? `Foto: ${p.author}` : 'Foto', p.license, where].join(' · ');
 }
 

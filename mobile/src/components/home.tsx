@@ -109,7 +109,7 @@ export function Masthead({ ed }: { ed: Edition }) {
   return (
     <View style={{ backgroundColor: N.bg }}>
       <View style={styles.mast}>
-        <Text accessibilityRole="header" style={[MONO_B, { color: N.ink, flexShrink: 1 }]} numberOfLines={1}>Chromatic Underground</Text>
+        <Text accessibilityRole="header" style={[MONO_B, { color: N.ink, flexShrink: 1 }]} numberOfLines={1}>#4MUSIC</Text>
         <Text style={[MONO, { color: N.soft }]} numberOfLines={1}>{ed.dateLabel}</Text>
       </View>
       <View {...decorative} style={{ height: 4, backgroundColor: ed.palette.accent }} />
@@ -328,7 +328,7 @@ function CoverBlocks({ ed, width, track, state, onOpen, onSearch }: CoverProps) 
             <Text {...FIXED} numberOfLines={1} adjustsFontSizeToFit style={type(T, fitSize(word, wide - Space.lg * 2, T, 150, 20), P.hero.ink, 0.95)}>{word}</Text>
           </View>
           <View {...decorative} style={[styles.block, { width: narrow, backgroundColor: P.paper.bg, alignItems: 'center', justifyContent: 'center' }]}>
-            <Text {...FIXED} style={type(V, fitSize(day, narrow - Space.lg, V, 110, 30), P.paper.ink, 1.0)}>{day}</Text>
+            <Text {...FIXED} numberOfLines={1} adjustsFontSizeToFit style={type(V, fitSize(day, narrow - Space.lg, V, 110, 30), P.paper.ink, 1.0)}>{day}</Text>
             <Text style={[MONO_B, { color: P.paper.ink }]}>{ed.dateLabel.split(' ').pop()}</Text>
           </View>
         </View>

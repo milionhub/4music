@@ -1,4 +1,4 @@
-/** Primitivas visuales de Chromatic Underground (sin dependencias externas). */
+/** Primitivas visuales de #4MUSIC (sin dependencias externas). */
 import { createContext, type ReactNode, useContext } from 'react';
 import {
   ActivityIndicator,

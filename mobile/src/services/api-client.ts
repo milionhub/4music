@@ -80,7 +80,7 @@ export function describeError(error: ApiError): string {
       return 'MusicBrainz devolvió una respuesta inesperada.';
   }
   if (error.kind === 'config') return error.message;
-  if (error.kind === 'network') return 'No hay conexión con el servidor de Chromatic Underground. Comprueba que está arrancado y la URL en Perfil.';
+  if (error.kind === 'network') return 'No hay conexión con el servidor de #4MUSIC. Comprueba que está arrancado y la URL en Perfil.';
   if (error.kind === 'timeout') return `${error.message}. La primera consulta a MusicBrainz puede tardar; vuelve a intentarlo.`;
   return error.message;
 }

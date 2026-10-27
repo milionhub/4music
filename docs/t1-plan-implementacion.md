@@ -305,7 +305,7 @@ La búsqueda exacta de «Luciano» devuelve primero a un **cantante de reggae** 
 - **Mobile:**
   - Navegación: pila raíz con `(tabs)` (Inicio, Explorar, Guardados y Perfil, con `NativeTabs`), `onboarding` y `artist/[mbid]`.
   - Datos y estado: `state/library.tsx` (contexto con escrituras funcionales), `storage/local-store.ts` (`expo-sqlite/kv-store`, claves versionadas, datos corruptos → vacío), `services/api-client.ts` y `music.ts`, y `hooks/use-remote.ts`.
-  - Interfaz: `components/ui.tsx` y `music.tsx` (Chromatic Underground con gradientes nativos `experimental_backgroundImage`, tipografía condensada del sistema y acento por MBID).
+  - Interfaz: `components/ui.tsx` y `music.tsx` (#4MUSIC con gradientes nativos `experimental_backgroundImage`, tipografía condensada del sistema y acento por MBID).
   - Se retiraron los componentes de la plantilla de Expo. La comprobación de `/health` de la Fase 0 se conserva en Perfil.
 
 **Cambios respecto al contrato de T0** (ya reflejados en el código):
@@ -342,7 +342,7 @@ La búsqueda exacta de «Luciano» devuelve primero a un **cantante de reggae** 
 - Colecciones e historial (T3).
 - Control de sorpresa y Home personalizado completo (T2).
 - Mapa de relaciones (T3).
-- Identidad visual Chromatic Underground definitiva (T4): en T1 basta un estilo oscuro sencillo y legible.
+- Identidad visual #4MUSIC definitiva (T4): en T1 basta un estilo oscuro sencillo y legible.
 - IA, previews, géneros, imágenes, cuentas, ListenBrainz y Spotify.
 
 ## 2. Bloques de implementación (en orden)

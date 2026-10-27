@@ -61,6 +61,6 @@ export function describePosterError(error: ApiError): string {
       return 'Formato de imagen no admitido.';
   }
   if (error.kind === 'timeout') return 'La IA tardó demasiado en responder. Puedes volver a intentarlo.';
-  if (error.kind === 'network') return 'No hay conexión con el servidor de Chromatic Underground.';
+  if (error.kind === 'network') return 'No hay conexión con el servidor de #4MUSIC.';
   return error.message;
 }
